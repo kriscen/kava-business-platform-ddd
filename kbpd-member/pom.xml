@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.kava.kbpd</groupId>
+        <artifactId>kava-business-platform-ddd</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kbpd-member</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>kbpd-member-api</module>
+        <module>kbpd-member-app</module>
+        <module>kbpd-member-domain</module>
+        <module>kbpd-member-trigger</module>
+        <module>kbpd-member-infrastructure</module>
+        <module>kbpd-member-types</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 工程模块 -->
+            <dependency>
+                <groupId>com.kava.kbpd</groupId>
+                <artifactId>kbpd-member-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kava.kbpd</groupId>
+                <artifactId>kbpd-member-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kava.kbpd</groupId>
+                <artifactId>kbpd-member-types</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kava.kbpd</groupId>
+                <artifactId>kbpd-member-trigger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kava.kbpd</groupId>
+                <artifactId>kbpd-member-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

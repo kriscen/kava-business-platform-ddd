@@ -1,0 +1,43 @@
+app:
+  config:
+    cross-origin: '*'
+    api-version: v1
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/kava-upms
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # 验签公钥地址
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          jwk-set-uri: http://localhost:8600/auth/oauth2/jwks
+dubbo:
+  application:
+    name: ${spring.application.name}
+    qos-port: 22610
+  protocol:
+    name: dubbo
+    port: 20610
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr}
+    parameters:
+      namespace: ${spring.cloud.nacos.discovery.namespace}
+  consumer:
+    check: false
+
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
+
+kbpd:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+

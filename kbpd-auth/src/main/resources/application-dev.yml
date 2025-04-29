@@ -1,0 +1,31 @@
+dubbo:
+  application:
+    name: ${spring.application.name}
+    qos-port: 22600
+  protocol:
+    name: dubbo
+    port: 20600
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr}
+    parameters:
+      namespace: ${spring.cloud.nacos.discovery.namespace}
+  consumer:
+    check: false
+    # 去除auth中对spring security 上下文写入
+    filter: -authenticationPrepare
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
+
+kbpd:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+#spring:
+#  security:
+#    oauth2:
+#      authorization-server:
+#        token-uri: http://localhost/oauth2/token

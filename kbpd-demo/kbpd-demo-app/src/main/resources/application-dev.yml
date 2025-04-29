@@ -1,0 +1,28 @@
+app:
+  config:
+    cross-origin: '*'
+    api-version: v1
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/kava-demo
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: 20880
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr}
+    parameters:
+      namespace: ${spring.cloud.nacos.discovery.namespace}
+
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
