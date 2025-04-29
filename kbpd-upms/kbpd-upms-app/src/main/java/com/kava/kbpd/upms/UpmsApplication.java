@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms;
 
-import com.kava.kbpd.common.security.annotations.EnableResourceServer;
+import com.kava.kbpd.common.security.annotation.EnableResourceServer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;

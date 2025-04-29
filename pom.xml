@@ -10,6 +10,7 @@
     <modules>
         <module>kbpd-common</module>
         <module>kbpd-common/kbpd-common-bom</module>
+        <module>kbpd-demo</module>
         <module>kbpd-upms</module>
         <module>kbpd-auth</module>
         <module>kbpd-gateway</module>

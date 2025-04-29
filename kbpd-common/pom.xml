@@ -17,7 +17,6 @@
         <module>kbpd-common-cache</module>
         <module>kbpd-common-database</module>
         <module>kbpd-common-security</module>
-        <module>kbpd-common-web</module>
     </modules>
 
 </project>

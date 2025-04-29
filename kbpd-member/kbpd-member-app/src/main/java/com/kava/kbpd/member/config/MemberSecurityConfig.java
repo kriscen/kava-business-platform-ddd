@@ -1,5 +1,7 @@
 package com.kava.kbpd.member.config;
 
+import com.kava.kbpd.upms.api.service.IRemoteUserService;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -10,5 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MemberSecurityConfig {
 
+    @DubboReference(version = "1.0")
+    private IRemoteUserService remoteUserService;
 
 }

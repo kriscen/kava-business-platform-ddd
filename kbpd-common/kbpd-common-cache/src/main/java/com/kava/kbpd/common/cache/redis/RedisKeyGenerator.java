@@ -27,17 +27,6 @@ public class RedisKeyGenerator {
      * 生成redis Key
      * @param module 模块
      * @param keyType 缓存key类型
-     * @return redis key
-     */
-    public String generateKey(RedisKeyModule module, String keyType) {
-        return activeProfile + CoreConstant.SEPARATOR + module.getModule() + CoreConstant.SEPARATOR +
-                keyType;
-    }
-
-    /**
-     * 生成redis Key
-     * @param module 模块
-     * @param keyType 缓存key类型
      * @param id 缓存id
      * @return redis key
      */
@@ -47,16 +36,15 @@ public class RedisKeyGenerator {
     }
 
     /**
-     * 生成带字段的 Key
+     * 生成带字段的 Key（适用于 Hash 类型）
      * @param module 模块
      * @param keyType 缓存key类型
-     * @param field 字段
      * @param id 缓存id
+     * @param field hash 字段
      * @return redis key
      */
-    public String generateKey(RedisKeyModule module, String keyType, String field, String id) {
-        return activeProfile + CoreConstant.SEPARATOR + module.getModule() + CoreConstant.SEPARATOR +
-                keyType + CoreConstant.SEPARATOR + field + CoreConstant.SEPARATOR + id;
+    public String generateKey(RedisKeyModule module, String keyType, String id, String field) {
+        return generateKey(module, keyType, id) + CoreConstant.SEPARATOR + field;
     }
 
 }

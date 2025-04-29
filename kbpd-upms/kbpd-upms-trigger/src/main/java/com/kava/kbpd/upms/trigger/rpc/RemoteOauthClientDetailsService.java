@@ -24,8 +24,8 @@ public class RemoteOauthClientDetailsService implements IRemoteOauthClientDetail
         SysOauthClientDetailsDTO dto = new SysOauthClientDetailsDTO();
         dto.setClientId(clientId);
         dto.setClientSecret("aaaa-bbbb-cccc-dddd-eeee");
-        dto.setWebServerRedirectUri("https://www.baidu.com");
-        dto.setScope("user");
+        dto.setWebServerRedirectUri("*");
+        dto.setScope("openid,userid,userinfo");
         dto.setAuthorizedGrantTypes(new String[]{"authorization_code","password","refresh_token"});
         return dto;
     }

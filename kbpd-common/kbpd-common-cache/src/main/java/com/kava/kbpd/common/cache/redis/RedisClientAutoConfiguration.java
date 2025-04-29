@@ -1,32 +1,31 @@
 package com.kava.kbpd.common.cache.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
-import org.redisson.client.codec.StringCodec;
+import org.redisson.client.codec.BaseCodec;
+import org.redisson.client.protocol.Decoder;
+import org.redisson.client.protocol.Encoder;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisPassword;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.util.StringUtils;
 
-import java.time.Duration;
+import java.io.IOException;
 
 /**
  * @author Kris
  * @date 2025/3/18
  * @description: Redis 客户端，使用 Redisson
  */
-@Data
 @Configuration
 @EnableConfigurationProperties(RedisClientProperties.class)
 public class RedisClientAutoConfiguration {
@@ -37,66 +36,57 @@ public class RedisClientAutoConfiguration {
     }
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory(RedisClientProperties properties) {
-        // 配置Lettuce连接池
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .commandTimeout(Duration.ofMillis(properties.getIdleTimeout()))
-                .build();
-
-        // 配置Redis地址和密码
-        RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration(
-                properties.getHost(),
-                properties.getPort()
-        );
-        serverConfig.setPassword(RedisPassword.of(properties.getPassword()));
-
-        return new LettuceConnectionFactory(serverConfig, clientConfig);
+    public RedissonService redissonService(RedissonClient redissonClient) {
+        return new RedissonService(redissonClient);
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-
-        redisTemplate.setKeySerializer(RedisSerializer.string());
-        redisTemplate.setHashKeySerializer(RedisSerializer.string());
-
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
-
-        redisTemplate.setValueSerializer(serializer);
-        redisTemplate.setHashValueSerializer(serializer); // HashValue需显式配置[[2]][[9]]
-
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate;
-    }
-
-    @Bean
-    public RedissonClient redissonClient(RedisClientProperties properties) {
+    public RedissonClient redissonClient(ConfigurableApplicationContext applicationContext, RedisClientProperties properties) {
         Config config = new Config();
         // 根据需要可以设定编解码器；https://github.com/redisson/redisson/wiki/4.-%E6%95%B0%E6%8D%AE%E5%BA%8F%E5%88%97%E5%8C%96
-        config.setCodec(new StringCodec());
-        config.setThreads(5);
-        config.setNettyThreads(5);
+        config.setCodec(new RedisCodec());
 
         config.useSingleServer()
-                .setAddress("redis://" + properties.getHost() + ":" + properties.getPort())
-//                .setPassword(properties.getPassword())
-                .setConnectionPoolSize(properties.getPoolSize())
-                .setConnectionMinimumIdleSize(properties.getMinIdleSize())
-                .setIdleConnectionTimeout(properties.getIdleTimeout())
-                .setConnectTimeout(properties.getConnectTimeout())
-                .setRetryAttempts(properties.getRetryAttempts())
-                .setRetryInterval(properties.getRetryInterval())
-                .setPingConnectionInterval(properties.getPingInterval())
-                .setKeepAlive(properties.isKeepAlive())
-        ;
+            .setAddress("redis://" + properties.getHost() + ":" + properties.getPort())
+            .setPassword(StringUtils.hasText(properties.getPassword())?properties.getPassword():null)
+            .setConnectionPoolSize(properties.getPoolSize())
+            .setConnectionMinimumIdleSize(properties.getMinIdleSize())
+            .setIdleConnectionTimeout(properties.getIdleTimeout())
+            .setConnectTimeout(properties.getConnectTimeout())
+            .setRetryAttempts(properties.getRetryAttempts())
+            .setRetryInterval(properties.getRetryInterval())
+            .setPingConnectionInterval(properties.getPingInterval())
+            .setKeepAlive(properties.isKeepAlive());
 
         return Redisson.create(config);
     }
 
-    @Bean
-    public RedisLock redisLock(RedissonClient redissonClient) {
-        return new RedisLock(redissonClient);
+    static class RedisCodec extends BaseCodec {
+
+        private final Encoder encoder = in -> {
+            ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
+            try {
+                ByteBufOutputStream os = new ByteBufOutputStream(out);
+                JSON.writeTo(os, in, JSONWriter.Feature.WriteClassName);
+                return os.buffer();
+            } catch (Exception e) {
+                out.release();
+                throw new IOException(e);
+            }
+        };
+
+        private final Decoder<Object> decoder = (buf, state) -> JSON.parseObject(new ByteBufInputStream(buf), Object.class);
+
+        @Override
+        public Decoder<Object> getValueDecoder() {
+            return decoder;
+        }
+
+        @Override
+        public Encoder getValueEncoder() {
+            return encoder;
+        }
+
     }
 
 }

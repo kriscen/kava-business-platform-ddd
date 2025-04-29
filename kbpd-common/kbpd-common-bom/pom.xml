@@ -37,7 +37,8 @@
         <fastjson2.version>2.0.53</fastjson2.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <mapstruct-binding.version>0.2.0</mapstruct-binding.version>
-
+        <!-- sa-token -->
+        <sa-token.version>1.42.0</sa-token.version>
     </properties>
 
 
@@ -84,11 +85,6 @@
             <dependency>
                 <groupId>com.kava.kbpd</groupId>
                 <artifactId>kbpd-common-security</artifactId>
-                <version>${kava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.kava.kbpd</groupId>
-                <artifactId>kbpd-common-web</artifactId>
                 <version>${kava.version}</version>
             </dependency>
 
@@ -240,6 +236,26 @@
                 <version>${hutool.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Sa-Token 权限认证, 在线文档：https://sa-token.cc -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+            <!-- Sa-Token OAuth2.0 模块 -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-oauth2</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-jwt</artifactId>
+                <version>${sa-token.version}</version>
             </dependency>
 
         </dependencies>

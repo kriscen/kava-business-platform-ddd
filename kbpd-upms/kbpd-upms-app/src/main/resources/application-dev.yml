@@ -9,12 +9,7 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-  # 验签公钥地址
-  security:
-    oauth2:
-      resource-server:
-        jwt:
-          jwk-set-uri: http://localhost:8600/auth/oauth2/jwks
+
 dubbo:
   application:
     name: ${spring.application.name}
@@ -29,6 +24,12 @@ dubbo:
   consumer:
     check: false
 
+# sa-token配置
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: kava-token
+  # jwt 秘钥
+  jwt-secret-key: saxsaxsaxsax
 # 日志
 logging:
   level:
@@ -39,5 +40,3 @@ kbpd:
   redis:
     host: 127.0.0.1
     port: 6379
-
-

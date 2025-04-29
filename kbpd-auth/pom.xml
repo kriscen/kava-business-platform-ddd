@@ -13,18 +13,6 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!-- OAuth2 认证服务器-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
-        </dependency>
-
-        <!-- OAuth2 客户端（第三方登录 微信、Gitee、Github、QQ）-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-oauth2-client</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.kava.kbpd</groupId>
             <artifactId>kbpd-upms-api</artifactId>
@@ -35,16 +23,22 @@
         </dependency>
         <dependency>
             <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-common-cache</artifactId>
+            <artifactId>kbpd-common-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-common-core</artifactId>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-common-web</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-mapstruct-binding</artifactId>
         </dependency>
+
 
         <!-- thymeleaf 视图引擎 -->
         <dependency>
@@ -52,6 +46,16 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
+        <!--web 模块-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--undertow容器-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
         <!-- Dubbo Spring Boot 3 Starter -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -60,21 +64,6 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-common-security</artifactId>
-            <exclusions>
-                <exclusion>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-                </exclusion>
-                <exclusion>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-starter-security</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
