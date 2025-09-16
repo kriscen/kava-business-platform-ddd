@@ -46,11 +46,11 @@
         <!-- 工程模块；启动依赖 trigger->domain, infrastructure-->
         <dependency>
             <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-demo-trigger</artifactId>
+            <artifactId>kbpd-demo-adapter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-demo-adapter</artifactId>
+            <artifactId>kbpd-demo-infrastructure</artifactId>
         </dependency>
     </dependencies>
 
