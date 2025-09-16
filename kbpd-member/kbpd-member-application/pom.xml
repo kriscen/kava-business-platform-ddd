@@ -3,19 +3,22 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.kava.kbpd</groupId>
-        <artifactId>kbpd-demo</artifactId>
+        <artifactId>kbpd-member</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kbpd-demo-case</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>kbpd-member-application</artifactId>
 
-    <name>kbpd-demo-case</name>
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-demo-domain</artifactId>
+            <artifactId>kbpd-member-domain</artifactId>
         </dependency>
     </dependencies>
 </project>

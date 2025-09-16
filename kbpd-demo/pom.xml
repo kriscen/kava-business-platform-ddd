@@ -13,12 +13,12 @@
 
     <modules>
         <module>kbpd-demo-api</module>
-        <module>kbpd-demo-app</module>
+        <module>kbpd-demo-bootstrap</module>
         <module>kbpd-demo-domain</module>
         <module>kbpd-demo-trigger</module>
-        <module>kbpd-demo-infrastructure</module>
+        <module>kbpd-demo-adapter</module>
         <module>kbpd-demo-types</module>
-        <module>kbpd-demo-case</module>
+        <module>kbpd-demo-application</module>
     </modules>
 
     <dependencyManagement>
@@ -31,7 +31,7 @@
             </dependency>
             <dependency>
                 <groupId>com.kava.kbpd</groupId>
-                <artifactId>kbpd-demo-infrastructure</artifactId>
+                <artifactId>kbpd-demo-adapter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

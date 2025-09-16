@@ -13,11 +13,12 @@
 
     <modules>
         <module>kbpd-upms-api</module>
-        <module>kbpd-upms-app</module>
+        <module>kbpd-upms-bootstrap</module>
         <module>kbpd-upms-domain</module>
-        <module>kbpd-upms-trigger</module>
+        <module>kbpd-upms-adapter</module>
         <module>kbpd-upms-infrastructure</module>
         <module>kbpd-upms-types</module>
+        <module>kbpd-upms-application</module>
     </modules>
 
     <dependencyManagement>
@@ -40,12 +41,17 @@
             </dependency>
             <dependency>
                 <groupId>com.kava.kbpd</groupId>
-                <artifactId>kbpd-upms-trigger</artifactId>
+                <artifactId>kbpd-upms-adapter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.kava.kbpd</groupId>
                 <artifactId>kbpd-upms-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kava.kbpd</groupId>
+                <artifactId>kbpd-upms-application</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

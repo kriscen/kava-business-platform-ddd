@@ -7,7 +7,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kbpd-member-app</artifactId>
+    <artifactId>kbpd-member-bootstrap</artifactId>
 
     <packaging>jar</packaging>
 
@@ -57,7 +57,7 @@
         <!-- 工程模块；启动依赖 trigger->domain, infrastructure-->
         <dependency>
             <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-member-trigger</artifactId>
+            <artifactId>kbpd-member-adapter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.kava.kbpd</groupId>

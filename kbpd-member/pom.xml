@@ -14,11 +14,12 @@
 
     <modules>
         <module>kbpd-member-api</module>
-        <module>kbpd-member-app</module>
+        <module>kbpd-member-bootstrap</module>
         <module>kbpd-member-domain</module>
-        <module>kbpd-member-trigger</module>
+        <module>kbpd-member-adapter</module>
         <module>kbpd-member-infrastructure</module>
         <module>kbpd-member-types</module>
+        <module>kbpd-member-application</module>
     </modules>
 
     <dependencyManagement>
@@ -41,12 +42,17 @@
             </dependency>
             <dependency>
                 <groupId>com.kava.kbpd</groupId>
-                <artifactId>kbpd-member-trigger</artifactId>
+                <artifactId>kbpd-member-adapter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.kava.kbpd</groupId>
                 <artifactId>kbpd-member-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kava.kbpd</groupId>
+                <artifactId>kbpd-member-application</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

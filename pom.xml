@@ -14,6 +14,7 @@
         <module>kbpd-auth</module>
         <module>kbpd-gateway</module>
         <module>kbpd-member</module>
+<!--        <module>kbpd-demo</module>-->
     </modules>
 
     <packaging>pom</packaging>

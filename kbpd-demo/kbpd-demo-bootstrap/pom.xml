@@ -3,15 +3,24 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.kava.kbpd</groupId>
-        <artifactId>kbpd-upms</artifactId>
+        <artifactId>kbpd-demo</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kbpd-upms-app</artifactId>
+    <artifactId>kbpd-demo-bootstrap</artifactId>
 
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--undertow容器-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -33,35 +42,20 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- nacos 服务注册与配置中心 -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
 
         <!-- 工程模块；启动依赖 trigger->domain, infrastructure-->
         <dependency>
             <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-upms-trigger</artifactId>
+            <artifactId>kbpd-demo-trigger</artifactId>
         </dependency>
         <dependency>
             <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-upms-infrastructure</artifactId>
+            <artifactId>kbpd-demo-adapter</artifactId>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>kbpd-upms-app</finalName>
+        <finalName>kbpd-demo-app</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -97,7 +91,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.kava.kbpd.upms.UpmsApplication</mainClass>
+                    <mainClass>com.kava.kbpd.demo.demoApplication</mainClass>
                     <layout>JAR</layout>
                 </configuration>
             </plugin>
