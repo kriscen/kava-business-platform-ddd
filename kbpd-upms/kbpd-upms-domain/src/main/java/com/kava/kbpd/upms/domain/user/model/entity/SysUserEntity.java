@@ -76,16 +76,6 @@ public class SysUserEntity implements Entity<SysUserId> {
 	private String wxOpenid;
 
 	/**
-	 * 企微微信 userid
-	 */
-	private String wxCpUserid;
-
-	/**
-	 * 钉钉 userid
-	 */
-	private String wxDingUserid;
-
-	/**
 	 * 微信小程序openId
 	 */
 	private String miniOpenid;

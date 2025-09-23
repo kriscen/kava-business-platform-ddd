@@ -68,4 +68,9 @@ public class SysMenuPO extends TenantDeletablePO {
      * 菜单是否内嵌
      */
     private String embedded;
+
+    /**
+     * 菜单范围，区分平台还是租户
+     */
+    private String scope;
 }

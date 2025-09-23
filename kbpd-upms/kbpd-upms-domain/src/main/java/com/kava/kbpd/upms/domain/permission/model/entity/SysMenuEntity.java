@@ -78,6 +78,11 @@ public class SysMenuEntity implements Entity<SysMenuId> {
      */
     private String embedded;
 
+    /**
+     * 菜单范围，区分平台还是租户
+     */
+    private String scope;
+
     @Override
     public SysMenuId identifier() {
         return id;

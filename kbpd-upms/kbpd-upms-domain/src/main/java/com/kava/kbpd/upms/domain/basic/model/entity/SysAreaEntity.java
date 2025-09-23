@@ -66,11 +66,6 @@ public class SysAreaEntity implements Entity<SysAreaId> {
     private String areaType;
 
     /**
-     * 0:非热门，1:热门
-     */
-    private String hot;
-
-    /**
      * 城市编码
      */
     private String cityCode;
