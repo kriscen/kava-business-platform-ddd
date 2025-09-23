@@ -1,9 +1,10 @@
 package com.kava.kbpd.upms.infrastructure.dao.po;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.kava.kbpd.common.database.po.TenantDeletablePO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -11,15 +12,10 @@ import java.time.LocalDateTime;
  * @date 2025/3/18
  * @description: 用户表
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_user")
-public class SysUserPO implements Serializable {
-
-	/**
-	 * 主键ID
-	 */
-	@TableId
-	private Long id;
+public class SysUserPO extends TenantDeletablePO {
 
 	/**
 	 * 用户名
@@ -35,37 +31,6 @@ public class SysUserPO implements Serializable {
 	 * 随机盐
 	 */
 	private String salt;
-
-	/**
-	 * 创建人
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private String creator;
-
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime gmtCreate;
-
-	/**
-	 * 修改人
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private String modifier;
-
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime gmtModified;
-
-	/**
-	 * 0-正常，1-删除
-	 */
-	@TableLogic
-	@TableField(fill = FieldFill.INSERT)
-	private String delFlag;
 
 	/**
 	 * 锁定标记
@@ -108,24 +73,9 @@ public class SysUserPO implements Serializable {
 	private String wxOpenid;
 
 	/**
-	 * 企微微信 userid
-	 */
-	private String wxCpUserid;
-
-	/**
-	 * 钉钉 userid
-	 */
-	private String wxDingUserid;
-
-	/**
 	 * 微信小程序openId
 	 */
 	private String miniOpenid;
-
-	/**
-	 * QQ openid
-	 */
-	private String qqOpenid;
 
 	/**
 	 * 昵称

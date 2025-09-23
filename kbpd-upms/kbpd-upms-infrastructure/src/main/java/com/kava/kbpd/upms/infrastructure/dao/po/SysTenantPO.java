@@ -1,26 +1,19 @@
 package com.kava.kbpd.upms.infrastructure.dao.po;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.kava.kbpd.common.database.po.SysDeletablePO;
 import lombok.Data;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Kris
  * @date 2025/3/18
  * @description: 租户
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_tenant")
-public class SysTenantPO implements Serializable {
-
-	/**
-	 * 租户id
-	 */
-	@TableId
-	private Long id;
-
+public class SysTenantPO extends SysDeletablePO {
 	/**
 	 * 租户名称
 	 */
@@ -62,50 +55,9 @@ public class SysTenantPO implements Serializable {
 	private String background;
 
 	/**
-	 * 开始时间
-	 */
-	private LocalDateTime startTime;
-
-	/**
-	 * 结束时间
-	 */
-	private LocalDateTime endTime;
-
-	/**
 	 * 0正常 9-冻结
 	 */
 	private String status;
 
 	private String menuId;
-
-	/**
-	 * 创建人
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private String creator;
-
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime gmtCreate;
-
-	/**
-	 * 修改人
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private String modifier;
-
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime gmtModified;
-
-	/**
-	 * 删除标记
-	 */
-	@TableLogic
-	@TableField(fill = FieldFill.INSERT)
-	private String delFlag;
 }

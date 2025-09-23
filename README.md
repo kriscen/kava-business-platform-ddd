@@ -8,4 +8,4 @@ ddd架构
 - kbpd-member 会员服务
 - kbpd-order 订单服务
 - kbpd-pay 支付服务
-- kbpd-upms 权限系统管理
+- kbpd-upms (Unified Permission Management System)权限系统管理

@@ -1,26 +1,19 @@
 package com.kava.kbpd.upms.infrastructure.dao.po;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.kava.kbpd.common.database.po.TenantDeletablePO;
 import lombok.Data;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Kris
  * @date 2025/3/18
  * @description: 日志表
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_file_group")
-public class SysLogPO implements Serializable {
-
-	/**
-	 * 编号
-	 */
-	@TableId
-	private Long id;
-
+public class SysLogPO extends TenantDeletablePO {
 	/**
 	 * 日志类型
 	 */
@@ -35,18 +28,6 @@ public class SysLogPO implements Serializable {
 	 * 创建者
 	 */
 	private String createBy;
-
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime gmtCreate;
-
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime gmtModified;
 
 	/**
 	 * 操作IP地址
@@ -87,12 +68,4 @@ public class SysLogPO implements Serializable {
 	 * 服务ID
 	 */
 	private String serviceId;
-
-	/**
-	 * 删除标记
-	 */
-	@TableLogic
-	@TableField(fill = FieldFill.INSERT)
-	private String delFlag;
-
 }

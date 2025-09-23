@@ -1,26 +1,19 @@
 package com.kava.kbpd.upms.infrastructure.dao.po;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.kava.kbpd.common.database.po.TenantDeletablePO;
 import lombok.Data;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Kris
  * @date 2025/3/18
  * @description: 菜单权限表
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_menu")
-public class SysMenuPO implements Serializable {
-
-    /**
-     * 菜单ID
-     */
-    @TableId
-    private Long id;
-
+public class SysMenuPO extends TenantDeletablePO {
     /**
      * 菜单名称
      */
@@ -75,36 +68,4 @@ public class SysMenuPO implements Serializable {
      * 菜单是否内嵌
      */
     private String embedded;
-
-    /**
-     * 创建人
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private String creator;
-
-    /**
-     * 创建时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime gmtCreate;
-
-    /**
-     * 修改人
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String modifier;
-
-    /**
-     * 更新时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime gmtModified;
-
-    /**
-     * 0--正常 1--删除
-     */
-    @TableLogic
-    @TableField(fill = FieldFill.INSERT)
-    private String delFlag;
-
 }

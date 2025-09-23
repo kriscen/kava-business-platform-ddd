@@ -1,23 +1,19 @@
 package com.kava.kbpd.upms.infrastructure.dao.po;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.kava.kbpd.common.database.po.TenantDeletablePO;
 import lombok.Data;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Kris
  * @date 2025/3/18
  * @description: 客户端信息
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_oauth_client_details")
-public class SysOauthClientDetailsPO implements Serializable {
-
-
-	@TableId
-	private Long id;
+public class SysOauthClientDetailsPO extends TenantDeletablePO {
 
 	/**
 	 * 客户端ID
@@ -73,36 +69,4 @@ public class SysOauthClientDetailsPO implements Serializable {
 	 * 是否自动放行
 	 */
 	private String autoapprove;
-
-	/**
-	 * 删除标记
-	 */
-	@TableLogic
-	@TableField(fill = FieldFill.INSERT)
-	private String delFlag;
-
-	/**
-	 * 创建人
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private String creator;
-
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime gmtCreate;
-
-	/**
-	 * 修改人
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private String modifier;
-
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime gmtModified;
-
 }
