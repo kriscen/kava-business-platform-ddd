@@ -2,6 +2,7 @@ package com.kava.kbpd.upms.domain.model.entity;
 
 import com.kava.kbpd.common.core.label.Entity;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
+import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +53,7 @@ public class SysFileEntity implements Entity<SysFileId> {
     /**
      * 文件组
      */
-    private Long groupId;
+    private SysFileGroupId groupId;
 
     /**
      * 文件大小

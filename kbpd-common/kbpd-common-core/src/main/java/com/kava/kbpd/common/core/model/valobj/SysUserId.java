@@ -21,4 +21,8 @@ public class SysUserId implements Identifier {
 	 * 主键ID
 	 */
 	Long id;
+
+	public static SysUserId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

@@ -2,15 +2,16 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.common.core.model.valobj.SysUserId;
+import com.kava.kbpd.upms.adapter.converter.SysUserAdapterConverter;
 import com.kava.kbpd.upms.api.model.query.SysUserQuery;
 import com.kava.kbpd.upms.api.model.request.SysUserRequest;
 import com.kava.kbpd.upms.api.model.response.SysUserListResponse;
 import com.kava.kbpd.upms.api.model.response.SysUserResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysUserEntity;
-import com.kava.kbpd.common.core.model.valobj.SysUserId;
+import com.kava.kbpd.upms.application.model.dto.SysUserAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysUserListQueryDTO;
+import com.kava.kbpd.upms.application.service.ISysUserAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
-import com.kava.kbpd.upms.domain.service.ISysUserService;
-import com.kava.kbpd.upms.adapter.converter.SysUserAdapterConverter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/user/")
 public class SysUserController {
     @Resource
-    private ISysUserService sysUserService;
+    private ISysUserAppService sysUserAppService;
     @Resource
     private SysUserAdapterConverter sysUserTriggerConverter;
 
@@ -34,12 +35,12 @@ public class SysUserController {
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysUserListResponse>> getSysAreaPage(SysUserQuery query) {
+    public JsonResult<PagingInfo<SysUserListResponse>> getSysAreaPage(@ModelAttribute SysUserQuery query) {
         SysUserListQuery q = sysUserTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysUserEntity> pagingInfo = sysUserService.queryPage(q);
-        PagingInfo<SysUserListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysUserTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+        PagingInfo<SysUserListQueryDTO> queryUserPage = sysUserAppService.queryUserPage(q);
+        PagingInfo<SysUserListResponse> result = PagingInfo.toResponse(queryUserPage.getList().stream().
+                        map(sysUserTriggerConverter::convertDTO2List).toList(),
+                queryUserPage);
         return JsonResult.buildSuccess(result);
     }
 
@@ -50,12 +51,10 @@ public class SysUserController {
      * @param id 查询id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysUserResponse> getDetails(Long id) {
-        SysUserEntity sysUser = sysUserService.queryById(SysUserId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysUserTriggerConverter.convertEntity2Detail(sysUser));
+    @GetMapping("/{id}}")
+    public JsonResult<SysUserResponse> getDetails(@PathVariable("id") Long id) {
+        SysUserAppDetailDTO sysUser = sysUserAppService.queryUserById(SysUserId.of(id));
+        return JsonResult.buildSuccess(sysUserTriggerConverter.convertDetailDTO2DetailResp(sysUser));
     }
 
     /**
@@ -66,7 +65,7 @@ public class SysUserController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysUserRequest req) {
-        SysUserId id = sysUserService.create(sysUserTriggerConverter.convertRequest2Entity(req));
+        SysUserId id = sysUserAppService.createUser(sysUserTriggerConverter.convertRequest2CreateCommand(req));
         return JsonResult.buildSuccess(id.getId());
     }
 
@@ -78,7 +77,8 @@ public class SysUserController {
      */
     @PutMapping
     public JsonResult<Boolean> updateById(@RequestBody SysUserRequest req) {
-        return JsonResult.buildSuccess(sysUserService.update(sysUserTriggerConverter.convertRequest2Entity(req)));
+        sysUserAppService.updateUser(sysUserTriggerConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -89,8 +89,9 @@ public class SysUserController {
      */
     @DeleteMapping
     public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysUserId> idList = ids.stream().map(t->SysUserId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysUserService.removeBatchByIds(idList));
+        List<SysUserId> idList = ids.stream().map(t->SysUserId.of(t)).toList();
+        sysUserAppService.removeUserBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
 
 }

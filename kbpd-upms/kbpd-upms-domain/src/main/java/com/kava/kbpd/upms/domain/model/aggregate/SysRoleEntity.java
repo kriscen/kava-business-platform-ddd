@@ -1,4 +1,4 @@
-package com.kava.kbpd.upms.domain.model.entity;
+package com.kava.kbpd.upms.domain.model.aggregate;
 
 import com.kava.kbpd.common.core.label.AggregateRoot;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Kris
  * @date 2025/3/18
- * @description: 角色 实体
+ * @description: 角色 聚合根
  */
 @Data
 @Builder

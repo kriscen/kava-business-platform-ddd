@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.infrastructure.converter;
 
-import com.kava.kbpd.upms.domain.model.entity.SysRoleEntity;
+import com.kava.kbpd.upms.domain.model.aggregate.SysRoleEntity;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysRolePO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

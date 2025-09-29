@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class SysAreaAppServiceImpl implements ISysAreaAppService {
+public class SysAreaAppService implements ISysAreaAppService {
     @Resource
     private ISysAreaRepository sysAreaRepository;
 

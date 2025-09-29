@@ -8,9 +8,10 @@ import java.util.List;
 /**
  * @author Kris
  * @date 2025/9/28
- * @description: repository基本接口 - 操作
+ * @description: cqrs模型下的 write接口
  */
-public interface IBaseRepository<I extends Identifier, E extends Entity<I>> {
+public interface IBaseWriteRepository<I extends Identifier, E extends Entity<I>> {
+
     I create(E entity);
 
     Boolean update(E entity);

@@ -6,7 +6,7 @@ import com.kava.kbpd.upms.api.model.query.SysRoleQuery;
 import com.kava.kbpd.upms.api.model.request.SysRoleRequest;
 import com.kava.kbpd.upms.api.model.response.SysRoleListResponse;
 import com.kava.kbpd.upms.api.model.response.SysRoleResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysRoleEntity;
+import com.kava.kbpd.upms.domain.model.aggregate.SysRoleEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery;
 import com.kava.kbpd.upms.domain.service.ISysRoleService;
