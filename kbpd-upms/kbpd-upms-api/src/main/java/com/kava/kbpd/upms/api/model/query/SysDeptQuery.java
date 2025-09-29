@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.api.model.query;
 
-import com.kava.kbpd.common.core.base.BaseQuery;
+import com.kava.kbpd.common.core.base.AdapterBaseListQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysDeptQuery extends BaseQuery {
+public class SysDeptQuery extends AdapterBaseListQuery {
 
     /**
      * 部门ID

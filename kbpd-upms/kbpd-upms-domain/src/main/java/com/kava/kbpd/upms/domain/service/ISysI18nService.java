@@ -1,0 +1,20 @@
+package com.kava.kbpd.upms.domain.service;
+
+import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.upms.domain.model.entity.SysI18nEntity;
+import com.kava.kbpd.upms.domain.model.valobj.SysI18nId;
+import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
+
+import java.util.List;
+
+public interface ISysI18nService {
+    SysI18nId create(SysI18nEntity entity);
+
+    Boolean update(SysI18nEntity entity);
+
+    PagingInfo<SysI18nEntity> queryPage(SysI18nListQuery query);
+
+    SysI18nEntity queryById(SysI18nId id);
+
+    Boolean removeBatchByIds(List<SysI18nId> ids);
+}

@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.infrastructure.converter;
 
-import com.kava.kbpd.upms.domain.basic.model.entity.SysRouteConfEntity;
+import com.kava.kbpd.upms.domain.model.entity.SysRouteConfEntity;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysRouteConfPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.api.model.query;
 
-import com.kava.kbpd.common.core.base.BaseQuery;
+import com.kava.kbpd.common.core.base.AdapterBaseListQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysAreaQuery extends BaseQuery {
+public class SysAreaQuery extends AdapterBaseListQuery {
 
     /**
      * 主键ID

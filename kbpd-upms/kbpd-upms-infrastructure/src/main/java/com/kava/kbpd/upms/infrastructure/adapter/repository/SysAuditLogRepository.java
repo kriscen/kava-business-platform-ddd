@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.domain.basic.model.entity.SysAuditLogEntity;
-import com.kava.kbpd.upms.domain.basic.model.valobj.SysAuditLogId;
-import com.kava.kbpd.upms.domain.basic.model.valobj.SysAuditLogListQuery;
-import com.kava.kbpd.upms.domain.basic.repository.ISysAuditLogRepository;
+import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;
+import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogId;
+import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysAuditLogRepository;
 import com.kava.kbpd.upms.infrastructure.converter.SysAuditLogConverter;
 import com.kava.kbpd.upms.infrastructure.dao.SysAuditLogMapper;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysAuditLogPO;
@@ -41,12 +41,13 @@ public class SysAuditLogRepository implements ISysAuditLogRepository {
 
     @Override
     public PagingInfo<SysAuditLogEntity> queryPage(SysAuditLogListQuery query) {
-        Page<SysAuditLogPO> SysAuditLogPOPage = sysAuditLogMapper.selectPage(
-                Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
-                Wrappers.lambdaQuery(SysAuditLogPO.class));
-        return PagingInfo.toResponse(SysAuditLogPOPage.getRecords().stream()
-                        .map(sysAuditLogConverter::convertPO2Entity).toList(),
-                SysAuditLogPOPage.getTotal(), SysAuditLogPOPage.getCurrent(), SysAuditLogPOPage.getSize());
+//        Page<SysAuditLogPO> SysAuditLogPOPage = sysAuditLogMapper.selectPage(
+//                Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
+//                Wrappers.lambdaQuery(SysAuditLogPO.class));
+//        return PagingInfo.toResponse(SysAuditLogPOPage.getRecords().stream()
+//                        .map(sysAuditLogConverter::convertPO2Entity).toList(),
+//                SysAuditLogPOPage.getTotal(), SysAuditLogPOPage.getCurrent(), SysAuditLogPOPage.getSize());
+        return null;
     }
 
     @Override

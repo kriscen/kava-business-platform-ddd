@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.infrastructure.converter;
 
-import com.kava.kbpd.upms.domain.permission.model.entity.SysOauthClientDetailsEntity;
+import com.kava.kbpd.upms.domain.model.entity.SysOauthClientDetailsEntity;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysOauthClientDetailsPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,8 +14,10 @@ import org.mapstruct.Mapping;
 public interface SysOauthClientDetailsConverter {
 
     @Mapping(source = "id", target = "id.id")
+    @Mapping(source = "tenantId", target = "tenantId.id")
     SysOauthClientDetailsEntity convertPO2Entity(SysOauthClientDetailsPO sysOauthClientDetailsPO);
 
     @Mapping(source = "id.id", target = "id")
+    @Mapping(source = "tenantId.id", target = "tenantId")
     SysOauthClientDetailsPO convertEntity2PO(SysOauthClientDetailsEntity entity);
 }

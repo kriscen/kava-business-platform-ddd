@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.infrastructure.converter;
 
-import com.kava.kbpd.upms.domain.basic.model.entity.SysTenantEntity;
+import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysTenantPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

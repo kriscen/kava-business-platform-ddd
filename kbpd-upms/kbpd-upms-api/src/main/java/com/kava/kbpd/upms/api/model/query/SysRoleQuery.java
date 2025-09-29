@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.api.model.query;
 
-import com.kava.kbpd.common.core.base.BaseQuery;
+import com.kava.kbpd.common.core.base.AdapterBaseListQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysRoleQuery extends BaseQuery {
+public class SysRoleQuery extends AdapterBaseListQuery {
 
 	private Long roleId;
 

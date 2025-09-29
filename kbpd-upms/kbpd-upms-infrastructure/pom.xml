@@ -32,10 +32,6 @@
             <groupId>com.kava.kbpd</groupId>
             <artifactId>kbpd-upms-domain</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-common-security</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

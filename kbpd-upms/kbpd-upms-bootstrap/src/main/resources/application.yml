@@ -14,7 +14,7 @@ spring:
       password: @nacos.password@
       discovery:
         server-addr: 127.0.0.1:8848
-        namespace: 5a8db0f6-134e-4982-8258-40d25df99408
+        namespace: 92c33821-3fa9-4f51-92d3-6fd27ee9dbf4
       config:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
         namespace: ${spring.cloud.nacos.discovery.namespace}

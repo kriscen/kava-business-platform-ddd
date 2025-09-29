@@ -26,15 +26,13 @@ public class PagingInfo<T> implements Serializable {
      */
     private Long total;
 
-    /**
-     * 起始位置
-     */
-    private Integer startPos = (pageNo - 1) * pageSize;
-
     private List<T> list;
 
     public PagingInfo() {
 
+    }
+    public Integer getStartPos(){
+        return (pageNo - 1) * pageSize;
     }
 
     public PagingInfo(Long total, List<T> list) {

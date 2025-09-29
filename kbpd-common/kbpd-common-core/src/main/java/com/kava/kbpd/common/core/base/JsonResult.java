@@ -31,7 +31,7 @@ public class JsonResult<T> implements Serializable {
     /**
      * 请求是否成功
      */
-    private Boolean success;
+    private boolean success;
 
     /**
      * 业务数据
@@ -52,7 +52,7 @@ public class JsonResult<T> implements Serializable {
     public JsonResult() {
     }
 
-    public JsonResult(Boolean success, T data, String errorCode, String errorMessage) {
+    private JsonResult(Boolean success, T data, String errorCode, String errorMessage) {
         this.success = success;
         this.data = data;
         this.errorCode = errorCode;

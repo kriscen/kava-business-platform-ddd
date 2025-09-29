@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.common.core.enums.YesNoEnum;
-import com.kava.kbpd.upms.domain.basic.model.entity.SysAreaEntity;
-import com.kava.kbpd.upms.domain.basic.model.valobj.SysAreaId;
-import com.kava.kbpd.upms.domain.basic.model.valobj.SysAreaListQuery;
-import com.kava.kbpd.upms.domain.basic.repository.ISysAreaRepository;
+import com.kava.kbpd.upms.domain.model.entity.SysAreaEntity;
+import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
+import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysAreaRepository;
 import com.kava.kbpd.upms.infrastructure.converter.SysAreaConverter;
 import com.kava.kbpd.upms.infrastructure.dao.SysAreaMapper;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysAreaPO;
@@ -29,9 +29,7 @@ public class SysAreaRepository implements ISysAreaRepository {
     public SysAreaId create(SysAreaEntity sysAreaEntity) {
         SysAreaPO sysAreaPO = sysAreaConverter.convertEntity2PO(sysAreaEntity);
         sysAreaMapper.insert(sysAreaPO);
-        return SysAreaId.builder()
-                .id(sysAreaPO.getId())
-                .build();
+        return SysAreaId.of(sysAreaPO.getId());
     }
 
     @Override

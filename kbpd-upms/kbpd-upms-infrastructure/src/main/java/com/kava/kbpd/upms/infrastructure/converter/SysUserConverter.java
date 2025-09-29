@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.infrastructure.converter;
 
-import com.kava.kbpd.upms.domain.user.model.entity.SysUserEntity;
+import com.kava.kbpd.upms.domain.model.entity.SysUserEntity;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysUserPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,8 +14,12 @@ import org.mapstruct.Mapping;
 public interface SysUserConverter {
 
     @Mapping(source = "id", target = "id.id")
+    @Mapping(source = "tenantId", target = "tenantId.id")
+    @Mapping(source = "deptId", target = "deptId.id")
     SysUserEntity convertPO2Entity(SysUserPO sysUserPO);
 
     @Mapping(source = "id.id", target = "id")
+    @Mapping(source = "tenantId.id", target = "tenantId")
+    @Mapping(source = "deptId.id", target = "deptId")
     SysUserPO convertEntity2PO(SysUserEntity entity);
 }
