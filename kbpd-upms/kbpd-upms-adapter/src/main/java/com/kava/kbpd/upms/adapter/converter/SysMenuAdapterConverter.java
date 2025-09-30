@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.adapter.converter;
 import com.kava.kbpd.upms.api.model.query.SysMenuQuery;
 import com.kava.kbpd.upms.api.model.request.SysMenuRequest;
 import com.kava.kbpd.upms.api.model.response.SysMenuListResponse;
-import com.kava.kbpd.upms.api.model.response.SysMenuResponse;
+import com.kava.kbpd.upms.api.model.response.SysMenuDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
 import org.mapstruct.Mapper;
@@ -31,5 +31,5 @@ public interface SysMenuAdapterConverter {
 
     @Mapping(source = "id.id", target = "id")
     @Mapping(source = "pid.id", target = "pid")
-    SysMenuResponse convertEntity2Detail(SysMenuEntity sysMenu);
+    SysMenuDetailResponse convertEntity2Detail(SysMenuEntity sysMenu);
 }

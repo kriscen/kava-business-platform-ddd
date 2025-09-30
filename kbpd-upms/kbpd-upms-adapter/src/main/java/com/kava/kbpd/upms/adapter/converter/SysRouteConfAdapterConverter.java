@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.adapter.converter;
 import com.kava.kbpd.upms.api.model.query.SysRouteConfQuery;
 import com.kava.kbpd.upms.api.model.request.SysRouteConfRequest;
 import com.kava.kbpd.upms.api.model.response.SysRouteConfListResponse;
-import com.kava.kbpd.upms.api.model.response.SysRouteConfResponse;
+import com.kava.kbpd.upms.api.model.response.SysRouteConfDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysRouteConfEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfListQuery;
 import org.mapstruct.Mapper;
@@ -23,5 +23,5 @@ public interface SysRouteConfAdapterConverter {
     SysRouteConfEntity convertRequest2Entity(SysRouteConfRequest req);
 
     @Mapping(source = "id.id", target = "id")
-    SysRouteConfResponse convertEntity2Detail(SysRouteConfEntity sysRouteConf);
+    SysRouteConfDetailResponse convertEntity2Detail(SysRouteConfEntity sysRouteConf);
 }

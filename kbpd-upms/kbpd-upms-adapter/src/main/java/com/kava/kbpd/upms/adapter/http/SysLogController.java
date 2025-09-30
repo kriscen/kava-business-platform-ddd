@@ -5,7 +5,7 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysLogQuery;
 import com.kava.kbpd.upms.api.model.request.SysLogRequest;
 import com.kava.kbpd.upms.api.model.response.SysLogListResponse;
-import com.kava.kbpd.upms.api.model.response.SysLogResponse;
+import com.kava.kbpd.upms.api.model.response.SysLogDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogId;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogListQuery;
@@ -50,7 +50,7 @@ public class SysLogController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysLogResponse> getDetails(Long id) {
+    public JsonResult<SysLogDetailResponse> getDetails(Long id) {
         SysLogEntity sysLog = sysLogService.queryById(SysLogId.builder()
                 .id(id)
                 .build());

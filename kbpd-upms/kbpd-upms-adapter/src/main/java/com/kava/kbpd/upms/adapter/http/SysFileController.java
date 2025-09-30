@@ -4,8 +4,8 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysFileQuery;
 import com.kava.kbpd.upms.api.model.request.SysFileRequest;
+import com.kava.kbpd.upms.api.model.response.SysFileDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysFileListResponse;
-import com.kava.kbpd.upms.api.model.response.SysFileResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysFileEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileListQuery;
@@ -50,7 +50,7 @@ public class SysFileController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysFileResponse> getDetails(Long id) {
+    public JsonResult<SysFileDetailResponse> getDetails(Long id) {
         SysFileEntity sysFile = sysFileService.queryById(SysFileId.builder()
                 .id(id)
                 .build());

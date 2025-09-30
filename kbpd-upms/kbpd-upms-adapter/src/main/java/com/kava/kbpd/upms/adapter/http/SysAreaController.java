@@ -7,9 +7,9 @@ import com.kava.kbpd.upms.adapter.converter.SysAreaAdapterConverter;
 import com.kava.kbpd.upms.api.model.query.SysAreaQuery;
 import com.kava.kbpd.upms.api.model.request.SysAreaRequest;
 import com.kava.kbpd.upms.api.model.response.SysAreaListResponse;
-import com.kava.kbpd.upms.api.model.response.SysAreaResponse;
+import com.kava.kbpd.upms.api.model.response.SysAreaDetailResponse;
 import com.kava.kbpd.upms.application.model.dto.SysAreaAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysAreaListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysAreaAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysAreaAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
@@ -42,7 +42,7 @@ public class SysAreaController {
      */
     @GetMapping("/page")
     public JsonResult<PagingInfo<SysAreaListResponse>> getSysAreaPage(@ModelAttribute SysAreaQuery query) {
-        PagingInfo<SysAreaListQueryDTO> sysAreaEntityPagingInfo = sysAreaAppService.queryAreaPage(sysAreaTriggerConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysAreaAppListDTO> sysAreaEntityPagingInfo = sysAreaAppService.queryAreaPage(sysAreaTriggerConverter.convertQueryDTO2QueryVal(query));
         PagingInfo<SysAreaListResponse> result = PagingInfo.toResponse(sysAreaEntityPagingInfo.getList().stream().
                                                     map(sysAreaTriggerConverter::convertEntity2List).toList(),
                                                     sysAreaEntityPagingInfo);
@@ -69,7 +69,7 @@ public class SysAreaController {
      * @return 明细
      */
     @GetMapping("/{id}")
-    public JsonResult<SysAreaResponse> getDetails(@PathVariable("id") Long id) {
+    public JsonResult<SysAreaDetailResponse> getDetails(@PathVariable("id") Long id) {
         SysAreaAppDetailDTO sysAreaEntity = sysAreaAppService.queryAreaById(SysAreaId.of(id));
         return JsonResult.buildSuccess(sysAreaTriggerConverter.convertEntity2Detail(sysAreaEntity));
     }

@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.adapter.converter;
 import com.kava.kbpd.upms.api.model.query.SysTenantQuery;
 import com.kava.kbpd.upms.api.model.request.SysTenantRequest;
 import com.kava.kbpd.upms.api.model.response.SysTenantListResponse;
-import com.kava.kbpd.upms.api.model.response.SysTenantResponse;
+import com.kava.kbpd.upms.api.model.response.SysTenantDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
 import org.mapstruct.Mapper;
@@ -23,5 +23,5 @@ public interface SysTenantAdapterConverter {
     SysTenantEntity convertRequest2Entity(SysTenantRequest req);
 
     @Mapping(source = "id.id", target = "id")
-    SysTenantResponse convertEntity2Detail(SysTenantEntity sysTenant);
+    SysTenantDetailResponse convertEntity2Detail(SysTenantEntity sysTenant);
 }

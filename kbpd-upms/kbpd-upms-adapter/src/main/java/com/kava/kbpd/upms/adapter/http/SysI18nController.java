@@ -4,7 +4,7 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysI18nQuery;
 import com.kava.kbpd.upms.api.model.request.SysI18nRequest;
-import com.kava.kbpd.upms.api.model.response.SysI18nResponse;
+import com.kava.kbpd.upms.api.model.response.SysI18nDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysI18nEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nId;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
@@ -33,10 +33,10 @@ public class SysI18nController {
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysI18nResponse>> getSysI18nPage(SysI18nQuery query) {
+    public JsonResult<PagingInfo<SysI18nDetailResponse>> getSysI18nPage(SysI18nQuery query) {
         SysI18nListQuery q = sysI18nTriggerConverter.convertQueryDTO2QueryVal(query);
         PagingInfo<SysI18nEntity> pagingInfo = sysI18nService.queryPage(q);
-        PagingInfo<SysI18nResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
+        PagingInfo<SysI18nDetailResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
                         map(sysI18nTriggerConverter::convertEntity2Resp).toList(),
                         pagingInfo);
         return JsonResult.buildSuccess(result);
@@ -49,7 +49,7 @@ public class SysI18nController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysI18nResponse> getDetails(Long id) {
+    public JsonResult<SysI18nDetailResponse> getDetails(Long id) {
         SysI18nEntity sysI18n = sysI18nService.queryById(SysI18nId.builder()
                 .id(id)
                 .build());

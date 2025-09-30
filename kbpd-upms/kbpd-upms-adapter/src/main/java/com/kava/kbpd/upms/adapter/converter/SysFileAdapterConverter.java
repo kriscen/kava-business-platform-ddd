@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.adapter.converter;
 import com.kava.kbpd.upms.api.model.query.SysFileQuery;
 import com.kava.kbpd.upms.api.model.request.SysFileRequest;
 import com.kava.kbpd.upms.api.model.response.SysFileListResponse;
-import com.kava.kbpd.upms.api.model.response.SysFileResponse;
+import com.kava.kbpd.upms.api.model.response.SysFileDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysFileEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileListQuery;
 import org.mapstruct.Mapper;
@@ -28,5 +28,5 @@ public interface SysFileAdapterConverter {
     SysFileEntity convertRequest2Entity(SysFileRequest req);
 
     @Mapping(source = "id.id", target = "id")
-    SysFileResponse convertEntity2Detail(SysFileEntity sysFile);
+    SysFileDetailResponse convertEntity2Detail(SysFileEntity sysFile);
 }

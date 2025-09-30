@@ -1,6 +1,6 @@
 package com.kava.kbpd.auth.test;
 
-import com.kava.kbpd.upms.api.service.IRemoteOauthClientDetailService;
+import com.kava.kbpd.upms.api.service.IRemoteOauthClientService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -11,7 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,7 +29,7 @@ public class AuthApplicationTest {
     private RedisTemplate<String,OAuth2Authorization> redisTemplate;
 
     @DubboReference(version = "1.0")
-    private IRemoteOauthClientDetailService remoteOauthClientDetailService;
+    private IRemoteOauthClientService remoteOauthClientDetailService;
 
     @Test
     public void test2() throws Exception {

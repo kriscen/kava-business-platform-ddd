@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.application.converter;
 import com.kava.kbpd.upms.application.model.command.SysUserCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysUserUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysUserAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysUserListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysUserAppListDTO;
 import com.kava.kbpd.upms.domain.model.aggregate.SysUserEntity;
 import org.mapstruct.Mapper;
 
@@ -19,7 +19,7 @@ public interface SysUserAppConverter {
 
     SysUserEntity convertUpdateCommand2Entity(SysUserUpdateCommand command);
 
-    SysUserListQueryDTO convertEntity2DTO(SysUserEntity sysUserEntity);
+    SysUserAppListDTO convertEntity2DTO(SysUserEntity sysUserEntity);
 
     SysUserAppDetailDTO convertEntity2Detail(SysUserEntity sysUserEntity);
 }

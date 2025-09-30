@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.adapter.converter;
 import com.kava.kbpd.upms.api.model.query.SysAuditLogQuery;
 import com.kava.kbpd.upms.api.model.request.SysAuditLogRequest;
 import com.kava.kbpd.upms.api.model.response.SysAuditLogListResponse;
-import com.kava.kbpd.upms.api.model.response.SysAuditLogResponse;
+import com.kava.kbpd.upms.api.model.response.SysAuditLogDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogListQuery;
 import org.mapstruct.Mapper;
@@ -29,5 +29,5 @@ public interface SysAuditLogAdapterConverter {
 
     @Mapping(source = "id.id", target = "id")
     @Mapping(source = "tenantId.id", target = "tenantId")
-    SysAuditLogResponse convertEntity2Detail(SysAuditLogEntity sysAuditLog);
+    SysAuditLogDetailResponse convertEntity2Detail(SysAuditLogEntity sysAuditLog);
 }

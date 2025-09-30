@@ -3,8 +3,8 @@ package com.kava.kbpd.auth.oauth2.client;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.kava.kbpd.common.core.constants.SecretConstants;
-import com.kava.kbpd.upms.api.model.dto.SysOauthClientDetailsDTO;
-import com.kava.kbpd.upms.api.service.IRemoteOauthClientDetailService;
+import com.kava.kbpd.upms.api.model.dto.SysOauthClientDTO;
+import com.kava.kbpd.upms.api.service.IRemoteOauthClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -39,7 +39,7 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
     private final static int accessTokenValiditySeconds = 60 * 60 * 12;
 
     @DubboReference(version = "1.0")
-    private IRemoteOauthClientDetailService remoteOauthClientDetailService;
+    private IRemoteOauthClientService remoteOauthClientDetailService;
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -53,7 +53,7 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
 
     @Override
     public RegisteredClient findByClientId(String clientId) {
-        SysOauthClientDetailsDTO clientDetails = remoteOauthClientDetailService.findByClientId(clientId);
+        SysOauthClientDTO clientDetails = remoteOauthClientDetailService.findByClientId(clientId);
 
         RegisteredClient.Builder builder = RegisteredClient.withId(clientDetails.getClientId())
                 .clientId(clientDetails.getClientId())

@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.adapter.converter;
 import com.kava.kbpd.upms.api.model.query.SysPublicParamQuery;
 import com.kava.kbpd.upms.api.model.request.SysPublicParamRequest;
 import com.kava.kbpd.upms.api.model.response.SysPublicParamListResponse;
-import com.kava.kbpd.upms.api.model.response.SysPublicParamResponse;
+import com.kava.kbpd.upms.api.model.response.SysPublicParamDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysPublicParamEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamListQuery;
 import org.mapstruct.Mapper;
@@ -28,5 +28,5 @@ public interface SysPublicParamAdapterConverter {
     SysPublicParamEntity convertRequest2Entity(SysPublicParamRequest req);
 
     @Mapping(source = "id.id", target = "id")
-    SysPublicParamResponse convertEntity2Detail(SysPublicParamEntity sysPublicParam);
+    SysPublicParamDetailResponse convertEntity2Detail(SysPublicParamEntity sysPublicParam);
 }

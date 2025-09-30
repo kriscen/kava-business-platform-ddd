@@ -4,8 +4,8 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysRouteConfQuery;
 import com.kava.kbpd.upms.api.model.request.SysRouteConfRequest;
+import com.kava.kbpd.upms.api.model.response.SysRouteConfDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysRouteConfListResponse;
-import com.kava.kbpd.upms.api.model.response.SysRouteConfResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysRouteConfEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfListQuery;
@@ -51,7 +51,7 @@ public class SysRouteConfController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysRouteConfResponse> getDetails(Long id) {
+    public JsonResult<SysRouteConfDetailResponse> getDetails(Long id) {
         SysRouteConfEntity sysRouteConf = sysRouteConfService.queryById(SysRouteConfId.builder()
                 .id(id)
                 .build());

@@ -6,10 +6,10 @@ import com.kava.kbpd.common.core.model.valobj.SysUserId;
 import com.kava.kbpd.upms.adapter.converter.SysUserAdapterConverter;
 import com.kava.kbpd.upms.api.model.query.SysUserQuery;
 import com.kava.kbpd.upms.api.model.request.SysUserRequest;
+import com.kava.kbpd.upms.api.model.response.SysUserDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysUserListResponse;
-import com.kava.kbpd.upms.api.model.response.SysUserResponse;
 import com.kava.kbpd.upms.application.model.dto.SysUserAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysUserListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysUserAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysUserAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
 import jakarta.annotation.Resource;
@@ -37,7 +37,7 @@ public class SysUserController {
     @GetMapping("/page")
     public JsonResult<PagingInfo<SysUserListResponse>> getSysAreaPage(@ModelAttribute SysUserQuery query) {
         SysUserListQuery q = sysUserTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysUserListQueryDTO> queryUserPage = sysUserAppService.queryUserPage(q);
+        PagingInfo<SysUserAppListDTO> queryUserPage = sysUserAppService.queryUserPage(q);
         PagingInfo<SysUserListResponse> result = PagingInfo.toResponse(queryUserPage.getList().stream().
                         map(sysUserTriggerConverter::convertDTO2List).toList(),
                 queryUserPage);
@@ -52,7 +52,7 @@ public class SysUserController {
      * @return 明细
      */
     @GetMapping("/{id}}")
-    public JsonResult<SysUserResponse> getDetails(@PathVariable("id") Long id) {
+    public JsonResult<SysUserDetailResponse> getDetails(@PathVariable("id") Long id) {
         SysUserAppDetailDTO sysUser = sysUserAppService.queryUserById(SysUserId.of(id));
         return JsonResult.buildSuccess(sysUserTriggerConverter.convertDetailDTO2DetailResp(sysUser));
     }

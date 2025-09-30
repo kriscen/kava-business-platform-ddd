@@ -5,7 +5,7 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysDeptQuery;
 import com.kava.kbpd.upms.api.model.request.SysDeptRequest;
 import com.kava.kbpd.upms.api.model.response.SysDeptListResponse;
-import com.kava.kbpd.upms.api.model.response.SysDeptResponse;
+import com.kava.kbpd.upms.api.model.response.SysDeptDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
@@ -50,7 +50,7 @@ public class SysDeptController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysDeptResponse> getDetails(Long id) {
+    public JsonResult<SysDeptDetailResponse> getDetails(Long id) {
         SysDeptEntity sysDept = sysDeptService.queryById(SysDeptId.builder()
                 .id(id)
                 .build());

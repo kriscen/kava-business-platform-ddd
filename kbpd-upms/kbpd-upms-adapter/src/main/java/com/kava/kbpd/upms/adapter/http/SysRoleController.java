@@ -5,11 +5,12 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysRoleQuery;
 import com.kava.kbpd.upms.api.model.request.SysRoleRequest;
 import com.kava.kbpd.upms.api.model.response.SysRoleListResponse;
-import com.kava.kbpd.upms.api.model.response.SysRoleResponse;
-import com.kava.kbpd.upms.domain.model.aggregate.SysRoleEntity;
+import com.kava.kbpd.upms.api.model.response.SysRoleDetailResponse;
+import com.kava.kbpd.upms.application.model.dto.SysRoleAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysRoleAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysRoleAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery;
-import com.kava.kbpd.upms.domain.service.ISysRoleService;
 import com.kava.kbpd.upms.adapter.converter.SysRoleAdapterConverter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,9 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/role/")
 public class SysRoleController {
     @Resource
-    private ISysRoleService sysRoleService;
+    private ISysRoleAppService appService;
     @Resource
-    private SysRoleAdapterConverter sysRoleTriggerConverter;
+    private SysRoleAdapterConverter adapterConverter;
 
     /**
      * 分页查询
@@ -34,11 +35,11 @@ public class SysRoleController {
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysRoleListResponse>> getSysRolePage(SysRoleQuery query) {
-        SysRoleListQuery q = sysRoleTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysRoleEntity> pagingInfo = sysRoleService.queryPage(q);
+    public JsonResult<PagingInfo<SysRoleListResponse>> getSysRolePage(@ModelAttribute SysRoleQuery query) {
+        SysRoleListQuery q = adapterConverter.convertQueryDTO2QueryVal(query);
+        PagingInfo<SysRoleAppListDTO> pagingInfo = appService.queryRolePage(q);
         PagingInfo<SysRoleListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysRoleTriggerConverter::convertEntity2List).toList(),
+                        map(adapterConverter::convertListDTO2ListResp).toList(),
                         pagingInfo);
         return JsonResult.buildSuccess(result);
     }
@@ -49,12 +50,10 @@ public class SysRoleController {
      * @param id 查询id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysRoleResponse> getDetails(Long id) {
-        SysRoleEntity sysRole = sysRoleService.queryById(SysRoleId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysRoleTriggerConverter.convertEntity2Detail(sysRole));
+    @GetMapping("/{id}")
+    public JsonResult<SysRoleDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysRoleAppDetailDTO sysRole = appService.queryRoleById(SysRoleId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertDetailDTO2DetailResp(sysRole));
     }
 
     /**
@@ -65,7 +64,7 @@ public class SysRoleController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysRoleRequest req) {
-        SysRoleId id = sysRoleService.create(sysRoleTriggerConverter.convertRequest2Entity(req));
+        SysRoleId id = appService.createRole(adapterConverter.convertRequest2CreateCommand(req));
         return JsonResult.buildSuccess(id.getId());
     }
 
@@ -77,7 +76,8 @@ public class SysRoleController {
      */
     @PutMapping
     public JsonResult<Boolean> updateById(@RequestBody SysRoleRequest req) {
-        return JsonResult.buildSuccess(sysRoleService.update(sysRoleTriggerConverter.convertRequest2Entity(req)));
+        appService.updateRole(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -89,7 +89,8 @@ public class SysRoleController {
     @DeleteMapping
     public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
         List<SysRoleId> idList = ids.stream().map(t->SysRoleId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysRoleService.removeBatchByIds(idList));
+        appService.removeRoleBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
 
 }

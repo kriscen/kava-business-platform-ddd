@@ -6,7 +6,7 @@ import com.kava.kbpd.upms.application.converter.SysUserAppConverter;
 import com.kava.kbpd.upms.application.model.command.SysUserCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysUserUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysUserAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysUserListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysUserAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysUserAppService;
 import com.kava.kbpd.upms.domain.model.aggregate.SysUserEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
@@ -55,9 +55,9 @@ public class SysUserAppService implements ISysUserAppService {
     }
 
     @Override
-    public PagingInfo<SysUserListQueryDTO> queryUserPage(SysUserListQuery query) {
+    public PagingInfo<SysUserAppListDTO> queryUserPage(SysUserListQuery query) {
         PagingInfo<SysUserEntity> pagingInfo = readRepository.queryPage(query);
-        List<SysUserListQueryDTO> convertList = pagingInfo.getList().stream().map(sysUserAppConverter::convertEntity2DTO).toList();
+        List<SysUserAppListDTO> convertList = pagingInfo.getList().stream().map(sysUserAppConverter::convertEntity2DTO).toList();
         return PagingInfo.toResponse(convertList, pagingInfo);
     }
 

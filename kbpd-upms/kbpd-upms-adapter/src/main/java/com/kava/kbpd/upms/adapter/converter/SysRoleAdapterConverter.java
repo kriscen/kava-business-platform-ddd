@@ -2,8 +2,12 @@ package com.kava.kbpd.upms.adapter.converter;
 
 import com.kava.kbpd.upms.api.model.query.SysRoleQuery;
 import com.kava.kbpd.upms.api.model.request.SysRoleRequest;
+import com.kava.kbpd.upms.api.model.response.SysRoleDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysRoleListResponse;
-import com.kava.kbpd.upms.api.model.response.SysRoleResponse;
+import com.kava.kbpd.upms.application.model.command.SysRoleCreateCommand;
+import com.kava.kbpd.upms.application.model.command.SysRoleUpdateCommand;
+import com.kava.kbpd.upms.application.model.dto.SysRoleAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysRoleAppListDTO;
 import com.kava.kbpd.upms.domain.model.aggregate.SysRoleEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery;
 import org.mapstruct.Mapper;
@@ -24,9 +28,15 @@ public interface SysRoleAdapterConverter {
     @Mapping(source = "id.id", target = "id")
     SysRoleListResponse convertEntity2List(SysRoleEntity entity);
 
+    @Mapping(source = "id.id", target = "id")
+    SysRoleListResponse convertListDTO2ListResp(SysRoleAppListDTO dto);
+
     @Mapping(source = "id", target = "id.id")
-    SysRoleEntity convertRequest2Entity(SysRoleRequest req);
+    SysRoleCreateCommand convertRequest2CreateCommand(SysRoleRequest req);
+
+    @Mapping(source = "id", target = "id.id")
+    SysRoleUpdateCommand convertRequest2UpdateCommand(SysRoleRequest req);
 
     @Mapping(source = "id.id", target = "id")
-    SysRoleResponse convertEntity2Detail(SysRoleEntity sysRole);
+    SysRoleDetailResponse convertDetailDTO2DetailResp(SysRoleAppDetailDTO sysRole);
 }

@@ -4,8 +4,8 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysAuditLogQuery;
 import com.kava.kbpd.upms.api.model.request.SysAuditLogRequest;
+import com.kava.kbpd.upms.api.model.response.SysAuditLogDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysAuditLogListResponse;
-import com.kava.kbpd.upms.api.model.response.SysAuditLogResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogListQuery;
@@ -51,7 +51,7 @@ public class SysAuditLogController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysAuditLogResponse> getDetails(Long id) {
+    public JsonResult<SysAuditLogDetailResponse> getDetails(Long id) {
         SysAuditLogEntity sysAuditLog = sysAuditLogService.queryById(SysAuditLogId.builder()
                 .id(id)
                 .build());

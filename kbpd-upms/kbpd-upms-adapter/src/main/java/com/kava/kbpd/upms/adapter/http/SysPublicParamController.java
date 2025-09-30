@@ -4,8 +4,8 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysPublicParamQuery;
 import com.kava.kbpd.upms.api.model.request.SysPublicParamRequest;
+import com.kava.kbpd.upms.api.model.response.SysPublicParamDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysPublicParamListResponse;
-import com.kava.kbpd.upms.api.model.response.SysPublicParamResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysPublicParamEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamId;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamListQuery;
@@ -50,7 +50,7 @@ public class SysPublicParamController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysPublicParamResponse> getDetails(Long id) {
+    public JsonResult<SysPublicParamDetailResponse> getDetails(Long id) {
         SysPublicParamEntity sysPublicParam = sysPublicParamService.queryById(SysPublicParamId.builder()
                 .id(id)
                 .build());

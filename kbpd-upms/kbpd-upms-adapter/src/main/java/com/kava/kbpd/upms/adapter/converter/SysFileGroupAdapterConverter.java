@@ -2,7 +2,7 @@ package com.kava.kbpd.upms.adapter.converter;
 
 import com.kava.kbpd.upms.api.model.query.SysFileGroupQuery;
 import com.kava.kbpd.upms.api.model.request.SysFileGroupRequest;
-import com.kava.kbpd.upms.api.model.response.SysFileGroupResponse;
+import com.kava.kbpd.upms.api.model.response.SysFileGroupDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysFileGroupEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupListQuery;
 import org.mapstruct.Mapper;
@@ -26,5 +26,5 @@ public interface SysFileGroupAdapterConverter {
 
     @Mapping(source = "id.id", target = "id")
     @Mapping(source = "pid.id", target = "pid")
-    SysFileGroupResponse SysFileGroupResponse(SysFileGroupEntity sysFileGroup);
+    SysFileGroupDetailResponse SysFileGroupResponse(SysFileGroupEntity sysFileGroup);
 }

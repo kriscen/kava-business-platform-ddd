@@ -2,12 +2,12 @@ package com.kava.kbpd.upms.adapter.converter;
 
 import com.kava.kbpd.upms.api.model.query.SysAreaQuery;
 import com.kava.kbpd.upms.api.model.request.SysAreaRequest;
+import com.kava.kbpd.upms.api.model.response.SysAreaDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysAreaListResponse;
-import com.kava.kbpd.upms.api.model.response.SysAreaResponse;
 import com.kava.kbpd.upms.application.model.command.SysAreaCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysAreaUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysAreaAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysAreaListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysAreaAppListDTO;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,9 +24,9 @@ public interface SysAreaAdapterConverter {
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
     SysAreaListQuery convertQueryDTO2QueryVal(SysAreaQuery request);
 
-    SysAreaListResponse convertEntity2List(SysAreaListQueryDTO request);
+    SysAreaListResponse convertEntity2List(SysAreaAppListDTO request);
 
-    SysAreaResponse convertEntity2Detail(SysAreaAppDetailDTO request);
+    SysAreaDetailResponse convertEntity2Detail(SysAreaAppDetailDTO request);
 
     @Mapping(source = "pid", target = "pid.id")
     SysAreaCreateCommand convertRequest2CreateCommand(SysAreaRequest request);

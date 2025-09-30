@@ -4,8 +4,8 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysMenuQuery;
 import com.kava.kbpd.upms.api.model.request.SysMenuRequest;
+import com.kava.kbpd.upms.api.model.response.SysMenuDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysMenuListResponse;
-import com.kava.kbpd.upms.api.model.response.SysMenuResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
@@ -50,7 +50,7 @@ public class SysMenuController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysMenuResponse> getDetails(Long id) {
+    public JsonResult<SysMenuDetailResponse> getDetails(Long id) {
         SysMenuEntity sysMenu = sysMenuService.queryById(SysMenuId.builder()
                 .id(id)
                 .build());

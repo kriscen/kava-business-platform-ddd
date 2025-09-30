@@ -4,8 +4,8 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.api.model.query.SysTenantQuery;
 import com.kava.kbpd.upms.api.model.request.SysTenantRequest;
+import com.kava.kbpd.upms.api.model.response.SysTenantDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysTenantListResponse;
-import com.kava.kbpd.upms.api.model.response.SysTenantResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
@@ -51,7 +51,7 @@ public class SysTenantController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysTenantResponse> getDetails(Long id) {
+    public JsonResult<SysTenantDetailResponse> getDetails(Long id) {
         SysTenantEntity sysTenant = sysTenantService.queryById(SysTenantId.builder()
                 .id(id)
                 .build());

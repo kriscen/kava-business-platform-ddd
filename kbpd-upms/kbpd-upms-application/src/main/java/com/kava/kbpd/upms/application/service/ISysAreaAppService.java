@@ -5,7 +5,7 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.application.model.command.SysAreaCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysAreaUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysAreaAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysAreaListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysAreaAppListDTO;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
 
@@ -23,7 +23,7 @@ public interface ISysAreaAppService {
 
     void removeAreaBatchByIds(List<SysAreaId> ids);
 
-    PagingInfo<SysAreaListQueryDTO> queryAreaPage(SysAreaListQuery query);
+    PagingInfo<SysAreaAppListDTO> queryAreaPage(SysAreaListQuery query);
 
     SysAreaAppDetailDTO queryAreaById(SysAreaId id);
 

@@ -6,7 +6,7 @@ import com.kava.kbpd.upms.application.converter.SysAreaAppConverter;
 import com.kava.kbpd.upms.application.model.command.SysAreaCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysAreaUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysAreaAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysAreaListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysAreaAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysAreaAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysAreaEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
@@ -54,9 +54,9 @@ public class SysAreaAppService implements ISysAreaAppService {
     }
 
     @Override
-    public PagingInfo<SysAreaListQueryDTO> queryAreaPage(SysAreaListQuery query) {
+    public PagingInfo<SysAreaAppListDTO> queryAreaPage(SysAreaListQuery query) {
         PagingInfo<SysAreaEntity> sysAreaEntityPagingInfo = sysAreaRepository.queryPage(query);
-        List<SysAreaListQueryDTO> collect = sysAreaEntityPagingInfo.getList().stream().map(sysAreaEntity -> sysAreaAppConverter.convertEntityToListQueryDTO(sysAreaEntity)).toList();
+        List<SysAreaAppListDTO> collect = sysAreaEntityPagingInfo.getList().stream().map(sysAreaEntity -> sysAreaAppConverter.convertEntityToListQueryDTO(sysAreaEntity)).toList();
         return PagingInfo.toResponse(collect, sysAreaEntityPagingInfo);
     }
 

@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.application.converter;
 import com.kava.kbpd.upms.application.model.command.SysAreaCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysAreaUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysAreaAppDetailDTO;
-import com.kava.kbpd.upms.application.model.dto.SysAreaListQueryDTO;
+import com.kava.kbpd.upms.application.model.dto.SysAreaAppListDTO;
 import com.kava.kbpd.upms.domain.model.entity.SysAreaEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,7 +21,7 @@ public interface SysAreaAppConverter {
 
     SysAreaEntity convertUpdateCommand2Entity(SysAreaUpdateCommand command);
 
-    SysAreaListQueryDTO convertEntityToListQueryDTO(SysAreaEntity entity);
+    SysAreaAppListDTO convertEntityToListQueryDTO(SysAreaEntity entity);
 
     @Mapping(source = "pid.id", target = "pid")
     SysAreaAppDetailDTO convertEntityToDetailDTO(SysAreaEntity entity);

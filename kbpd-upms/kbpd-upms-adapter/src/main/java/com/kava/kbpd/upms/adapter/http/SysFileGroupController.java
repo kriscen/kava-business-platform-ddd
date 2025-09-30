@@ -5,7 +5,7 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.adapter.converter.SysFileGroupAdapterConverter;
 import com.kava.kbpd.upms.api.model.query.SysFileGroupQuery;
 import com.kava.kbpd.upms.api.model.request.SysFileGroupRequest;
-import com.kava.kbpd.upms.api.model.response.SysFileGroupResponse;
+import com.kava.kbpd.upms.api.model.response.SysFileGroupDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysFileGroupEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupListQuery;
@@ -33,10 +33,10 @@ public class SysFileGroupController {
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysFileGroupResponse>> getSysFileGroupPage(SysFileGroupQuery query) {
+    public JsonResult<PagingInfo<SysFileGroupDetailResponse>> getSysFileGroupPage(SysFileGroupQuery query) {
         SysFileGroupListQuery q = sysFileGroupTriggerConverter.convertQueryDTO2QueryVal(query);
         PagingInfo<SysFileGroupEntity> pagingInfo = sysFileGroupService.queryPage(q);
-        PagingInfo<SysFileGroupResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
+        PagingInfo<SysFileGroupDetailResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
                         map(sysFileGroupTriggerConverter::SysFileGroupResponse).toList(),
                 pagingInfo);
         return JsonResult.buildSuccess(result);
@@ -49,7 +49,7 @@ public class SysFileGroupController {
      * @return 明细
      */
     @GetMapping("/details")
-    public JsonResult<SysFileGroupResponse> getDetails(Long id) {
+    public JsonResult<SysFileGroupDetailResponse> getDetails(Long id) {
         SysFileGroupEntity sysFileGroup = sysFileGroupService.queryById(SysFileGroupId.builder()
                 .id(id)
                 .build());

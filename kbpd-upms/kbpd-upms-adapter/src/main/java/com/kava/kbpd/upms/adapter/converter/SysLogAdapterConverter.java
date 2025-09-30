@@ -2,8 +2,8 @@ package com.kava.kbpd.upms.adapter.converter;
 
 import com.kava.kbpd.upms.api.model.query.SysLogQuery;
 import com.kava.kbpd.upms.api.model.request.SysLogRequest;
+import com.kava.kbpd.upms.api.model.response.SysLogDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysLogListResponse;
-import com.kava.kbpd.upms.api.model.response.SysLogResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogListQuery;
 import org.mapstruct.Mapper;
@@ -23,5 +23,5 @@ public interface SysLogAdapterConverter {
     SysLogListResponse convertEntity2List(SysLogEntity entity);
 
     @Mapping(source = "id.id", target = "id")
-    SysLogResponse convertEntity2Detail(SysLogEntity entity);
+    SysLogDetailResponse convertEntity2Detail(SysLogEntity entity);
 }

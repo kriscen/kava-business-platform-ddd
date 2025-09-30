@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.adapter.converter;
 import com.kava.kbpd.upms.api.model.query.SysDeptQuery;
 import com.kava.kbpd.upms.api.model.request.SysDeptRequest;
 import com.kava.kbpd.upms.api.model.response.SysDeptListResponse;
-import com.kava.kbpd.upms.api.model.response.SysDeptResponse;
+import com.kava.kbpd.upms.api.model.response.SysDeptDetailResponse;
 import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
 import org.mapstruct.Mapper;
@@ -31,5 +31,5 @@ public interface SysDeptAdapterConverter {
 
     @Mapping(source = "id.id", target = "id")
     @Mapping(source = "pid.id", target = "pid")
-    SysDeptResponse convertEntity2Detail(SysDeptEntity sysDept);
+    SysDeptDetailResponse convertEntity2Detail(SysDeptEntity sysDept);
 }

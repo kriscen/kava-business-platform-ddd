@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author Kris
  * @date 2025/9/28
- * @description: area create command
+ * @description: area update command
  */
 
 @Data

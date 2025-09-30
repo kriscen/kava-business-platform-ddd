@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author Kris
  * @date 2025/9/28
- * @description: user create command
+ * @description: user update command
  */
 
 @Data
