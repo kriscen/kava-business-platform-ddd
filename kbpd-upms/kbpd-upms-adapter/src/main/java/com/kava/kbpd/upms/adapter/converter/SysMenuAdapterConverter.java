@@ -1,10 +1,13 @@
 package com.kava.kbpd.upms.adapter.converter;
 
-import com.kava.kbpd.upms.api.model.query.SysMenuQuery;
+import com.kava.kbpd.upms.api.model.query.SysMenuAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysMenuRequest;
-import com.kava.kbpd.upms.api.model.response.SysMenuListResponse;
 import com.kava.kbpd.upms.api.model.response.SysMenuDetailResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
+import com.kava.kbpd.upms.api.model.response.SysMenuListResponse;
+import com.kava.kbpd.upms.application.model.command.SysMenuCreateCommand;
+import com.kava.kbpd.upms.application.model.command.SysMenuUpdateCommand;
+import com.kava.kbpd.upms.application.model.dto.SysMenuAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysMenuAppListDTO;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,17 +22,13 @@ public interface SysMenuAdapterConverter {
 
     @Mapping(source = "pageNo", target = "queryParam.pageNo")
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
-    SysMenuListQuery convertQueryDTO2QueryVal(SysMenuQuery request);
+    SysMenuListQuery convertQueryDTO2QueryVal(SysMenuAdapterListQuery request);
 
-    @Mapping(source = "id.id", target = "id")
-    @Mapping(source = "pid.id", target = "pid")
-    SysMenuListResponse convertEntity2List(SysMenuEntity entity);
+    SysMenuListResponse convertEntity2List(SysMenuAppListDTO request);
 
-    @Mapping(source = "id", target = "id.id")
-    @Mapping(source = "pid", target = "pid.id")
-    SysMenuEntity convertRequest2Entity(SysMenuRequest req);
+    SysMenuDetailResponse convertEntity2Detail(SysMenuAppDetailDTO request);
 
-    @Mapping(source = "id.id", target = "id")
-    @Mapping(source = "pid.id", target = "pid")
-    SysMenuDetailResponse convertEntity2Detail(SysMenuEntity sysMenu);
+    SysMenuCreateCommand convertRequest2CreateCommand(SysMenuRequest request);
+
+    SysMenuUpdateCommand convertRequest2UpdateCommand(SysMenuRequest request);
 }

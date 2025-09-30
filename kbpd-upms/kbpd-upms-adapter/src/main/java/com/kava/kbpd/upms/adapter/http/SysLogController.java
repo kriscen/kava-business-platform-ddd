@@ -2,15 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysLogQuery;
-import com.kava.kbpd.upms.api.model.request.SysLogRequest;
-import com.kava.kbpd.upms.api.model.response.SysLogListResponse;
-import com.kava.kbpd.upms.api.model.response.SysLogDetailResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysLogEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysLogId;
-import com.kava.kbpd.upms.domain.model.valobj.SysLogListQuery;
-import com.kava.kbpd.upms.domain.service.ISysLogService;
 import com.kava.kbpd.upms.adapter.converter.SysLogAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysLogAdapterListQuery;
+import com.kava.kbpd.upms.api.model.request.SysLogRequest;
+import com.kava.kbpd.upms.api.model.response.SysLogDetailResponse;
+import com.kava.kbpd.upms.api.model.response.SysLogListResponse;
+import com.kava.kbpd.upms.application.model.dto.SysLogAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysLogAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysLogAppService;
+import com.kava.kbpd.upms.domain.model.valobj.SysLogId;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,38 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/log/")
 public class SysLogController {
     @Resource
-    private ISysLogService sysLogService;
+    private ISysLogAppService appService;
     @Resource
-    private SysLogAdapterConverter sysLogTriggerConverter;
+    private SysLogAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysLogListResponse>> getSysLogPage(SysLogQuery query) {
-        SysLogListQuery q = sysLogTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysLogEntity> pagingInfo = sysLogService.queryPage(q);
-        PagingInfo<SysLogListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysLogTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysLogListResponse>> getSysLogPage(@ModelAttribute SysLogAdapterListQuery query) {
+        PagingInfo<SysLogAppListDTO> sysLogEntityPagingInfo = appService.queryLogPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysLogListResponse> result = PagingInfo.toResponse(sysLogEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysLogEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysLogDetailResponse> getDetails(Long id) {
-        SysLogEntity sysLog = sysLogService.queryById(SysLogId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysLogTriggerConverter.convertEntity2Detail(sysLog));
+    @GetMapping("/{id}")
+    public JsonResult<SysLogDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysLogAppDetailDTO sysLogEntity = appService.queryLogById(SysLogId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysLogEntity));
     }
 
     /**
@@ -65,8 +62,8 @@ public class SysLogController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysLogRequest req) {
-        SysLogId id = sysLogService.create(sysLogTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysLogId sysLogId = appService.createLog(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysLogId.getId());
     }
 
     /**
@@ -75,9 +72,11 @@ public class SysLogController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysLogRequest req) {
-        return JsonResult.buildSuccess(sysLogService.update(sysLogTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysLogRequest req) {
+        req.setId(id);
+        appService.updateLog(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -87,8 +86,10 @@ public class SysLogController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysLogId> idList = ids.stream().map(t->SysLogId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysLogService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysLogId> idList = ids.stream().map(SysLogId::of).toList();
+        appService.removeLogBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
+
 }

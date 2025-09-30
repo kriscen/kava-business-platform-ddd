@@ -19,4 +19,8 @@ public class SysAuditLogId implements Identifier {
 	 * 主键
 	 */
 	Long id;
+
+	public static SysAuditLogId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

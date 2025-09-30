@@ -2,15 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysTenantQuery;
+import com.kava.kbpd.common.core.model.valobj.SysTenantId;
+import com.kava.kbpd.upms.adapter.converter.SysTenantAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysTenantAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysTenantRequest;
 import com.kava.kbpd.upms.api.model.response.SysTenantDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysTenantListResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
-import com.kava.kbpd.common.core.model.valobj.SysTenantId;
-import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
-import com.kava.kbpd.upms.domain.service.ISysTenantService;
-import com.kava.kbpd.upms.adapter.converter.SysTenantAdapterConverter;
+import com.kava.kbpd.upms.application.model.dto.SysTenantAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysTenantAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysTenantAppService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,39 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/tenant/")
 public class SysTenantController {
     @Resource
-    private ISysTenantService sysTenantService;
+    private ISysTenantAppService appService;
     @Resource
-    private SysTenantAdapterConverter sysTenantTriggerConverter;
+    private SysTenantAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysTenantListResponse>> getSysAreaPage(SysTenantQuery query) {
-        SysTenantListQuery q = sysTenantTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysTenantEntity> pagingInfo = sysTenantService.queryPage(q);
-        PagingInfo<SysTenantListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysTenantTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysTenantListResponse>> getSysTenantPage(@ModelAttribute SysTenantAdapterListQuery query) {
+        PagingInfo<SysTenantAppListDTO> sysTenantEntityPagingInfo = appService.queryTenantPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysTenantListResponse> result = PagingInfo.toResponse(sysTenantEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysTenantEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
-
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysTenantDetailResponse> getDetails(Long id) {
-        SysTenantEntity sysTenant = sysTenantService.queryById(SysTenantId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysTenantTriggerConverter.convertEntity2Detail(sysTenant));
+    @GetMapping("/{id}")
+    public JsonResult<SysTenantDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysTenantAppDetailDTO sysTenantEntity = appService.queryTenantById(SysTenantId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysTenantEntity));
     }
 
     /**
@@ -66,8 +62,8 @@ public class SysTenantController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysTenantRequest req) {
-        SysTenantId id = sysTenantService.create(sysTenantTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysTenantId sysTenantId = appService.createTenant(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysTenantId.getId());
     }
 
     /**
@@ -76,9 +72,11 @@ public class SysTenantController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysTenantRequest req) {
-        return JsonResult.buildSuccess(sysTenantService.update(sysTenantTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysTenantRequest req) {
+        req.setId(id);
+        appService.updateTenant(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -88,9 +86,10 @@ public class SysTenantController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysTenantId> idList = ids.stream().map(t->SysTenantId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysTenantService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysTenantId> idList = ids.stream().map(SysTenantId::of).toList();
+        appService.removeTenantBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
 
 }

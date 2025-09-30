@@ -4,7 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.adapter.converter.SysAreaAdapterConverter;
-import com.kava.kbpd.upms.api.model.query.SysAreaQuery;
+import com.kava.kbpd.upms.api.model.query.SysAreaAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysAreaRequest;
 import com.kava.kbpd.upms.api.model.response.SysAreaListResponse;
 import com.kava.kbpd.upms.api.model.response.SysAreaDetailResponse;
@@ -12,7 +12,6 @@ import com.kava.kbpd.upms.application.model.dto.SysAreaAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysAreaAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysAreaAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
-import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +29,9 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/area/")
 public class SysAreaController {
     @Resource
-    private ISysAreaAppService sysAreaAppService;
+    private ISysAreaAppService appService;
     @Resource
-    private SysAreaAdapterConverter sysAreaTriggerConverter;
+    private SysAreaAdapterConverter adapterConverter;
 
     /**
      * 分页查询
@@ -41,10 +40,10 @@ public class SysAreaController {
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysAreaListResponse>> getSysAreaPage(@ModelAttribute SysAreaQuery query) {
-        PagingInfo<SysAreaAppListDTO> sysAreaEntityPagingInfo = sysAreaAppService.queryAreaPage(sysAreaTriggerConverter.convertQueryDTO2QueryVal(query));
+    public JsonResult<PagingInfo<SysAreaListResponse>> getSysAreaPage(@ModelAttribute SysAreaAdapterListQuery query) {
+        PagingInfo<SysAreaAppListDTO> sysAreaEntityPagingInfo = appService.queryAreaPage(adapterConverter.convertQueryDTO2QueryVal(query));
         PagingInfo<SysAreaListResponse> result = PagingInfo.toResponse(sysAreaEntityPagingInfo.getList().stream().
-                                                    map(sysAreaTriggerConverter::convertEntity2List).toList(),
+                                                    map(adapterConverter::convertEntity2List).toList(),
                                                     sysAreaEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
@@ -56,9 +55,9 @@ public class SysAreaController {
      * @return tree
      */
     @GetMapping("/tree")
-    public JsonResult<List<Tree<Long>>> getSysAreaTree(@ModelAttribute SysAreaQuery query) {
-        SysAreaListQuery q = sysAreaTriggerConverter.convertQueryDTO2QueryVal(query);
-        List<Tree<Long>> result = sysAreaAppService.selectAreaTree(q);
+    public JsonResult<List<Tree<Long>>> getSysAreaTree(@ModelAttribute SysAreaAdapterListQuery query) {
+        com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery q = adapterConverter.convertQueryDTO2QueryVal(query);
+        List<Tree<Long>> result = appService.selectAreaTree(q);
         return JsonResult.buildSuccess(result);
     }
 
@@ -70,8 +69,8 @@ public class SysAreaController {
      */
     @GetMapping("/{id}")
     public JsonResult<SysAreaDetailResponse> getDetails(@PathVariable("id") Long id) {
-        SysAreaAppDetailDTO sysAreaEntity = sysAreaAppService.queryAreaById(SysAreaId.of(id));
-        return JsonResult.buildSuccess(sysAreaTriggerConverter.convertEntity2Detail(sysAreaEntity));
+        SysAreaAppDetailDTO sysAreaEntity = appService.queryAreaById(SysAreaId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysAreaEntity));
     }
 
     /**
@@ -82,7 +81,7 @@ public class SysAreaController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysAreaRequest req) {
-        SysAreaId sysAreaId = sysAreaAppService.createArea(sysAreaTriggerConverter.convertRequest2CreateCommand(req));
+        SysAreaId sysAreaId = appService.createArea(adapterConverter.convertRequest2CreateCommand(req));
         return JsonResult.buildSuccess(sysAreaId.getId());
     }
 
@@ -95,7 +94,7 @@ public class SysAreaController {
     @PutMapping("/{id}")
     public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysAreaRequest req) {
         req.setId(id);
-        sysAreaAppService.updateArea(sysAreaTriggerConverter.convertRequest2UpdateCommand(req));
+        appService.updateArea(adapterConverter.convertRequest2UpdateCommand(req));
         return JsonResult.buildSuccess();
     }
 
@@ -108,7 +107,7 @@ public class SysAreaController {
     @DeleteMapping
     public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
         List<SysAreaId> idList = ids.stream().map(SysAreaId::of).toList();
-        sysAreaAppService.removeAreaBatchByIds(idList);
+        appService.removeAreaBatchByIds(idList);
         return JsonResult.buildSuccess();
     }
 

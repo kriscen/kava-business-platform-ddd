@@ -19,4 +19,8 @@ public class SysPublicParamId implements Identifier {
 	 * 编号
 	 */
 	Long id;
+
+	public static SysPublicParamId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

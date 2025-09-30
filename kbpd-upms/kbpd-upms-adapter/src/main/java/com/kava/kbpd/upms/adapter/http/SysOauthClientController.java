@@ -3,14 +3,14 @@ package com.kava.kbpd.upms.adapter.http;
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.adapter.converter.SysOauthClientAdapterConverter;
-import com.kava.kbpd.upms.api.model.query.SysOauthClientDetailsQuery;
-import com.kava.kbpd.upms.api.model.request.SysOauthClientDetailsRequest;
-import com.kava.kbpd.upms.api.model.response.SysOauthClientListResponse;
+import com.kava.kbpd.upms.api.model.query.SysOauthClientAdapterListQuery;
+import com.kava.kbpd.upms.api.model.request.SysOauthClientRequest;
 import com.kava.kbpd.upms.api.model.response.SysOauthClientDetailResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysOauthClientEntity;
+import com.kava.kbpd.upms.api.model.response.SysOauthClientListResponse;
+import com.kava.kbpd.upms.application.model.dto.SysOauthClientAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysOauthClientAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysOauthClientAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientId;
-import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientListQuery;
-import com.kava.kbpd.upms.domain.service.ISysOauthClientService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,38 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/oauth-client-details/")
 public class SysOauthClientController {
     @Resource
-    private ISysOauthClientService sysOauthClientDetailsService;
+    private ISysOauthClientAppService appService;
     @Resource
-    private SysOauthClientAdapterConverter sysOauthClientDetailsTriggerConverter;
+    private SysOauthClientAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysOauthClientListResponse>> getSysOauthClientDetailsPage(SysOauthClientDetailsQuery query) {
-        SysOauthClientListQuery q = sysOauthClientDetailsTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysOauthClientEntity> pagingInfo = sysOauthClientDetailsService.queryPage(q);
-        PagingInfo<SysOauthClientListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysOauthClientDetailsTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysOauthClientListResponse>> getSysOauthClientPage(@ModelAttribute SysOauthClientAdapterListQuery query) {
+        PagingInfo<SysOauthClientAppListDTO> sysOauthClientEntityPagingInfo = appService.queryOauthClientPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysOauthClientListResponse> result = PagingInfo.toResponse(sysOauthClientEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysOauthClientEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysOauthClientDetailResponse> getDetails(Long id) {
-        SysOauthClientEntity sysOauthClientDetails = sysOauthClientDetailsService.queryById(SysOauthClientId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysOauthClientDetailsTriggerConverter.convertEntity2Detail(sysOauthClientDetails));
+    @GetMapping("/{id}")
+    public JsonResult<SysOauthClientDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysOauthClientAppDetailDTO sysOauthClientEntity = appService.queryOauthClientById(SysOauthClientId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysOauthClientEntity));
     }
 
     /**
@@ -64,9 +61,9 @@ public class SysOauthClientController {
      * @return R
      */
     @PostMapping
-    public JsonResult<Long> save(@RequestBody SysOauthClientDetailsRequest req) {
-        SysOauthClientId id = sysOauthClientDetailsService.create(sysOauthClientDetailsTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+    public JsonResult<Long> save(@RequestBody SysOauthClientRequest req) {
+        SysOauthClientId sysOauthClientId = appService.createOauthClient(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysOauthClientId.getId());
     }
 
     /**
@@ -75,9 +72,11 @@ public class SysOauthClientController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysOauthClientDetailsRequest req) {
-        return JsonResult.buildSuccess(sysOauthClientDetailsService.update(sysOauthClientDetailsTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysOauthClientRequest req) {
+        req.setId(id);
+        appService.updateOauthClient(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -87,8 +86,10 @@ public class SysOauthClientController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysOauthClientId> idList = ids.stream().map(t-> SysOauthClientId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysOauthClientDetailsService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysOauthClientId> idList = ids.stream().map(SysOauthClientId::of).toList();
+        appService.removeOauthClientBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
+
 }

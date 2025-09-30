@@ -15,9 +15,11 @@ public interface SysFileConverter {
 
     @Mapping(source = "id", target = "id.id")
     @Mapping(source = "tenantId", target = "tenantId.id")
+    @Mapping(source = "groupId", target = "groupId.id")
     SysFileEntity convertPO2Entity(SysFilePO sysFilePO);
 
     @Mapping(source = "id.id", target = "id")
     @Mapping(source = "tenantId.id", target = "tenantId")
+    @Mapping(source = "groupId.id", target = "groupId")
     SysFilePO convertEntity2PO(SysFileEntity entity);
 }

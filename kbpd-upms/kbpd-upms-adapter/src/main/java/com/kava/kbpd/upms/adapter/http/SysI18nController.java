@@ -2,14 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysI18nQuery;
+import com.kava.kbpd.upms.adapter.converter.SysI18nAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysI18nAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysI18nRequest;
 import com.kava.kbpd.upms.api.model.response.SysI18nDetailResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysI18nEntity;
+import com.kava.kbpd.upms.api.model.response.SysI18nListResponse;
+import com.kava.kbpd.upms.application.model.dto.SysI18nAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysI18nAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysI18nAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nId;
-import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
-import com.kava.kbpd.upms.domain.service.ISysI18nService;
-import com.kava.kbpd.upms.adapter.converter.SysI18nAdapterConverter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,38 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/i18n/")
 public class SysI18nController {
     @Resource
-    private ISysI18nService sysI18nService;
+    private ISysI18nAppService appService;
     @Resource
-    private SysI18nAdapterConverter sysI18nTriggerConverter;
+    private SysI18nAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysI18nDetailResponse>> getSysI18nPage(SysI18nQuery query) {
-        SysI18nListQuery q = sysI18nTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysI18nEntity> pagingInfo = sysI18nService.queryPage(q);
-        PagingInfo<SysI18nDetailResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysI18nTriggerConverter::convertEntity2Resp).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysI18nListResponse>> getSysI18nPage(@ModelAttribute SysI18nAdapterListQuery query) {
+        PagingInfo<SysI18nAppListDTO> sysI18nEntityPagingInfo = appService.queryI18nPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysI18nListResponse> result = PagingInfo.toResponse(sysI18nEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysI18nEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysI18nDetailResponse> getDetails(Long id) {
-        SysI18nEntity sysI18n = sysI18nService.queryById(SysI18nId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysI18nTriggerConverter.convertEntity2Resp(sysI18n));
+    @GetMapping("/{id}")
+    public JsonResult<SysI18nDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysI18nAppDetailDTO sysI18nEntity = appService.queryI18nById(SysI18nId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysI18nEntity));
     }
 
     /**
@@ -64,8 +62,8 @@ public class SysI18nController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysI18nRequest req) {
-        SysI18nId id = sysI18nService.create(sysI18nTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysI18nId sysI18nId = appService.createI18n(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysI18nId.getId());
     }
 
     /**
@@ -74,9 +72,11 @@ public class SysI18nController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysI18nRequest req) {
-        return JsonResult.buildSuccess(sysI18nService.update(sysI18nTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysI18nRequest req) {
+        req.setId(id);
+        appService.updateI18n(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -86,8 +86,10 @@ public class SysI18nController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysI18nId> idList = ids.stream().map(t->SysI18nId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysI18nService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysI18nId> idList = ids.stream().map(SysI18nId::of).toList();
+        appService.removeI18nBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
+
 }

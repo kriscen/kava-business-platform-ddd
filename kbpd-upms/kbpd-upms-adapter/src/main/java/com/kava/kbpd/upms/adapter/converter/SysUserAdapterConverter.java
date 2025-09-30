@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.adapter.converter;
 
-import com.kava.kbpd.upms.api.model.query.SysUserQuery;
+import com.kava.kbpd.upms.api.model.query.SysUserAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysUserRequest;
 import com.kava.kbpd.upms.api.model.response.SysUserListResponse;
 import com.kava.kbpd.upms.api.model.response.SysUserDetailResponse;
@@ -15,7 +15,7 @@ import org.mapstruct.Mapper;
 public interface SysUserAdapterConverter {
 
 
-    SysUserListQuery convertQueryDTO2QueryVal(SysUserQuery request);
+    SysUserListQuery convertQueryDTO2QueryVal(SysUserAdapterListQuery request);
 
     SysUserListResponse convertDTO2List(SysUserAppListDTO dto);
 

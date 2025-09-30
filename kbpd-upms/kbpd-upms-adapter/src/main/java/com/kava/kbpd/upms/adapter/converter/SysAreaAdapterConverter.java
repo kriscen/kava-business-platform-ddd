@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.adapter.converter;
 
-import com.kava.kbpd.upms.api.model.query.SysAreaQuery;
+import com.kava.kbpd.upms.api.model.query.SysAreaAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysAreaRequest;
 import com.kava.kbpd.upms.api.model.response.SysAreaDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysAreaListResponse;
@@ -22,7 +22,7 @@ public interface SysAreaAdapterConverter {
 
     @Mapping(source = "pageNo", target = "queryParam.pageNo")
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
-    SysAreaListQuery convertQueryDTO2QueryVal(SysAreaQuery request);
+    SysAreaListQuery convertQueryDTO2QueryVal(SysAreaAdapterListQuery request);
 
     SysAreaListResponse convertEntity2List(SysAreaAppListDTO request);
 

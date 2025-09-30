@@ -21,4 +21,8 @@ public class SysTenantId implements Identifier {
 	 * 租户id
 	 */
 	Long id;
+
+	public static SysTenantId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

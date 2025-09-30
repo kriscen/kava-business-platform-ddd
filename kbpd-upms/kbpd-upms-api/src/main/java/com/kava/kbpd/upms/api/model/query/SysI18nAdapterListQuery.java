@@ -1,0 +1,63 @@
+package com.kava.kbpd.upms.api.model.query;
+
+import com.kava.kbpd.common.core.base.AdapterBaseListQuery;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
+
+/**
+ * @author Kris
+ * @date 2025/3/18
+ * @description: 国际化 query对象
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class SysI18nAdapterListQuery extends AdapterBaseListQuery {
+
+	/**
+	 * id
+	 */
+	private Long id;
+
+	/**
+	 * key
+	 */
+	private String name;
+
+	/**
+	 * 中文
+	 */
+	private String zhCn;
+
+	/**
+	 * 英文
+	 */
+	private String en;
+
+	/**
+	 * 创建人
+	 */
+	private String creator;
+
+	/**
+	 * 创建时间
+	 */
+	private LocalDateTime gmtCreate;
+
+	/**
+	 * 修改人
+	 */
+	private String modifier;
+
+	/**
+	 * 更新时间
+	 */
+	private LocalDateTime gmtModified;
+
+	/**
+	 * 删除标记
+	 */
+	private String delFlag;
+
+}

@@ -18,4 +18,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class SysDeptId implements Identifier {
 
 	Long id;
+
+	public static SysDeptId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

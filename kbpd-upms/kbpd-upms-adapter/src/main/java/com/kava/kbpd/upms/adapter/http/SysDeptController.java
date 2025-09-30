@@ -2,15 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysDeptQuery;
-import com.kava.kbpd.upms.api.model.request.SysDeptRequest;
-import com.kava.kbpd.upms.api.model.response.SysDeptListResponse;
-import com.kava.kbpd.upms.api.model.response.SysDeptDetailResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
-import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
-import com.kava.kbpd.upms.domain.service.ISysDeptService;
 import com.kava.kbpd.upms.adapter.converter.SysDeptAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysDeptAdapterListQuery;
+import com.kava.kbpd.upms.api.model.request.SysDeptRequest;
+import com.kava.kbpd.upms.api.model.response.SysDeptDetailResponse;
+import com.kava.kbpd.upms.api.model.response.SysDeptListResponse;
+import com.kava.kbpd.upms.application.model.dto.SysDeptAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysDeptAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysDeptAppService;
+import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,38 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/dept/")
 public class SysDeptController {
     @Resource
-    private ISysDeptService sysDeptService;
+    private ISysDeptAppService appService;
     @Resource
-    private SysDeptAdapterConverter sysDeptTriggerConverter;
+    private SysDeptAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysDeptListResponse>> getSysDeptPage(SysDeptQuery query) {
-        SysDeptListQuery q = sysDeptTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysDeptEntity> pagingInfo = sysDeptService.queryPage(q);
-        PagingInfo<SysDeptListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysDeptTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysDeptListResponse>> getSysDeptPage(@ModelAttribute SysDeptAdapterListQuery query) {
+        PagingInfo<SysDeptAppListDTO> sysDeptEntityPagingInfo = appService.queryDeptPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysDeptListResponse> result = PagingInfo.toResponse(sysDeptEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysDeptEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysDeptDetailResponse> getDetails(Long id) {
-        SysDeptEntity sysDept = sysDeptService.queryById(SysDeptId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysDeptTriggerConverter.convertEntity2Detail(sysDept));
+    @GetMapping("/{id}")
+    public JsonResult<SysDeptDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysDeptAppDetailDTO sysDeptEntity = appService.queryDeptById(SysDeptId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysDeptEntity));
     }
 
     /**
@@ -65,8 +62,8 @@ public class SysDeptController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysDeptRequest req) {
-        SysDeptId id = sysDeptService.create(sysDeptTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysDeptId sysDeptId = appService.createDept(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysDeptId.getId());
     }
 
     /**
@@ -75,9 +72,11 @@ public class SysDeptController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysDeptRequest req) {
-        return JsonResult.buildSuccess(sysDeptService.update(sysDeptTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysDeptRequest req) {
+        req.setId(id);
+        appService.updateDept(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -87,8 +86,10 @@ public class SysDeptController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysDeptId> idList = ids.stream().map(t->SysDeptId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysDeptService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysDeptId> idList = ids.stream().map(SysDeptId::of).toList();
+        appService.removeDeptBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
+
 }

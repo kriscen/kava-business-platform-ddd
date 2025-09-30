@@ -2,15 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysFileQuery;
+import com.kava.kbpd.upms.adapter.converter.SysFileAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysFileAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysFileRequest;
 import com.kava.kbpd.upms.api.model.response.SysFileDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysFileListResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysFileEntity;
+import com.kava.kbpd.upms.application.model.dto.SysFileAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysFileAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysFileAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileId;
-import com.kava.kbpd.upms.domain.model.valobj.SysFileListQuery;
-import com.kava.kbpd.upms.domain.service.ISysFileService;
-import com.kava.kbpd.upms.adapter.converter.SysFileAdapterConverter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,38 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/file/")
 public class SysFileController {
     @Resource
-    private ISysFileService sysFileService;
+    private ISysFileAppService appService;
     @Resource
-    private SysFileAdapterConverter sysFileTriggerConverter;
+    private SysFileAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysFileListResponse>> getSysFilePage(SysFileQuery query) {
-        SysFileListQuery q = sysFileTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysFileEntity> pagingInfo = sysFileService.queryPage(q);
-        PagingInfo<SysFileListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysFileTriggerConverter::convertEntity2List).toList(),
-                pagingInfo);
+    public JsonResult<PagingInfo<SysFileListResponse>> getSysFilePage(@ModelAttribute SysFileAdapterListQuery query) {
+        PagingInfo<SysFileAppListDTO> sysFileEntityPagingInfo = appService.queryFilePage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysFileListResponse> result = PagingInfo.toResponse(sysFileEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysFileEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysFileDetailResponse> getDetails(Long id) {
-        SysFileEntity sysFile = sysFileService.queryById(SysFileId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysFileTriggerConverter.convertEntity2Detail(sysFile));
+    @GetMapping("/{id}")
+    public JsonResult<SysFileDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysFileAppDetailDTO sysFileEntity = appService.queryFileById(SysFileId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysFileEntity));
     }
 
     /**
@@ -65,8 +62,8 @@ public class SysFileController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysFileRequest req) {
-        SysFileId id = sysFileService.create(sysFileTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysFileId sysFileId = appService.createFile(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysFileId.getId());
     }
 
     /**
@@ -75,9 +72,11 @@ public class SysFileController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysFileRequest req) {
-        return JsonResult.buildSuccess(sysFileService.update(sysFileTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysFileRequest req) {
+        req.setId(id);
+        appService.updateFile(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -87,8 +86,10 @@ public class SysFileController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysFileId> idList = ids.stream().map(t -> SysFileId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysFileService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysFileId> idList = ids.stream().map(SysFileId::of).toList();
+        appService.removeFileBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
+
 }

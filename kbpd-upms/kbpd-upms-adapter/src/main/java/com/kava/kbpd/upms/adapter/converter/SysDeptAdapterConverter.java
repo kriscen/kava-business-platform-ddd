@@ -1,10 +1,13 @@
 package com.kava.kbpd.upms.adapter.converter;
 
-import com.kava.kbpd.upms.api.model.query.SysDeptQuery;
+import com.kava.kbpd.upms.api.model.query.SysDeptAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysDeptRequest;
-import com.kava.kbpd.upms.api.model.response.SysDeptListResponse;
 import com.kava.kbpd.upms.api.model.response.SysDeptDetailResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
+import com.kava.kbpd.upms.api.model.response.SysDeptListResponse;
+import com.kava.kbpd.upms.application.model.command.SysDeptCreateCommand;
+import com.kava.kbpd.upms.application.model.command.SysDeptUpdateCommand;
+import com.kava.kbpd.upms.application.model.dto.SysDeptAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysDeptAppListDTO;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,17 +22,13 @@ public interface SysDeptAdapterConverter {
 
     @Mapping(source = "pageNo", target = "queryParam.pageNo")
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
-    SysDeptListQuery convertQueryDTO2QueryVal(SysDeptQuery request);
+    SysDeptListQuery convertQueryDTO2QueryVal(SysDeptAdapterListQuery request);
 
-    @Mapping(source = "id.id", target = "id")
-    @Mapping(source = "pid.id", target = "pid")
-    SysDeptListResponse convertEntity2List(SysDeptEntity entity);
+    SysDeptListResponse convertEntity2List(SysDeptAppListDTO request);
 
-    @Mapping(source = "id", target = "id.id")
-    @Mapping(source = "pid", target = "pid.id")
-    SysDeptEntity convertRequest2Entity(SysDeptRequest req);
+    SysDeptDetailResponse convertEntity2Detail(SysDeptAppDetailDTO request);
 
-    @Mapping(source = "id.id", target = "id")
-    @Mapping(source = "pid.id", target = "pid")
-    SysDeptDetailResponse convertEntity2Detail(SysDeptEntity sysDept);
+    SysDeptCreateCommand convertRequest2CreateCommand(SysDeptRequest request);
+
+    SysDeptUpdateCommand convertRequest2UpdateCommand(SysDeptRequest request);
 }

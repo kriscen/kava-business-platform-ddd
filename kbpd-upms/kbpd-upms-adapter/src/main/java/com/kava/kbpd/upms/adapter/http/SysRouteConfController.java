@@ -2,15 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysRouteConfQuery;
+import com.kava.kbpd.upms.adapter.converter.SysRouteConfAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysRouteConfAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysRouteConfRequest;
 import com.kava.kbpd.upms.api.model.response.SysRouteConfDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysRouteConfListResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysRouteConfEntity;
+import com.kava.kbpd.upms.application.model.dto.SysRouteConfAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysRouteConfAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysRouteConfAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfId;
-import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfListQuery;
-import com.kava.kbpd.upms.domain.service.ISysRouteConfService;
-import com.kava.kbpd.upms.adapter.converter.SysRouteConfAdapterConverter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,39 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/route-conf/")
 public class SysRouteConfController {
     @Resource
-    private ISysRouteConfService sysRouteConfService;
+    private ISysRouteConfAppService appService;
     @Resource
-    private SysRouteConfAdapterConverter sysRouteConfTriggerConverter;
+    private SysRouteConfAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysRouteConfListResponse>> getSysAreaPage(SysRouteConfQuery query) {
-        SysRouteConfListQuery q = sysRouteConfTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysRouteConfEntity> pagingInfo = sysRouteConfService.queryPage(q);
-        PagingInfo<SysRouteConfListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysRouteConfTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysRouteConfListResponse>> getSysRouteConfPage(@ModelAttribute SysRouteConfAdapterListQuery query) {
+        PagingInfo<SysRouteConfAppListDTO> sysRouteConfEntityPagingInfo = appService.queryRouteConfPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysRouteConfListResponse> result = PagingInfo.toResponse(sysRouteConfEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysRouteConfEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
-
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysRouteConfDetailResponse> getDetails(Long id) {
-        SysRouteConfEntity sysRouteConf = sysRouteConfService.queryById(SysRouteConfId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysRouteConfTriggerConverter.convertEntity2Detail(sysRouteConf));
+    @GetMapping("/{id}")
+    public JsonResult<SysRouteConfDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysRouteConfAppDetailDTO sysRouteConfEntity = appService.queryRouteConfById(SysRouteConfId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysRouteConfEntity));
     }
 
     /**
@@ -66,8 +62,8 @@ public class SysRouteConfController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysRouteConfRequest req) {
-        SysRouteConfId id = sysRouteConfService.create(sysRouteConfTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysRouteConfId sysRouteConfId = appService.createRouteConf(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysRouteConfId.getId());
     }
 
     /**
@@ -76,9 +72,11 @@ public class SysRouteConfController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysRouteConfRequest req) {
-        return JsonResult.buildSuccess(sysRouteConfService.update(sysRouteConfTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysRouteConfRequest req) {
+        req.setId(id);
+        appService.updateRouteConf(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -88,9 +86,10 @@ public class SysRouteConfController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysRouteConfId> idList = ids.stream().map(t->SysRouteConfId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysRouteConfService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysRouteConfId> idList = ids.stream().map(SysRouteConfId::of).toList();
+        appService.removeRouteConfBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
 
 }

@@ -19,4 +19,8 @@ public class SysLogId implements Identifier {
 	 * 编号
 	 */
 	Long id;
+
+	public static SysLogId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

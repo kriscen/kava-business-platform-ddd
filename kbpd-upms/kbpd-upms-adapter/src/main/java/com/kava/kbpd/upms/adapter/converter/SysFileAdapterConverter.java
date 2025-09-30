@@ -1,9 +1,17 @@
 package com.kava.kbpd.upms.adapter.converter;
 
-import com.kava.kbpd.upms.api.model.query.SysFileQuery;
+import com.kava.kbpd.upms.api.model.query.SysFileAdapterListQuery;
+import com.kava.kbpd.upms.api.model.query.SysFileAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysFileRequest;
+import com.kava.kbpd.upms.api.model.request.SysFileRequest;
+import com.kava.kbpd.upms.api.model.response.SysFileDetailResponse;
+import com.kava.kbpd.upms.api.model.response.SysFileListResponse;
 import com.kava.kbpd.upms.api.model.response.SysFileListResponse;
 import com.kava.kbpd.upms.api.model.response.SysFileDetailResponse;
+import com.kava.kbpd.upms.application.model.command.SysFileCreateCommand;
+import com.kava.kbpd.upms.application.model.command.SysFileUpdateCommand;
+import com.kava.kbpd.upms.application.model.dto.SysFileAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysFileAppListDTO;
 import com.kava.kbpd.upms.domain.model.entity.SysFileEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileListQuery;
 import org.mapstruct.Mapper;
@@ -19,14 +27,13 @@ public interface SysFileAdapterConverter {
 
     @Mapping(source = "pageNo", target = "queryParam.pageNo")
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
-    SysFileListQuery convertQueryDTO2QueryVal(SysFileQuery request);
+    SysFileListQuery convertQueryDTO2QueryVal(SysFileAdapterListQuery request);
 
-    @Mapping(source = "id.id", target = "id")
-    SysFileListResponse convertEntity2List(SysFileEntity entity);
+    SysFileListResponse convertEntity2List(SysFileAppListDTO request);
 
-    @Mapping(source = "id", target = "id.id")
-    SysFileEntity convertRequest2Entity(SysFileRequest req);
+    SysFileDetailResponse convertEntity2Detail(SysFileAppDetailDTO request);
 
-    @Mapping(source = "id.id", target = "id")
-    SysFileDetailResponse convertEntity2Detail(SysFileEntity sysFile);
+    SysFileCreateCommand convertRequest2CreateCommand(SysFileRequest request);
+
+    SysFileUpdateCommand convertRequest2UpdateCommand(SysFileRequest request);
 }

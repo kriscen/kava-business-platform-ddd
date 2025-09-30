@@ -16,4 +16,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class SysFileGroupId implements Identifier {
 
 	Long id;
+
+	public static SysFileGroupId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

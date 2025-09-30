@@ -20,4 +20,7 @@ public class SysMenuId implements Identifier {
      */
     Long id;
 
+    public static SysMenuId of(Long id) {
+        return id == null ? null : builder().id(id).build();
+    }
 }

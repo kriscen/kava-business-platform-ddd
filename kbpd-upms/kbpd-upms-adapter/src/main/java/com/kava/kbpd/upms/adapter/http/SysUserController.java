@@ -4,7 +4,7 @@ import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.common.core.model.valobj.SysUserId;
 import com.kava.kbpd.upms.adapter.converter.SysUserAdapterConverter;
-import com.kava.kbpd.upms.api.model.query.SysUserQuery;
+import com.kava.kbpd.upms.api.model.query.SysUserAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysUserRequest;
 import com.kava.kbpd.upms.api.model.response.SysUserDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysUserListResponse;
@@ -35,7 +35,7 @@ public class SysUserController {
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysUserListResponse>> getSysAreaPage(@ModelAttribute SysUserQuery query) {
+    public JsonResult<PagingInfo<SysUserListResponse>> getSysAreaPage(@ModelAttribute SysUserAdapterListQuery query) {
         SysUserListQuery q = sysUserTriggerConverter.convertQueryDTO2QueryVal(query);
         PagingInfo<SysUserAppListDTO> queryUserPage = sysUserAppService.queryUserPage(q);
         PagingInfo<SysUserListResponse> result = PagingInfo.toResponse(queryUserPage.getList().stream().

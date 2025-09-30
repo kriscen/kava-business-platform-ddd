@@ -2,15 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysAuditLogQuery;
+import com.kava.kbpd.upms.adapter.converter.SysAuditLogAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysAuditLogAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysAuditLogRequest;
 import com.kava.kbpd.upms.api.model.response.SysAuditLogDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysAuditLogListResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;
+import com.kava.kbpd.upms.application.model.dto.SysAuditLogAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysAuditLogAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysAuditLogAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogId;
-import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogListQuery;
-import com.kava.kbpd.upms.domain.service.ISysAuditLogService;
-import com.kava.kbpd.upms.adapter.converter.SysAuditLogAdapterConverter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,39 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/audit-log/")
 public class SysAuditLogController {
     @Resource
-    private ISysAuditLogService sysAuditLogService;
+    private ISysAuditLogAppService appService;
     @Resource
-    private SysAuditLogAdapterConverter sysAuditLogTriggerConverter;
+    private SysAuditLogAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysAuditLogListResponse>> getSysAreaPage(SysAuditLogQuery query) {
-        SysAuditLogListQuery q = sysAuditLogTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysAuditLogEntity> pagingInfo = sysAuditLogService.queryPage(q);
-        PagingInfo<SysAuditLogListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysAuditLogTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysAuditLogListResponse>> getSysAuditLogPage(@ModelAttribute SysAuditLogAdapterListQuery query) {
+        PagingInfo<SysAuditLogAppListDTO> sysAuditLogEntityPagingInfo = appService.queryAuditLogPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysAuditLogListResponse> result = PagingInfo.toResponse(sysAuditLogEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysAuditLogEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
-
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysAuditLogDetailResponse> getDetails(Long id) {
-        SysAuditLogEntity sysAuditLog = sysAuditLogService.queryById(SysAuditLogId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysAuditLogTriggerConverter.convertEntity2Detail(sysAuditLog));
+    @GetMapping("/{id}")
+    public JsonResult<SysAuditLogDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysAuditLogAppDetailDTO sysAuditLogEntity = appService.queryAuditLogById(SysAuditLogId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysAuditLogEntity));
     }
 
     /**
@@ -66,8 +62,8 @@ public class SysAuditLogController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysAuditLogRequest req) {
-        SysAuditLogId id = sysAuditLogService.create(sysAuditLogTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysAuditLogId sysAuditLogId = appService.createAuditLog(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysAuditLogId.getId());
     }
 
     /**
@@ -76,9 +72,11 @@ public class SysAuditLogController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysAuditLogRequest req) {
-        return JsonResult.buildSuccess(sysAuditLogService.update(sysAuditLogTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysAuditLogRequest req) {
+        req.setId(id);
+        appService.updateAuditLog(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -88,10 +86,10 @@ public class SysAuditLogController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysAuditLogId> idList = ids.stream().map(t->SysAuditLogId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysAuditLogService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysAuditLogId> idList = ids.stream().map(SysAuditLogId::of).toList();
+        appService.removeAuditLogBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
-
 
 }

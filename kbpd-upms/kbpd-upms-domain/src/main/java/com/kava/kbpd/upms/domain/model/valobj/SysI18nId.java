@@ -19,4 +19,8 @@ public class SysI18nId implements Identifier {
 	 * id
 	 */
 	Long id;
+
+	public static SysI18nId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

@@ -16,4 +16,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class SysOauthClientId implements Identifier {
 
 	Long id;
+
+	public static SysOauthClientId of(Long id) {
+		return id == null ? null : builder().id(id).build();
+	}
 }

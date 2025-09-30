@@ -2,15 +2,15 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.api.model.query.SysPublicParamQuery;
+import com.kava.kbpd.upms.adapter.converter.SysPublicParamAdapterConverter;
+import com.kava.kbpd.upms.api.model.query.SysPublicParamAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysPublicParamRequest;
 import com.kava.kbpd.upms.api.model.response.SysPublicParamDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysPublicParamListResponse;
-import com.kava.kbpd.upms.domain.model.entity.SysPublicParamEntity;
+import com.kava.kbpd.upms.application.model.dto.SysPublicParamAppDetailDTO;
+import com.kava.kbpd.upms.application.model.dto.SysPublicParamAppListDTO;
+import com.kava.kbpd.upms.application.service.ISysPublicParamAppService;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamId;
-import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamListQuery;
-import com.kava.kbpd.upms.domain.service.ISysPublicParamService;
-import com.kava.kbpd.upms.adapter.converter.SysPublicParamAdapterConverter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,38 +23,35 @@ import java.util.List;
 @RequestMapping("/api/${app.config.api-version}/sys/public-param/")
 public class SysPublicParamController {
     @Resource
-    private ISysPublicParamService sysPublicParamService;
+    private ISysPublicParamAppService appService;
     @Resource
-    private SysPublicParamAdapterConverter sysPublicParamTriggerConverter;
+    private SysPublicParamAdapterConverter adapterConverter;
 
     /**
      * 分页查询
      *
-     * @param query 查询条件
+     * @param query 行政区划
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysPublicParamListResponse>> getSysPublicParamPage(SysPublicParamQuery query) {
-        SysPublicParamListQuery q = sysPublicParamTriggerConverter.convertQueryDTO2QueryVal(query);
-        PagingInfo<SysPublicParamEntity> pagingInfo = sysPublicParamService.queryPage(q);
-        PagingInfo<SysPublicParamListResponse> result = PagingInfo.toResponse(pagingInfo.getList().stream().
-                        map(sysPublicParamTriggerConverter::convertEntity2List).toList(),
-                        pagingInfo);
+    public JsonResult<PagingInfo<SysPublicParamListResponse>> getSysPublicParamPage(@ModelAttribute SysPublicParamAdapterListQuery query) {
+        PagingInfo<SysPublicParamAppListDTO> sysPublicParamEntityPagingInfo = appService.queryPublicParamPage(adapterConverter.convertQueryDTO2QueryVal(query));
+        PagingInfo<SysPublicParamListResponse> result = PagingInfo.toResponse(sysPublicParamEntityPagingInfo.getList().stream().
+                        map(adapterConverter::convertEntity2List).toList(),
+                sysPublicParamEntityPagingInfo);
         return JsonResult.buildSuccess(result);
     }
 
     /**
      * 获取详细信息
      *
-     * @param id 查询id
+     * @param id id
      * @return 明细
      */
-    @GetMapping("/details")
-    public JsonResult<SysPublicParamDetailResponse> getDetails(Long id) {
-        SysPublicParamEntity sysPublicParam = sysPublicParamService.queryById(SysPublicParamId.builder()
-                .id(id)
-                .build());
-        return JsonResult.buildSuccess(sysPublicParamTriggerConverter.convertEntity2Detail(sysPublicParam));
+    @GetMapping("/{id}")
+    public JsonResult<SysPublicParamDetailResponse> getDetails(@PathVariable("id") Long id) {
+        SysPublicParamAppDetailDTO sysPublicParamEntity = appService.queryPublicParamById(SysPublicParamId.of(id));
+        return JsonResult.buildSuccess(adapterConverter.convertEntity2Detail(sysPublicParamEntity));
     }
 
     /**
@@ -65,8 +62,8 @@ public class SysPublicParamController {
      */
     @PostMapping
     public JsonResult<Long> save(@RequestBody SysPublicParamRequest req) {
-        SysPublicParamId id = sysPublicParamService.create(sysPublicParamTriggerConverter.convertRequest2Entity(req));
-        return JsonResult.buildSuccess(id.getId());
+        SysPublicParamId sysPublicParamId = appService.createPublicParam(adapterConverter.convertRequest2CreateCommand(req));
+        return JsonResult.buildSuccess(sysPublicParamId.getId());
     }
 
     /**
@@ -75,9 +72,11 @@ public class SysPublicParamController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysPublicParamRequest req) {
-        return JsonResult.buildSuccess(sysPublicParamService.update(sysPublicParamTriggerConverter.convertRequest2Entity(req)));
+    @PutMapping("/{id}")
+    public JsonResult<Void> updateById(@PathVariable("id") Long id,@RequestBody SysPublicParamRequest req) {
+        req.setId(id);
+        appService.updatePublicParam(adapterConverter.convertRequest2UpdateCommand(req));
+        return JsonResult.buildSuccess();
     }
 
     /**
@@ -87,8 +86,10 @@ public class SysPublicParamController {
      * @return R
      */
     @DeleteMapping
-    public JsonResult<Boolean> removeById(@RequestBody List<Long> ids) {
-        List<SysPublicParamId> idList = ids.stream().map(t->SysPublicParamId.builder().id(t).build()).toList();
-        return JsonResult.buildSuccess(sysPublicParamService.removeBatchByIds(idList));
+    public JsonResult<Void> removeById(@RequestBody List<Long> ids) {
+        List<SysPublicParamId> idList = ids.stream().map(SysPublicParamId::of).toList();
+        appService.removePublicParamBatchByIds(idList);
+        return JsonResult.buildSuccess();
     }
+
 }
