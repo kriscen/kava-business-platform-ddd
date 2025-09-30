@@ -7,4 +7,5 @@ import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientListQuery;
 
 public interface ISysOauthClientRepository extends IBaseSimpleRepository<SysOauthClientId, SysOauthClientEntity, SysOauthClientListQuery> {
 
+    SysOauthClientEntity queryByClientId(String clientId);
 }

@@ -65,4 +65,10 @@ public class SysOauthClientAppService implements ISysOauthClientAppService {
         return sysOauthClientAppConverter.convertEntityToDetailDTO(OauthClientEntity);
     }
 
+    @Override
+    public SysOauthClientAppDetailDTO queryByClientId(String clientId) {
+        SysOauthClientEntity OauthClientEntity = sysOauthClientRepository.queryByClientId(clientId);
+        return sysOauthClientAppConverter.convertEntityToDetailDTO(OauthClientEntity);
+    }
+
 }

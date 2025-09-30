@@ -1,5 +1,6 @@
 package com.kava.kbpd.upms.adapter.converter;
 
+import com.kava.kbpd.upms.api.model.dto.SysOauthClientDTO;
 import com.kava.kbpd.upms.api.model.query.SysOauthClientAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysOauthClientRequest;
 import com.kava.kbpd.upms.api.model.response.SysOauthClientDetailResponse;
@@ -31,4 +32,6 @@ public interface SysOauthClientAdapterConverter {
     SysOauthClientCreateCommand convertRequest2CreateCommand(SysOauthClientRequest request);
 
     SysOauthClientUpdateCommand convertRequest2UpdateCommand(SysOauthClientRequest request);
+
+    SysOauthClientDTO convertAppDetail2RemoteDTO(SysOauthClientAppDetailDTO appDetailDTO);
 }

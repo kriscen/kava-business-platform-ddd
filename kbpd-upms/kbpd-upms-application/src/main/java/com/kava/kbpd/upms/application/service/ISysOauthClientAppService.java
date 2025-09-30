@@ -26,4 +26,5 @@ public interface ISysOauthClientAppService {
 
     SysOauthClientAppDetailDTO queryOauthClientById(SysOauthClientId id);
 
+    SysOauthClientAppDetailDTO queryByClientId(String clientId);
 }

@@ -8,5 +8,5 @@ import com.kava.kbpd.upms.api.model.dto.SysOauthClientDTO;
  * @description: oauth dubbo service
  */
 public interface IRemoteOauthClientService {
-    SysOauthClientDTO findByClientId(String clientId);
+    SysOauthClientDTO queryByClientId(String clientId);
 }

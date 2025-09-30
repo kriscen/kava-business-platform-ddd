@@ -33,7 +33,7 @@ public class AuthApplicationTest {
 
     @Test
     public void test2() throws Exception {
-        System.out.println(remoteOauthClientDetailService.findByClientId("123"));
+        System.out.println(remoteOauthClientDetailService.queryByClientId("123"));
     }
 
     @Test

@@ -47,7 +47,7 @@ public class OauthController {
 		Set<String> previouslyApprovedScopes = new HashSet<>();
 		RegisteredClient registeredClient = this.registeredClientRepository.findByClientId(clientId);
 		if (registeredClient == null) {
-			throw new RuntimeException("客户端不存在");
+			throw new RuntimeException("registered client not found!");
 		}
 		OAuth2AuthorizationConsent currentAuthorizationConsent =
 				this.authorizationConsentService.findById(registeredClient.getId(), principal.getName());
