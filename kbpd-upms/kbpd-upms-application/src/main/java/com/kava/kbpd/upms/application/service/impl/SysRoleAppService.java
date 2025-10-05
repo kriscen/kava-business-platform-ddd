@@ -34,7 +34,7 @@ public class SysRoleAppService implements ISysRoleAppService {
     private ISysRoleWriteRepository writeRepository;
 
     @Resource
-    private ISysRoleService sysUserService;
+    private ISysRoleService sysRoleService;
 
     @Resource
     private SysRoleAppConverter appConverter;

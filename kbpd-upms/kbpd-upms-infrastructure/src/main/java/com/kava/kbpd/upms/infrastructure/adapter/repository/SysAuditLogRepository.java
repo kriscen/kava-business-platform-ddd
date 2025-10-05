@@ -1,7 +1,5 @@
 package com.kava.kbpd.upms.infrastructure.adapter.repository;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;

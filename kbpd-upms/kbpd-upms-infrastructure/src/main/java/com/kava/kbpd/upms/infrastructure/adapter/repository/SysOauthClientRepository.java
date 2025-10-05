@@ -1,5 +1,6 @@
 package com.kava.kbpd.upms.infrastructure.adapter.repository;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -20,14 +21,14 @@ import java.util.List;
 public class SysOauthClientRepository implements ISysOauthClientRepository {
 
     @Resource
-    private SysOauthClientMapper sysOauthClientDetailsMapper;
+    private SysOauthClientMapper sysOauthClientMapper;
     @Resource
-    private SysOauthClientConverter sysOauthClientDetailsConverter;
+    private SysOauthClientConverter sysOauthClientConverter;
 
     @Override
     public SysOauthClientId create(SysOauthClientEntity entity) {
-        SysOauthClientPO sysOauthClientDetailsPO = sysOauthClientDetailsConverter.convertEntity2PO(entity);
-        sysOauthClientDetailsMapper.insert(sysOauthClientDetailsPO);
+        SysOauthClientPO sysOauthClientDetailsPO = sysOauthClientConverter.convertEntity2PO(entity);
+        sysOauthClientMapper.insert(sysOauthClientDetailsPO);
         return SysOauthClientId.builder()
                 .id(sysOauthClientDetailsPO.getId())
                 .build();
@@ -35,29 +36,37 @@ public class SysOauthClientRepository implements ISysOauthClientRepository {
 
     @Override
     public Boolean update(SysOauthClientEntity entity) {
-        SysOauthClientPO sysOauthClientDetailsPO = sysOauthClientDetailsConverter.convertEntity2PO(entity);
-        return SqlHelper.retBool(sysOauthClientDetailsMapper.updateById(sysOauthClientDetailsPO));
+        SysOauthClientPO sysOauthClientDetailsPO = sysOauthClientConverter.convertEntity2PO(entity);
+        return SqlHelper.retBool(sysOauthClientMapper.updateById(sysOauthClientDetailsPO));
     }
 
     @Override
     public PagingInfo<SysOauthClientEntity> queryPage(SysOauthClientListQuery query) {
-        Page<SysOauthClientPO> sysOauthClientDetailsPOPage = sysOauthClientDetailsMapper.selectPage(
+        Page<SysOauthClientPO> sysOauthClientDetailsPOPage = sysOauthClientMapper.selectPage(
                 Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
                 Wrappers.lambdaQuery(SysOauthClientPO.class));
         return PagingInfo.toResponse(sysOauthClientDetailsPOPage.getRecords().stream()
-                        .map(sysOauthClientDetailsConverter::convertPO2Entity).toList(),
+                        .map(sysOauthClientConverter::convertPO2Entity).toList(),
                 sysOauthClientDetailsPOPage.getTotal(), sysOauthClientDetailsPOPage.getCurrent(), sysOauthClientDetailsPOPage.getSize());
     }
 
     @Override
     public SysOauthClientEntity queryById(SysOauthClientId id) {
-        SysOauthClientPO sysOauthClientDetailsPO = sysOauthClientDetailsMapper.selectById(id.getId());
-        return sysOauthClientDetailsConverter.convertPO2Entity(sysOauthClientDetailsPO);
+        SysOauthClientPO sysOauthClientDetailsPO = sysOauthClientMapper.selectById(id.getId());
+        return sysOauthClientConverter.convertPO2Entity(sysOauthClientDetailsPO);
     }
 
     @Override
     public Boolean removeBatchByIds(List<SysOauthClientId> ids) {
         List<Long> idList = ids.stream().map(SysOauthClientId::getId).toList();
-        return SqlHelper.retBool(sysOauthClientDetailsMapper.deleteByIds(idList));
+        return SqlHelper.retBool(sysOauthClientMapper.deleteByIds(idList));
+    }
+
+    @Override
+    public SysOauthClientEntity queryByClientId(String clientId) {
+        LambdaQueryWrapper<SysOauthClientPO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysOauthClientPO::getClientId, clientId);
+        SysOauthClientPO sysOauthClientPO = sysOauthClientMapper.selectOne(queryWrapper);
+        return sysOauthClientConverter.convertPO2Entity(sysOauthClientPO);
     }
 }

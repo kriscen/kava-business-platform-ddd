@@ -51,7 +51,7 @@ public class SysRoleController {
      * @param id 查询id
      * @return 明细
      */
-    @GetMapping("/{id}}")
+    @GetMapping("/{id}")
     public JsonResult<SysRoleDetailResponse> getDetails(@PathVariable("id") Long id) {
         SysRoleAppDetailDTO sysRole = sysRoleAppService.queryRoleById(SysRoleId.of(id));
         return JsonResult.buildSuccess(sysRoleTriggerConverter.convertDetailDTO2DetailResp(sysRole));

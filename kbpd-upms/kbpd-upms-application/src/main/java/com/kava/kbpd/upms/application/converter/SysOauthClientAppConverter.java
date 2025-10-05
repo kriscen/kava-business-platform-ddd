@@ -23,6 +23,8 @@ public interface SysOauthClientAppConverter {
 
     SysOauthClientAppListDTO convertEntityToListQueryDTO(SysOauthClientEntity entity);
 
+    @Mapping(source = "id.id", target = "id")
+    @Mapping(source = "tenantId.id", target = "tenantId")
     SysOauthClientAppDetailDTO convertEntityToDetailDTO(SysOauthClientEntity entity);
 
 }

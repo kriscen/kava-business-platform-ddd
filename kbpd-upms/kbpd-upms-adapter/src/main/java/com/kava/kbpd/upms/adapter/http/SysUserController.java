@@ -51,7 +51,7 @@ public class SysUserController {
      * @param id 查询id
      * @return 明细
      */
-    @GetMapping("/{id}}")
+    @GetMapping("/{id}")
     public JsonResult<SysUserDetailResponse> getDetails(@PathVariable("id") Long id) {
         SysUserAppDetailDTO sysUser = sysUserAppService.queryUserById(SysUserId.of(id));
         return JsonResult.buildSuccess(sysUserTriggerConverter.convertDetailDTO2DetailResp(sysUser));
