@@ -2,6 +2,8 @@ package com.kava.kbpd.auth.config;
 
 import cn.hutool.core.util.StrUtil;
 import com.kava.kbpd.auth.constants.AuthConstants;
+import com.kava.kbpd.auth.model.MemberDetails;
+import com.kava.kbpd.auth.model.SysUserDetails;
 import com.kava.kbpd.auth.oauth2.RedisAuthorizationConsentService;
 import com.kava.kbpd.auth.oauth2.RedisAuthorizationService;
 import com.kava.kbpd.auth.oauth2.client.DBRegisteredClientRepository;
@@ -10,8 +12,6 @@ import com.kava.kbpd.auth.oauth2.handler.AuthenticationSuccessEventHandler;
 import com.kava.kbpd.common.cache.redis.RedisKeyGenerator;
 import com.kava.kbpd.common.cache.redis.RedisKeyModule;
 import com.kava.kbpd.common.core.constants.JwtClaimConstants;
-import com.kava.kbpd.auth.model.MemberDetails;
-import com.kava.kbpd.auth.model.SysUserDetails;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -42,7 +42,6 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.security.KeyPair;
@@ -61,8 +60,6 @@ import java.util.stream.Collectors;
  */
 @Configuration
 public class AuthorizationServiceConfig {
-
-    private static final String CUSTOM_CONSENT_PAGE_URI = "/oauth2/consent";
 
     @Resource
     private RedisTemplate<String,String> redisTemplate;
@@ -137,7 +134,7 @@ public class AuthorizationServiceConfig {
 //                                //AuthenticationFailureHandler（后处理器），用于处理 OAuth2AuthorizationCodeRequestAuthenticationException，并返回 OAuth2Error 响应。
 //                                .errorResponseHandler(errorResponseHandler)
                                 //自定义同意（consent）页面的 URI，如果在授权请求流程中需要同意，则将资源所有者重定向至此。
-                                .consentPage(CUSTOM_CONSENT_PAGE_URI)
+                                .consentPage(AuthConstants.URL_OAUTH2_CONSENT)
         )
                 //OAuth2令牌端点 的 configurer。
                 .tokenEndpoint(tokenEndpoint ->
@@ -239,7 +236,7 @@ public class AuthorizationServiceConfig {
 
         http.exceptionHandling((exceptions) -> exceptions
                     .defaultAuthenticationEntryPointFor(
-                            new LoginUrlAuthenticationEntryPoint("/login"),
+                            new CustomLoginUrlAuthenticationEntryPoint(AuthConstants.URL_OAUTH2_LOGIN),
                             new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                     )
             )

@@ -2,6 +2,7 @@ package com.kava.kbpd.auth.config;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.fasterxml.jackson.databind.Module;
+import com.kava.kbpd.auth.constants.AuthConstants;
 import com.kava.kbpd.auth.oauth2.jackson.CustomerOauth2Module;
 import com.kava.kbpd.auth.oauth2.jackson.CustomerUserDetailsModule;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -61,7 +62,13 @@ public class DefaultSecurityConfig {
                         }
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(Customizer.withDefaults());
+                .formLogin(formLogin -> 
+                    formLogin
+                        .loginPage(AuthConstants.URL_OAUTH2_LOGIN)  // 设置自定义登录页面
+                        .loginProcessingUrl("/login")
+                        .permitAll()
+                        .failureUrl(AuthConstants.URL_OAUTH2_ERROR)  // 登录失败时重定向
+                );
 
         return http.build();
     }
@@ -77,7 +84,10 @@ public class DefaultSecurityConfig {
                 AntPathRequestMatcher.antMatcher("/doc.html"),
                 AntPathRequestMatcher.antMatcher("/swagger-resources/**"),
                 AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
-                AntPathRequestMatcher.antMatcher("/swagger-ui/**")
+                AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
+                AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/oauth2/login"),
+                AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/oauth2/error"),
+                AntPathRequestMatcher.antMatcher("/assets/**")
         );
     }
 

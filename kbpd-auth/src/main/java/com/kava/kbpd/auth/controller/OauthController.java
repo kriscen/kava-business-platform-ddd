@@ -1,9 +1,8 @@
 package com.kava.kbpd.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kava.kbpd.auth.model.LoginStateJson;
-import com.kava.kbpd.auth.model.Oauth2LoginContext;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -15,12 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.*;
 
@@ -42,17 +39,17 @@ public class OauthController {
 	private ObjectMapper objectMapper;
 
 	@GetMapping("/login")
-	public String login(@ModelAttribute Oauth2LoginContext oauth2LoginContext,Model model) throws IOException {
-		//TODO 后续需要根据tenantId 获取对应租户配置的登录页信息返回
-		String state = oauth2LoginContext.getState();
-		if (state == null) {
-			return "error";
-		}
-		//TODO state不存在页面完善
-		byte[] stateByte = Base64.getUrlDecoder().decode(state.getBytes(StandardCharsets.UTF_8));
-		LoginStateJson stateJson = objectMapper.readValue(stateByte, LoginStateJson.class);
-		model.addAttribute("stateData", stateJson);
+	public String login(HttpServletRequest request, Model model) throws IOException {
+		Map<String, String[]> parameterMap = request.getParameterMap();
+
 		return "login";
+	}
+
+	@GetMapping("/error")
+	public String error(HttpServletRequest request, Model model) throws IOException {
+		Map<String, String[]> parameterMap = request.getParameterMap();
+
+		return "error";
 	}
 
 	@GetMapping(value = "/consent")
