@@ -1,4 +1,4 @@
-package com.kava.kbpd.auth.oauth2;
+package com.kava.kbpd.auth.oauth2.component;
 
 import com.kava.kbpd.auth.enums.AuthRedisKeyType;
 import com.kava.kbpd.common.cache.redis.RedisKeyModule;

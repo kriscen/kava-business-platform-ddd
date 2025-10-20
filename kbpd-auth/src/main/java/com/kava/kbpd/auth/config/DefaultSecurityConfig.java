@@ -3,13 +3,16 @@ package com.kava.kbpd.auth.config;
 import cn.hutool.core.collection.CollectionUtil;
 import com.fasterxml.jackson.databind.Module;
 import com.kava.kbpd.auth.constants.AuthConstants;
+import com.kava.kbpd.auth.oauth2.component.TenantAwareAuthenticationFilter;
 import com.kava.kbpd.auth.oauth2.jackson.CustomerOauth2Module;
 import com.kava.kbpd.auth.oauth2.jackson.CustomerUserDetailsModule;
+import jakarta.annotation.Resource;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +22,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
@@ -34,12 +38,17 @@ import java.util.List;
 @ConfigurationProperties(prefix = "kbpd.auth")
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
+@DependsOn("authorizationServiceConfig")
 public class DefaultSecurityConfig {
 
     /**
      * 白名单路径列表
      */
     private List<String> whitelistPaths;
+
+
+    @Resource
+    private TenantAwareAuthenticationFilter tenantAwareAuthenticationFilter;
 
     /**
      * Spring Security 安全过滤器链配置
@@ -65,10 +74,12 @@ public class DefaultSecurityConfig {
                 .formLogin(formLogin -> 
                     formLogin
                         .loginPage(AuthConstants.URL_OAUTH2_LOGIN)  // 设置自定义登录页面
-                        .loginProcessingUrl("/login")
+                        .loginProcessingUrl(AuthConstants.URL_OAUTH2_LOGIN)
                         .permitAll()
                         .failureUrl(AuthConstants.URL_OAUTH2_ERROR)  // 登录失败时重定向
-                );
+                )
+                .addFilterAt(tenantAwareAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
 
         return http.build();
     }
@@ -85,8 +96,8 @@ public class DefaultSecurityConfig {
                 AntPathRequestMatcher.antMatcher("/swagger-resources/**"),
                 AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
                 AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
-                AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/oauth2/login"),
-                AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/oauth2/error"),
+                AntPathRequestMatcher.antMatcher(HttpMethod.GET,AuthConstants.URL_OAUTH2_LOGIN),
+                AntPathRequestMatcher.antMatcher(HttpMethod.GET,AuthConstants.URL_OAUTH2_ERROR),
                 AntPathRequestMatcher.antMatcher("/assets/**")
         );
     }

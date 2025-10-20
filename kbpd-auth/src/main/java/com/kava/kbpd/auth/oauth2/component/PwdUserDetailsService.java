@@ -1,4 +1,4 @@
-package com.kava.kbpd.auth.oauth2.service;
+package com.kava.kbpd.auth.oauth2.component;
 
 import com.kava.kbpd.auth.model.SysUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +14,14 @@ import java.util.Set;
  * @description:
  */
 @Service
-public class PwdService implements UserDetailsService {
+public class PwdUserDetailsService implements UserDetailsService {
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        throw new UsernameNotFoundException("user not found");
+    }
+
+    public UserDetails loadUserByUsername(String mobile,String tenantId,Integer userType) throws UsernameNotFoundException {
         return new SysUserDetails(1L, "admin", "{noop}123456", 1L, true, Set.of());
     }
 }

@@ -1,4 +1,4 @@
-package com.kava.kbpd.auth.oauth2.client;
+package com.kava.kbpd.auth.oauth2.component;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
