@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,7 +37,6 @@ import java.util.List;
 @ConfigurationProperties(prefix = "kbpd.auth")
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
-@DependsOn("authorizationServiceConfig")
 public class DefaultSecurityConfig {
 
     /**
@@ -95,9 +93,10 @@ public class DefaultSecurityConfig {
                 AntPathRequestMatcher.antMatcher("/swagger-resources/**"),
                 AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
                 AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
+                AntPathRequestMatcher.antMatcher("/assets/**"),
+                //由于filterChain为两个，此处需要放行authorization中的地址
                 AntPathRequestMatcher.antMatcher(HttpMethod.GET,AuthConstants.URL_OAUTH2_LOGIN),
-                AntPathRequestMatcher.antMatcher(HttpMethod.GET,AuthConstants.URL_OAUTH2_ERROR),
-                AntPathRequestMatcher.antMatcher("/assets/**")
+                AntPathRequestMatcher.antMatcher(HttpMethod.GET,AuthConstants.URL_OAUTH2_ERROR)
         );
     }
 

@@ -134,6 +134,18 @@ public class CustomerAuthenticationProvider extends AbstractUserDetailsAuthentic
             String newPassword = this.passwordEncoder.encode(presentedPassword);
             user = this.userDetailsPasswordService.updatePassword(user, newPassword);
         }
+
+        // 确保是扩展 token
+        if (authentication instanceof ExtendUsernamePasswordAuthenticationToken extendAuth) {
+            return new ExtendUsernamePasswordAuthenticationToken(
+                    principal,
+                    authentication.getCredentials(),
+                    user.getAuthorities(),
+                    extendAuth.getTenantId(),
+                    extendAuth.getUserType()
+            );
+        }
+        //fallback
         return super.createSuccessAuthentication(principal, authentication, user);
     }
 
