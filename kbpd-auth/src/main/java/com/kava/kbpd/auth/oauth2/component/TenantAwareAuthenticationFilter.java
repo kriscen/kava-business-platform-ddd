@@ -2,6 +2,8 @@ package com.kava.kbpd.auth.oauth2.component;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -12,7 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class TenantAwareAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    public TenantAwareAuthenticationFilter(AuthenticationManager authenticationManager) {
+    @Autowired
+    @Lazy
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         super.setAuthenticationManager(authenticationManager);
     }
 

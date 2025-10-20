@@ -46,7 +46,6 @@ public class DefaultSecurityConfig {
      */
     private List<String> whitelistPaths;
 
-
     @Resource
     private TenantAwareAuthenticationFilter tenantAwareAuthenticationFilter;
 
