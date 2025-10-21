@@ -20,8 +20,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
@@ -78,7 +80,12 @@ public class DefaultSecurityConfig {
                 .addFilterAt(tenantAwareAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
 
-        return http.build();
+        DefaultSecurityFilterChain build = http.build();
+        SecurityContextRepository repo = http.getSharedObject(SecurityContextRepository.class);
+        if (repo != null) {
+            tenantAwareAuthenticationFilter.setSecurityContextRepository(repo);
+        }
+        return build;
     }
 
 
