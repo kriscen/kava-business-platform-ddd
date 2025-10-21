@@ -1,5 +1,6 @@
 package com.kava.kbpd.auth.test;
 
+import com.kava.kbpd.common.cache.redis.IRedisService;
 import com.kava.kbpd.upms.api.service.IRemoteOauthClientService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +8,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
@@ -26,7 +26,7 @@ import java.time.Instant;
 @SpringBootTest
 public class AuthApplicationTest {
     @Resource
-    private RedisTemplate<String,OAuth2Authorization> redisTemplate;
+    private IRedisService redisService;
 
     @DubboReference(version = "1.0")
     private IRemoteOauthClientService remoteOauthClientDetailService;
@@ -47,9 +47,8 @@ public class AuthApplicationTest {
                         .principalName("4568")
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .build();
-
-        redisTemplate.opsForValue().set("2222",consent);
-        OAuth2Authorization o = redisTemplate.opsForValue().get("2222");
+        redisService.setValue("2222",consent);
+        OAuth2Authorization o = redisService.getValue("2222");
         System.out.println(o);
 
     }

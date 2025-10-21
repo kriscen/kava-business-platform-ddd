@@ -4,11 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import com.kava.kbpd.auth.constants.AuthConstants;
 import com.kava.kbpd.auth.model.MemberDetails;
 import com.kava.kbpd.auth.model.SysUserDetails;
+import com.kava.kbpd.auth.oauth2.component.DBRegisteredClientRepository;
 import com.kava.kbpd.auth.oauth2.component.RedisAuthorizationConsentService;
 import com.kava.kbpd.auth.oauth2.component.RedisAuthorizationService;
-import com.kava.kbpd.auth.oauth2.component.DBRegisteredClientRepository;
 import com.kava.kbpd.auth.oauth2.handler.AuthenticationFailureEventHandler;
 import com.kava.kbpd.auth.oauth2.handler.AuthenticationSuccessEventHandler;
+import com.kava.kbpd.common.cache.redis.IRedisService;
 import com.kava.kbpd.common.cache.redis.RedisKeyGenerator;
 import com.kava.kbpd.common.cache.redis.RedisKeyModule;
 import com.kava.kbpd.common.core.constants.JwtClaimConstants;
@@ -23,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
 public class AuthorizationServiceConfig {
 
     @Resource
-    private RedisTemplate<String,String> redisTemplate;
+    private IRedisService redisService;
 
     @Resource
     private RedisKeyGenerator redisKeyGenerator;
@@ -253,7 +253,7 @@ public class AuthorizationServiceConfig {
     @SneakyThrows
     public JWKSource<SecurityContext> jwkSource() {
         // 尝试从Redis中获取JWKSet(JWT密钥对，包含非对称加密的公钥和私钥)
-        String jwkSetStr = redisTemplate.opsForValue().get(redisKeyGenerator.generateKey(RedisKeyModule.AUTH,AuthConstants.JWK_SET_KEY));
+        String jwkSetStr = redisService.getValue(redisKeyGenerator.generateKey(RedisKeyModule.AUTH,AuthConstants.JWK_SET_KEY));
         if (StrUtil.isNotBlank(jwkSetStr)) {
             // 如果存在，解析JWKSet并返回
             JWKSet jwkSet = JWKSet.parse(jwkSetStr);
@@ -274,7 +274,7 @@ public class AuthorizationServiceConfig {
             JWKSet jwkSet = new JWKSet(rsaKey);
 
             // 将JWKSet存储在Redis中
-            redisTemplate.opsForValue().set(redisKeyGenerator.generateKey(RedisKeyModule.AUTH,AuthConstants.JWK_SET_KEY),
+            redisService.setValue(redisKeyGenerator.generateKey(RedisKeyModule.AUTH,AuthConstants.JWK_SET_KEY),
                     jwkSet.toString(Boolean.FALSE));
             return new ImmutableJWKSet<>(jwkSet);
         }

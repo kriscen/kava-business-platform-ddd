@@ -1,11 +1,11 @@
 package com.kava.kbpd.auth.oauth2.component;
 
 import com.kava.kbpd.auth.enums.AuthRedisKeyType;
-import com.kava.kbpd.common.cache.redis.RedisKeyModule;
+import com.kava.kbpd.common.cache.redis.IRedisService;
 import com.kava.kbpd.common.cache.redis.RedisKeyGenerator;
+import com.kava.kbpd.common.cache.redis.RedisKeyModule;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kris
@@ -41,7 +40,7 @@ public class RedisAuthorizationService implements OAuth2AuthorizationService {
     private final static String ATTR_STATE = "state";
 
     @Resource
-    private RedisTemplate<String,OAuth2Authorization> redisTemplate;
+    private IRedisService redisService;
     @Resource
     private RedisKeyGenerator redisKeyGenerator;
 
@@ -51,8 +50,8 @@ public class RedisAuthorizationService implements OAuth2AuthorizationService {
 
         if (isState(authorization)) {
             String token = authorization.getAttribute(ATTR_STATE);
-            redisTemplate.opsForValue().set(getRedisKey(OAuth2ParameterNames.STATE, token),authorization,
-                    TIMEOUT, TimeUnit.MILLISECONDS);
+            redisService.setValue(getRedisKey(OAuth2ParameterNames.STATE, token),authorization,
+                    TIMEOUT);
         }
 
         if (isCode(authorization)) {
@@ -61,22 +60,22 @@ public class RedisAuthorizationService implements OAuth2AuthorizationService {
             OAuth2AuthorizationCode authorizationCodeToken = Objects.requireNonNull(authorizationCode).getToken();
             long between = ChronoUnit.MILLIS.between(Objects.requireNonNull(authorizationCodeToken.getIssuedAt()),
                     authorizationCodeToken.getExpiresAt());
-            redisTemplate.opsForValue().set(getRedisKey(OAuth2ParameterNames.CODE, authorizationCodeToken.getTokenValue()),
-                    authorization, between, TimeUnit.MILLISECONDS);
+            redisService.setValue(getRedisKey(OAuth2ParameterNames.CODE, authorizationCodeToken.getTokenValue()),
+                    authorization, between);
         }
 
         if (isRefreshToken(authorization)) {
             OAuth2RefreshToken refreshToken = Objects.requireNonNull(authorization.getRefreshToken()).getToken();
             long between = ChronoUnit.MILLIS.between(Objects.requireNonNull(refreshToken.getIssuedAt()), refreshToken.getExpiresAt());
-            redisTemplate.opsForValue().set(getRedisKey(OAuth2ParameterNames.REFRESH_TOKEN, refreshToken.getTokenValue()),
-                    authorization, between, TimeUnit.MILLISECONDS);
+            redisService.setValue(getRedisKey(OAuth2ParameterNames.REFRESH_TOKEN, refreshToken.getTokenValue()),
+                    authorization, between);
         }
 
         if (isAccessToken(authorization)) {
             OAuth2AccessToken accessToken = authorization.getAccessToken().getToken();
             long between = ChronoUnit.MILLIS.between(Objects.requireNonNull(accessToken.getIssuedAt()), accessToken.getExpiresAt());
-            redisTemplate.opsForValue().set(getRedisKey(OAuth2ParameterNames.ACCESS_TOKEN, accessToken.getTokenValue()),
-                    authorization, between, TimeUnit.MILLISECONDS);
+            redisService.setValue(getRedisKey(OAuth2ParameterNames.ACCESS_TOKEN, accessToken.getTokenValue()),
+                    authorization, between);
         }
     }
 
@@ -106,7 +105,7 @@ public class RedisAuthorizationService implements OAuth2AuthorizationService {
             OAuth2AccessToken accessToken = authorization.getAccessToken().getToken();
             keys.add(getRedisKey(OAuth2ParameterNames.ACCESS_TOKEN, accessToken.getTokenValue()));
         }
-        redisTemplate.delete(keys);
+        redisService.removeKeys(keys);
     }
 
     @Override
@@ -118,7 +117,7 @@ public class RedisAuthorizationService implements OAuth2AuthorizationService {
     public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
         Assert.hasText(token, "token cannot be empty");
         Assert.notNull(tokenType, "tokenType cannot be empty");
-        return redisTemplate.opsForValue().get(getRedisKey(tokenType.getValue(),token));
+        return redisService.getValue(getRedisKey(tokenType.getValue(),token));
     }
 
     private String getRedisKey(String tokenType,String id){
