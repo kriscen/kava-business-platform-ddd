@@ -12,14 +12,10 @@ import org.apache.dubbo.config.annotation.DubboService;
 @DubboService(version = "1.0")
 public class RemoteMemberService implements IRemoteMemberService {
     @Override
-    public MemberInfoDTO findMemberByMobile(String mobile) {
+    public MemberInfoDTO findMemberByMobile(String tenantId,String mobile) {
         MemberInfoDTO dto = new MemberInfoDTO();
         dto.setId(1L);
         return dto;
     }
 
-    @Override
-    public MemberInfoDTO loginByPwd(String name, String pwd) {
-        return null;
-    }
 }

@@ -8,7 +8,6 @@ import com.kava.kbpd.member.api.model.dto.MemberInfoDTO;
  * @description: remote member service
  */
 public interface IRemoteMemberService {
-    MemberInfoDTO findMemberByMobile(String mobile);
+    MemberInfoDTO findMemberByMobile(String tenantId,String mobile);
 
-    MemberInfoDTO loginByPwd(String name, String pwd);
 }

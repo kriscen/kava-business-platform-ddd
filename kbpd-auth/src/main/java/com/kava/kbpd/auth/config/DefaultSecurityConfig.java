@@ -74,8 +74,8 @@ public class DefaultSecurityConfig {
                     formLogin
                         .loginPage(AuthConstants.URL_OAUTH2_LOGIN)  // 设置自定义登录页面
                         .loginProcessingUrl(AuthConstants.URL_OAUTH2_LOGIN)
-                        .permitAll()
                         .failureUrl(AuthConstants.URL_OAUTH2_ERROR)  // 登录失败时重定向
+                        .permitAll()
                 )
                 .addFilterAt(tenantAwareAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;

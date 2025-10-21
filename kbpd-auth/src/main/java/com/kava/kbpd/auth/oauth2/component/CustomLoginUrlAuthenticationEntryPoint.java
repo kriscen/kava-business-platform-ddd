@@ -1,4 +1,4 @@
-package com.kava.kbpd.auth.config;
+package com.kava.kbpd.auth.oauth2.component;
 
 import com.kava.kbpd.auth.constants.AuthConstants;
 import jakarta.servlet.RequestDispatcher;

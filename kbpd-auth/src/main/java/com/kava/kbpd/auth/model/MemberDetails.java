@@ -26,14 +26,17 @@ public class MemberDetails implements UserDetails {
      */
     private String username;
 
+    private String password;
+
     /**
      * 会员状态
      */
     private Boolean enabled;
 
-    public MemberDetails(Long id,String username,Boolean enabled) {
+    public MemberDetails(Long id, String username, String password, Boolean enabled) {
         this.id = id;
         this.username = username;
+        this.password = password;
         this.enabled = enabled;
     }
 

@@ -8,7 +8,7 @@ import com.kava.kbpd.upms.api.model.dto.SysUserDTO;
  * @description: user dubbo service
  */
 public interface IRemoteUserService {
-    SysUserDTO findByUsername(String username);
+    SysUserDTO findByUsername(String tenantId,String username);
 
     SysUserDTO loginByPwd(String name, String pwd);
 }

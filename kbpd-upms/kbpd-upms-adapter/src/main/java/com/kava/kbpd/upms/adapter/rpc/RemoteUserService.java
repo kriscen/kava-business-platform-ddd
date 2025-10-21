@@ -14,7 +14,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 @DubboService(version = "1.0")
 public class RemoteUserService implements IRemoteUserService {
     @Override
-    public SysUserDTO findByUsername(String username) {
+    public SysUserDTO findByUsername(String tenantId,String username) {
         return null;
     }
 

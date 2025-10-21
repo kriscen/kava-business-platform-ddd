@@ -1,4 +1,4 @@
-package com.kava.kbpd.auth.oauth2.handler;
+package com.kava.kbpd.auth.oauth2.component;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import jakarta.servlet.ServletException;

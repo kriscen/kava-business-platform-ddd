@@ -11,8 +11,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum UserType {
-    TO_C("C", "C端"),
-    TO_B("B", "B端");
+    TO_B("1", "B端"),
+    TO_C("2", "C端"),
+    ERROR("9", "错误请求用户"),
+
+
+    ;
 
     private final String code;
     private final String desc;

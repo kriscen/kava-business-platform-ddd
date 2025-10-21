@@ -35,12 +35,13 @@ public class TenantAwareAuthenticationFilter extends UsernamePasswordAuthenticat
         String tenantId = request.getParameter("tenantId");
         String userType = request.getParameter("userType");
 
+
         username = username != null ? username.trim() : "";
         password = password != null ? password : "";
 
         ExtendUsernamePasswordAuthenticationToken authRequest =
                 new ExtendUsernamePasswordAuthenticationToken(
-                        username, password, tenantId, 1);
+                        username, password, tenantId, userType);
 
         setDetails(request, authRequest);
 

@@ -16,7 +16,7 @@ public class ExtendUsernamePasswordAuthenticationToken extends UsernamePasswordA
 
     private String tenantId;
 
-    private Integer userType;
+    private String userType;
 
     public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials) {
         super(principal, credentials);
@@ -26,13 +26,13 @@ public class ExtendUsernamePasswordAuthenticationToken extends UsernamePasswordA
         super(principal, credentials, authorities);
     }
 
-    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials, String tenantId, Integer userType) {
+    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials, String tenantId, String userType) {
         super(principal, credentials);
         this.tenantId = tenantId;
         this.userType = userType;
     }
 
-    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities, String tenantId, Integer userType) {
+    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities, String tenantId, String userType) {
         super(principal, credentials, authorities);
         this.tenantId = tenantId;
         this.userType = userType;
