@@ -1,5 +1,7 @@
 package com.kava.kbpd.auth.oauth2.component;
 
+import com.kava.kbpd.auth.config.KbpdAuthProperties;
+import com.kava.kbpd.auth.constants.AuthConstants;
 import com.kava.kbpd.auth.enums.AuthRedisKeyType;
 import com.kava.kbpd.common.cache.redis.IRedisService;
 import com.kava.kbpd.common.cache.redis.RedisKeyGenerator;
@@ -32,26 +34,24 @@ import java.util.Objects;
 @Component
 public class RedisAuthorizationService implements OAuth2AuthorizationService {
 
-    /**
-     * 过期时间 10min
-     */
-    private final static Long TIMEOUT = 10 * 60 * 1000L;
 
-    private final static String ATTR_STATE = "state";
 
     @Resource
     private IRedisService redisService;
     @Resource
     private RedisKeyGenerator redisKeyGenerator;
 
+    @Resource
+    private KbpdAuthProperties kbpdAuthProperties;
+
     @Override
     public void save(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
 
         if (isState(authorization)) {
-            String token = authorization.getAttribute(ATTR_STATE);
+            String token = authorization.getAttribute(AuthConstants.ATTR_STATE);
             redisService.setValue(getRedisKey(OAuth2ParameterNames.STATE, token),authorization,
-                    TIMEOUT);
+                    kbpdAuthProperties.getAuthorizationTimeout());
         }
 
         if (isCode(authorization)) {
@@ -85,7 +85,7 @@ public class RedisAuthorizationService implements OAuth2AuthorizationService {
 
         List<String> keys = new ArrayList<>();
         if (isState(authorization)) {
-            String token = authorization.getAttribute(ATTR_STATE);
+            String token = authorization.getAttribute(AuthConstants.ATTR_STATE);
             keys.add(getRedisKey(OAuth2ParameterNames.STATE, token));
         }
 
@@ -126,7 +126,7 @@ public class RedisAuthorizationService implements OAuth2AuthorizationService {
     }
 
     private static boolean isState(OAuth2Authorization authorization) {
-        return Objects.nonNull(authorization.getAttribute(ATTR_STATE));
+        return Objects.nonNull(authorization.getAttribute(AuthConstants.ATTR_STATE));
     }
 
     private static boolean isCode(OAuth2Authorization authorization) {

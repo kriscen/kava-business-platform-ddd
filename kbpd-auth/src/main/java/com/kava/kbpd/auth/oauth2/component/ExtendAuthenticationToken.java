@@ -12,27 +12,27 @@ import java.util.Collection;
  * @description: UsernamePasswordAuthenticationToken扩展
  */
 @Getter
-public class ExtendUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {
+public class ExtendAuthenticationToken extends UsernamePasswordAuthenticationToken {
 
     private String tenantId;
 
     private String userType;
 
-    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials) {
+    public ExtendAuthenticationToken(Object principal, Object credentials) {
         super(principal, credentials);
     }
 
-    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public ExtendAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(principal, credentials, authorities);
     }
 
-    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials, String tenantId, String userType) {
+    public ExtendAuthenticationToken(Object principal, Object credentials, String tenantId, String userType) {
         super(principal, credentials);
         this.tenantId = tenantId;
         this.userType = userType;
     }
 
-    public ExtendUsernamePasswordAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities, String tenantId, String userType) {
+    public ExtendAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities, String tenantId, String userType) {
         super(principal, credentials, authorities);
         this.tenantId = tenantId;
         this.userType = userType;

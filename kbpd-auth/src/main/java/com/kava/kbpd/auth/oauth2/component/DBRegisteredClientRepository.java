@@ -2,9 +2,11 @@ package com.kava.kbpd.auth.oauth2.component;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.kava.kbpd.auth.config.KbpdAuthProperties;
 import com.kava.kbpd.common.core.constants.SecretConstants;
 import com.kava.kbpd.upms.api.model.dto.SysOauthClientDTO;
 import com.kava.kbpd.upms.api.service.IRemoteOauthClientService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -28,18 +30,12 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class DBRegisteredClientRepository implements RegisteredClientRepository {
-    /**
-     * 刷新令牌有效期默认 30 天
-     */
-    private final static int refreshTokenValiditySeconds = 60 * 60 * 24 * 30;
-
-    /**
-     * 请求令牌有效期默认 12 小时
-     */
-    private final static int accessTokenValiditySeconds = 60 * 60 * 12;
 
     @DubboReference(version = "1.0")
     private IRemoteOauthClientService remoteOauthClientDetailService;
+
+    @Resource
+    private KbpdAuthProperties kbpdAuthProperties;
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -83,9 +79,9 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                         .accessTokenTimeToLive(Duration.ofSeconds(
-                                Optional.ofNullable(clientDetails.getAccessTokenValidity()).orElse(accessTokenValiditySeconds)))
+                                Optional.ofNullable(clientDetails.getAccessTokenValidity()).orElse(kbpdAuthProperties.getAccessTokenValiditySeconds())))
                         .refreshTokenTimeToLive(Duration.ofSeconds(Optional.ofNullable(clientDetails.getRefreshTokenValidity())
-                                .orElse(refreshTokenValiditySeconds)))
+                                .orElse(kbpdAuthProperties.getRefreshTokenValiditySeconds())))
                         .build())
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(!BooleanUtil.toBoolean(clientDetails.getAutoapprove()))

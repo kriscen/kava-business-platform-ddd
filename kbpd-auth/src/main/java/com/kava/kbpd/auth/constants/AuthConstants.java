@@ -39,4 +39,6 @@ public interface AuthConstants {
 
 	String URL_OAUTH2_CONSENT = "/oauth2/consent";
 
+	String ATTR_STATE = "state";
+
 }

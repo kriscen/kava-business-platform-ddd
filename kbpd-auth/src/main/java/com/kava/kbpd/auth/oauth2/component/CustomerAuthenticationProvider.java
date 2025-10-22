@@ -1,5 +1,6 @@
 package com.kava.kbpd.auth.oauth2.component;
 
+import com.kava.kbpd.auth.oauth2.service.PwdUserDetailsService;
 import jakarta.annotation.Resource;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -94,12 +95,12 @@ public class CustomerAuthenticationProvider extends AbstractUserDetailsAuthentic
     @Override
     protected final UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
-        if (!(authentication instanceof ExtendUsernamePasswordAuthenticationToken)) {
+        if (!(authentication instanceof ExtendAuthenticationToken)) {
             return null; // 不支持就跳过
         }
         prepareTimingAttackProtection();
         try {
-            ExtendUsernamePasswordAuthenticationToken extendAuthentication = (ExtendUsernamePasswordAuthenticationToken) authentication;
+            ExtendAuthenticationToken extendAuthentication = (ExtendAuthenticationToken) authentication;
             UserDetails loadedUser = pwdUserDetailsService.loadUserByUsername(username,extendAuthentication.getTenantId(),extendAuthentication.getUserType());
             if (loadedUser == null) {
                 throw new InternalAuthenticationServiceException(
@@ -136,8 +137,8 @@ public class CustomerAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
 
         // 确保是扩展 token
-        if (authentication instanceof ExtendUsernamePasswordAuthenticationToken extendAuth) {
-            return new ExtendUsernamePasswordAuthenticationToken(
+        if (authentication instanceof ExtendAuthenticationToken extendAuth) {
+            return new ExtendAuthenticationToken(
                     principal,
                     authentication.getCredentials(),
                     user.getAuthorities(),

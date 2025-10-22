@@ -4,12 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.kava.kbpd.auth.constants.AuthConstants;
 import com.kava.kbpd.auth.model.MemberDetails;
 import com.kava.kbpd.auth.model.SysUserDetails;
-import com.kava.kbpd.auth.oauth2.component.CustomLoginUrlAuthenticationEntryPoint;
-import com.kava.kbpd.auth.oauth2.component.DBRegisteredClientRepository;
-import com.kava.kbpd.auth.oauth2.component.RedisAuthorizationConsentService;
-import com.kava.kbpd.auth.oauth2.component.RedisAuthorizationService;
-import com.kava.kbpd.auth.oauth2.component.AuthenticationFailureEventHandler;
-import com.kava.kbpd.auth.oauth2.component.AuthenticationSuccessEventHandler;
+import com.kava.kbpd.auth.oauth2.component.*;
 import com.kava.kbpd.common.cache.redis.IRedisService;
 import com.kava.kbpd.common.cache.redis.RedisKeyGenerator;
 import com.kava.kbpd.common.cache.redis.RedisKeyModule;
@@ -103,6 +98,7 @@ public class AuthorizationServiceConfig {
                 .authorizationServerSettings(authorizationServerSettings())
                 //OAuth2TokenGenerator，用于生成OAuth2授权服务器支持的令牌。
                 .tokenGenerator(tokenGenerator(jwkSource(), jwtTokenCustomizer()))
+/*
                 //OAuth2客户端认证的configurer。
 //                .clientAuthentication(clientAuthentication ->
 //                        clientAuthentication
@@ -119,9 +115,11 @@ public class AuthorizationServiceConfig {
 //                                //AuthenticationFailureHandler（后处理器），用于处理客户端认证失败并返回 OAuth2Error 响应。
 //                                .errorResponseHandler(errorResponseHandler)
 //        )
+ */
                 //OAuth2授权端点 的 configurer。
                 .authorizationEndpoint(authorizationEndpoint ->
                         authorizationEndpoint
+/*
 //                                //添加一个 AuthenticationConverter（预处理器），当试图从 HttpServletRequest 中提取 OAuth2授权请求（或consent）到 OAuth2AuthorizationCodeRequestAuthenticationToken 或 OAuth2AuthorizationConsentAuthenticationToken 的实例时使用。
 //                                .authorizationRequestConverter(authorizationRequestConverter)
 //                                //设置 Consumer，提供对默认和（可选）添加的 AuthenticationConverter List 的访问，允许添加、删除或定制特定的 AuthenticationConverter 的能力。
@@ -134,12 +132,14 @@ public class AuthorizationServiceConfig {
 //                                .authorizationResponseHandler(authorizationResponseHandler)
 //                                //AuthenticationFailureHandler（后处理器），用于处理 OAuth2AuthorizationCodeRequestAuthenticationException，并返回 OAuth2Error 响应。
 //                                .errorResponseHandler(errorResponseHandler)
+ */
                                 //自定义同意（consent）页面的 URI，如果在授权请求流程中需要同意，则将资源所有者重定向至此。
                                 .consentPage(AuthConstants.URL_OAUTH2_CONSENT)
         )
                 //OAuth2令牌端点 的 configurer。
                 .tokenEndpoint(tokenEndpoint ->
                         tokenEndpoint
+/*
 //                                //添加一个 AuthenticationConverter（预处理器），当试图从 HttpServletRequest 中提取 OAuth2 access token 请求 到 OAuth2AuthorizationGrantAuthenticationToken 的实例时使用。
 //                                .accessTokenRequestConverter(accessTokenRequestConverter)
 //                                //设置 Consumer，提供对默认和（可选）添加的 AuthenticationConverter List 的访问，允许添加、删除或定制特定的 AuthenticationConverter 的能力。
@@ -148,12 +148,14 @@ public class AuthorizationServiceConfig {
 //                                .authenticationProvider(authenticationProvider)
 //                                //设置 Consumer，提供对默认和（可选）添加的 AuthenticationProvider List 的访问，允许添加、删除或定制特定的 AuthenticationProvider。
 //                                .authenticationProviders(authenticationProvidersConsumer)
+ */
 //                                //用于处理 OAuth2AccessTokenAuthenticationToken 并返回 OAuth2AccessTokenResponse 的 AuthenticationSuccessHandler（后处理器）。
                                 .accessTokenResponseHandler(authenticationSuccessEventHandler)
 //                                //AuthenticationFailureHandler（后处理程序），用于处理 OAuth2AuthenticationException 并返回 OAuth2Error 响应。
                                 .errorResponseHandler(authenticationFailureEventHandler)
        )
-                //OAuth2 Token Introspection endpoint 端点的 configurer。
+                /*
+                    //OAuth2 Token Introspection endpoint 端点的 configurer。
 //                .tokenIntrospectionEndpoint(tokenIntrospectionEndpoint ->
 //                        tokenIntrospectionEndpoint
 //                                //添加一个 AuthenticationConverter（预处理器），当试图从 HttpServletRequest 中提取 OAuth2 introspection 请求 到 OAuth2TokenIntrospectionAuthenticationToken 的实例时使用。
@@ -233,6 +235,7 @@ public class AuthorizationServiceConfig {
 //                                        .errorResponseHandler(errorResponseHandler)
 //       )
 //                )
+                 */
                 ;
 
         http.exceptionHandling((exceptions) -> exceptions
@@ -311,6 +314,7 @@ public class AuthorizationServiceConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
+/*
 //                .issuer("https://example.com")
 //                .authorizationEndpoint("/oauth2/v1/authorize")
 //                .tokenEndpoint("/oauth2/v1/token")
@@ -319,6 +323,7 @@ public class AuthorizationServiceConfig {
 //                .jwkSetEndpoint("/oauth2/v1/jwks")
 //                .oidcUserInfoEndpoint("/connect/v1/userinfo")
 //                .oidcClientRegistrationEndpoint("/connect/v1/register")
+ */
                 .build();
     }
 

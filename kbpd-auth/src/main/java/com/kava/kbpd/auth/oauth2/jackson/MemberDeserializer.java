@@ -38,8 +38,9 @@ class MemberDeserializer extends JsonDeserializer<MemberDetails> {
         JsonNode jsonNode = mapper.readTree(jp);
         Long userId = readJsonNode(jsonNode, "id").asLong();
         String username = readJsonNode(jsonNode, "username").asText();
+        String password = readJsonNode(jsonNode, "password").asText();
         boolean enabled = readJsonNode(jsonNode, "enabled").asBoolean();
-        return new MemberDetails(userId, username, enabled);
+        return new MemberDetails(userId, username, password,enabled);
     }
 
     private JsonNode readJsonNode(JsonNode jsonNode, String field) {

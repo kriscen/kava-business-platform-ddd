@@ -1,12 +1,11 @@
-package com.kava.kbpd.auth.oauth2.component;
+package com.kava.kbpd.auth.oauth2.service;
 
-import com.kava.kbpd.auth.enums.UserType;
+import com.kava.kbpd.common.core.enums.UserType;
 import com.kava.kbpd.auth.model.MemberDetails;
 import com.kava.kbpd.auth.model.SysUserDetails;
 import com.kava.kbpd.member.api.model.dto.MemberInfoDTO;
 import com.kava.kbpd.member.api.service.IRemoteMemberService;
 import com.kava.kbpd.upms.api.model.dto.SysUserDTO;
-import com.kava.kbpd.upms.api.service.IRemoteOauthClientService;
 import com.kava.kbpd.upms.api.service.IRemoteUserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.security.core.userdetails.UserDetails;

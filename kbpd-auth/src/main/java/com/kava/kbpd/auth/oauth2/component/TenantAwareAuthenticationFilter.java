@@ -39,8 +39,8 @@ public class TenantAwareAuthenticationFilter extends UsernamePasswordAuthenticat
         username = username != null ? username.trim() : "";
         password = password != null ? password : "";
 
-        ExtendUsernamePasswordAuthenticationToken authRequest =
-                new ExtendUsernamePasswordAuthenticationToken(
+        ExtendAuthenticationToken authRequest =
+                new ExtendAuthenticationToken(
                         username, password, tenantId, userType);
 
         setDetails(request, authRequest);

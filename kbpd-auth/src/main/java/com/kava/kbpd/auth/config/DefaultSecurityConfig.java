@@ -7,9 +7,7 @@ import com.kava.kbpd.auth.oauth2.component.TenantAwareAuthenticationFilter;
 import com.kava.kbpd.auth.oauth2.jackson.CustomerOauth2Module;
 import com.kava.kbpd.auth.oauth2.jackson.CustomerUserDetailsModule;
 import jakarta.annotation.Resource;
-import lombok.Setter;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -35,16 +33,12 @@ import java.util.List;
  * @date 2025/4/14
  * @description: 默认安全配置
  */
-@Setter
-@ConfigurationProperties(prefix = "kbpd.auth")
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @EnableWebSecurity
 public class DefaultSecurityConfig {
 
-    /**
-     * 白名单路径列表
-     */
-    private List<String> whitelistPaths;
+    @Resource
+    private KbpdAuthProperties kbpdAuthProperties;
 
     @Resource
     private TenantAwareAuthenticationFilter tenantAwareAuthenticationFilter;
@@ -61,8 +55,8 @@ public class DefaultSecurityConfig {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
         http.authorizeHttpRequests((requests) ->
                         {
-                            if (CollectionUtil.isNotEmpty(whitelistPaths)) {
-                                for (String whitelistPath : whitelistPaths) {
+                            if (CollectionUtil.isNotEmpty(kbpdAuthProperties.getWhitelistPaths())) {
+                                for (String whitelistPath : kbpdAuthProperties.getWhitelistPaths()) {
                                     requests.requestMatchers(mvcMatcherBuilder.pattern(whitelistPath)).permitAll();
                                 }
                             }

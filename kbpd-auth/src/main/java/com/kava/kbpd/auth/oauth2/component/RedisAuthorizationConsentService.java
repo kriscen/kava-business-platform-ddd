@@ -1,5 +1,6 @@
 package com.kava.kbpd.auth.oauth2.component;
 
+import com.kava.kbpd.auth.config.KbpdAuthProperties;
 import com.kava.kbpd.auth.enums.AuthRedisKeyType;
 import com.kava.kbpd.common.cache.redis.IRedisService;
 import com.kava.kbpd.common.cache.redis.RedisKeyGenerator;
@@ -21,20 +22,19 @@ import org.springframework.util.Assert;
 @Slf4j
 @Component
 public class RedisAuthorizationConsentService implements OAuth2AuthorizationConsentService {
-    /**
-     * 过期时间 10min
-     */
-    private final static Long TIMEOUT = 10 * 60 * 1000L;
 
     @Resource
     private IRedisService redisService;
     @Resource
     private RedisKeyGenerator redisKeyGenerator;
 
+    @Resource
+    private KbpdAuthProperties kbpdAuthProperties;
+
     @Override
     public void save(OAuth2AuthorizationConsent authorizationConsent) {
         Assert.notNull(authorizationConsent, "authorizationConsent cannot be null");
-        redisService.setValue(getRedisKey(authorizationConsent.getRegisteredClientId(),authorizationConsent.getPrincipalName()),authorizationConsent,TIMEOUT);
+        redisService.setValue(getRedisKey(authorizationConsent.getRegisteredClientId(),authorizationConsent.getPrincipalName()),authorizationConsent,kbpdAuthProperties.getAuthorizationConsentTimeout());
     }
 
     @Override
