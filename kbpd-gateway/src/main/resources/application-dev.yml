@@ -1,0 +1,22 @@
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: kbpd-auth
+          uri: http://localhost:8600
+          predicates:
+            - Path=/auth/**
+        - id: kbpd-upms
+          uri: http://localhost:8610
+          predicates:
+            - Path=/upms/**
+        - id: kbpd-member
+          uri: http://localhost:8620
+          predicates:
+            - Path=/member/**

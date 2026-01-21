@@ -1,0 +1,22 @@
+server:
+  port: 8500
+
+spring:
+  application:
+    name: @artifactId@
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      username: @nacos.username@
+      password: @nacos.password@
+      discovery:
+        server-addr: localhost:8848
+        namespace: 92c33821-3fa9-4f51-92d3-6fd27ee9dbf4
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+  config:
+    import:
+      - optional:nacos:application-${spring.profiles.active}.yml
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
