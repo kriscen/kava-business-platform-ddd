@@ -35,16 +35,16 @@ public class OauthController {
 	private OAuth2AuthorizationConsentService authorizationConsentService;
 
 	@GetMapping("/login")
-	public String login(HttpServletRequest request, Model model) throws IOException {
-		Map<String, String[]> parameterMap = request.getParameterMap();
-
+	public String login(@RequestParam Map<String, String> allParams, Model model) throws IOException {
+		model.addAllAttributes(allParams);
+		//TODO 根据userType 和 tenantId动态获取登录页
 		return "login";
 	}
 
 	@GetMapping("/error")
 	public String error(HttpServletRequest request, Model model) throws IOException {
 		Map<String, String[]> parameterMap = request.getParameterMap();
-
+		//TODO 根据userType 和 tenantId动态获取错误页
 		return "error";
 	}
 
@@ -86,6 +86,7 @@ public class OauthController {
 		model.addAttribute("previouslyApprovedScopes", withDescription(previouslyApprovedScopes));
 		model.addAttribute("principalName", principal.getName());
 		model.addAttribute("requestURI", "/oauth2/authorize");
+		//TODO 根据userType 和 tenantId动态获取授权页
 		return "consent";
 	}
 

@@ -2,6 +2,8 @@ package com.kava.kbpd.upms.adapter.rpc;
 
 import com.kava.kbpd.upms.api.model.dto.SysUserDTO;
 import com.kava.kbpd.upms.api.service.IRemoteUserService;
+import com.kava.kbpd.upms.application.service.impl.SysUserAppService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 
@@ -13,6 +15,9 @@ import org.apache.dubbo.config.annotation.DubboService;
 @Slf4j
 @DubboService(version = "1.0")
 public class RemoteUserService implements IRemoteUserService {
+    @Resource
+    private SysUserAppService sysUserAppService;
+
     @Override
     public SysUserDTO findByUsername(String tenantId,String username) {
         return null;

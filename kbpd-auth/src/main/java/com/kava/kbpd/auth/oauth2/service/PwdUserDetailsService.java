@@ -37,10 +37,12 @@ public class PwdUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username,String tenantId,String userType) throws UsernameNotFoundException {
         if(UserType.TO_B.getCode().equals(userType)){
             SysUserDTO user = remoteUserService.findByUsername(username, tenantId);
-            return new SysUserDetails(user.getId(), "admin", "{noop}123456", 1L, true, Set.of());
+            //TODO 使用真实的user
+            return new SysUserDetails(1L, "admin", "{noop}123456", 1L, true, Set.of());
         }else if(UserType.TO_C.getCode().equals(userType)) {
             MemberInfoDTO member = remoteMemberService.findMemberByMobile(username, tenantId);
-            return new MemberDetails(member.getId(), "admin", "{noop}123456", true);
+            //TODO 使用真实的member
+            return new MemberDetails(1L, "admin", "{noop}123456", true);
         }else {
             throw new UsernameNotFoundException("user not found");
         }
