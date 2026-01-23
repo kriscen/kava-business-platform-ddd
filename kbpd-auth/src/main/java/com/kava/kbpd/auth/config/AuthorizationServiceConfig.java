@@ -23,7 +23,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -238,14 +237,14 @@ public class AuthorizationServiceConfig {
                  */
                 ;
 
-        http.exceptionHandling((exceptions) -> exceptions
+        http.exceptionHandling((exceptions) ->
+                exceptions
                     .defaultAuthenticationEntryPointFor(
                             new CustomLoginUrlAuthenticationEntryPoint(AuthConstants.URL_OAUTH2_LOGIN),
                             new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                     )
             )
-            .oauth2ResourceServer(oauth2ResourceServer ->
-                    oauth2ResourceServer.jwt(Customizer.withDefaults()));
+        ;
 
         return http.build();
     }

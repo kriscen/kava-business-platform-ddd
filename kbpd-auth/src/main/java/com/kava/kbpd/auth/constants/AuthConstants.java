@@ -7,10 +7,6 @@ package com.kava.kbpd.auth.constants;
  */
 public interface AuthConstants {
 
-	/**
-	 * http 请求头 用户类型
-	 */
-	String HTTP_HEARD_USER_TYPE = "user_type";
 
 	/**
 	 * jwk 缓存 key
@@ -26,6 +22,11 @@ public interface AuthConstants {
 	 * url 参数 租户id
 	 */
 	String URL_PARAM_TENANT_ID = "tenantId";
+
+	/**
+	 * url 参数 clientId
+	 */
+	String URL_PARAM_CLIENT_ID = "clientId";
 
 	/**
 	 * url 登录

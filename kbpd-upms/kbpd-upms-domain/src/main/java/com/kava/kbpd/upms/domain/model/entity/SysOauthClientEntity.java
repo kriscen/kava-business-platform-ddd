@@ -82,6 +82,12 @@ public class SysOauthClientEntity implements Entity<SysOauthClientId> {
 	 */
 	private SysTenantId tenantId;
 
+	/**
+	 * 对应user场景
+	 * tob or toc
+	 */
+	private Integer userType;
+
 	@Override
 	public SysOauthClientId identifier() {
 		return id;

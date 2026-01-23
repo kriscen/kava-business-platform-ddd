@@ -73,4 +73,9 @@ public class SysOauthClientDTO implements Serializable {
 	 * 租户ID
 	 */
 	private Long tenantId;
+
+	/**
+	 * 用户类型
+	 */
+	private Integer userType;
 }

@@ -1,8 +1,12 @@
 package com.kava.kbpd.auth.controller;
 
+import com.kava.kbpd.auth.constants.AuthConstants;
+import com.kava.kbpd.upms.api.model.dto.SysOauthClientDTO;
+import com.kava.kbpd.upms.api.service.IRemoteOauthClientService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
@@ -34,17 +38,25 @@ public class OauthController {
 	@Resource
 	private OAuth2AuthorizationConsentService authorizationConsentService;
 
+	@DubboReference(version = "1.0")
+	private IRemoteOauthClientService remoteOauthClientDetailService;
+
 	@GetMapping("/login")
-	public String login(@RequestParam Map<String, String> allParams, Model model) throws IOException {
-		model.addAllAttributes(allParams);
-		//TODO 根据userType 和 tenantId动态获取登录页
+	public String login(@RequestParam(value = OAuth2ParameterNames.CLIENT_ID,required = false) String clientId,
+						HttpServletRequest request,Model model) throws IOException {
+		//TODO 根据CLIENT_ID动态获取登录页
+		SysOauthClientDTO clientDetails = remoteOauthClientDetailService.queryByClientId(clientId);
+		if(clientDetails == null) {
+			return "error";
+		}
+		model.addAttribute(AuthConstants.URL_PARAM_TENANT_ID, clientDetails.getTenantId());
+		model.addAttribute(AuthConstants.URL_PARAM_USER_TYPE, clientDetails.getUserType());
+		model.addAttribute(AuthConstants.URL_PARAM_CLIENT_ID, clientDetails.getClientId());
 		return "login";
 	}
 
 	@GetMapping("/error")
 	public String error(HttpServletRequest request, Model model) throws IOException {
-		Map<String, String[]> parameterMap = request.getParameterMap();
-		//TODO 根据userType 和 tenantId动态获取错误页
 		return "error";
 	}
 

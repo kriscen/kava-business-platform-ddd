@@ -34,7 +34,8 @@ public class TenantAwareAuthenticationFilter extends UsernamePasswordAuthenticat
         String password = obtainPassword(request);
         String tenantId = request.getParameter("tenantId");
         String userType = request.getParameter("userType");
-
+        String clientId = request.getParameter("clientId");
+        //TODO check userType tenantId clientId是否匹配
 
         username = username != null ? username.trim() : "";
         password = password != null ? password : "";

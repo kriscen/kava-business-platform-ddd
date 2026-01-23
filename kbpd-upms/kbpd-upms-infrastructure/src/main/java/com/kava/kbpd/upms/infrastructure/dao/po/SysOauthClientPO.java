@@ -69,4 +69,9 @@ public class SysOauthClientPO extends TenantDeletablePO {
 	 * 是否自动放行
 	 */
 	private String autoapprove;
+
+	/**
+	 * 用户类型
+	 */
+	private Integer userType;
 }

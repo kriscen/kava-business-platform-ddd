@@ -23,9 +23,3 @@ kbpd:
   redis:
     host: 127.0.0.1
     port: 6379
-
-#spring:
-#  security:
-#    oauth2:
-#      authorization-server:
-#        token-uri: http://localhost/oauth2/token

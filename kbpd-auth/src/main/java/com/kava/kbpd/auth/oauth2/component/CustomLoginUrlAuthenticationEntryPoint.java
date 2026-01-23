@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.log.LogMessage;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.*;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.RedirectUrlBuilder;
@@ -82,11 +83,12 @@ public class CustomLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticati
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
         // 提取自定义参数
-        String userType = request.getParameter(AuthConstants.URL_PARAM_USER_TYPE);
-        String tenantId = request.getParameter(AuthConstants.URL_PARAM_TENANT_ID);
+//        String userType = request.getParameter(AuthConstants.URL_PARAM_USER_TYPE);
+//        String tenantId = request.getParameter(AuthConstants.URL_PARAM_TENANT_ID);
+        String clientId = request.getParameter(OAuth2ParameterNames.CLIENT_ID);
 
-        // 构建要携带的额外参数字符串（如 "?userType=admin&tenantId=123"）
-        String extraParams = buildExtraParameters(userType, tenantId);
+        // 构建要携带的额外参数字符串
+        String extraParams = buildExtraParameters(clientId);
 
         if (!this.useForward) {
             // 情况1：执行重定向（Redirect）→ 跳转到登录页
@@ -211,23 +213,26 @@ public class CustomLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticati
     }
 
     /**
-     * 构建额外参数字符串，例如 "?userType=xxx&tenantId=yyy"
+     * 构建额外参数字符串
      */
-    private String buildExtraParameters(String userType, String tenantId) {
+    private String buildExtraParameters(String clientId) {
         StringBuilder sb = new StringBuilder();
         boolean hasParam = false;
-
-        if (StringUtils.hasText(userType)) {
-            sb.append(AuthConstants.URL_PARAM_USER_TYPE).append("=").append(URLEncoder.encode(userType, StandardCharsets.UTF_8));
+        if (StringUtils.hasText(clientId)) {
+            sb.append(OAuth2ParameterNames.CLIENT_ID).append("=").append(URLEncoder.encode(clientId, StandardCharsets.UTF_8));
             hasParam = true;
         }
-        if (StringUtils.hasText(tenantId)) {
-            if (hasParam) {
-                sb.append("&");
-            }
-            sb.append(AuthConstants.URL_PARAM_TENANT_ID).append("=")
-                    .append(URLEncoder.encode(tenantId, StandardCharsets.UTF_8));
-        }
+//        if (StringUtils.hasText(userType)) {
+//            sb.append(AuthConstants.URL_PARAM_USER_TYPE).append("=").append(URLEncoder.encode(userType, StandardCharsets.UTF_8));
+//            hasParam = true;
+//        }
+//        if (StringUtils.hasText(tenantId)) {
+//            if (hasParam) {
+//                sb.append("&");
+//            }
+//            sb.append(AuthConstants.URL_PARAM_TENANT_ID).append("=")
+//                    .append(URLEncoder.encode(tenantId, StandardCharsets.UTF_8));
+//        }
 
         return !sb.isEmpty() ? "?" + sb.toString() : "";
     }
