@@ -1,14 +1,18 @@
 package com.kava.kbpd.common.cache.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Set;
 
 /**
  * @author Kris
@@ -26,10 +30,10 @@ public class RedisClientAutoConfiguration {
     }
 
     @Bean
-    public RedissonClient redissonClient(RedisClientProperties properties) {
+    public RedissonClient redissonClient(RedisClientProperties properties, ObjectMapper objectMapper) {
         Config config = new Config();
         // 根据需要可以设定编解码器；https://github.com/redisson/redisson/wiki/4.-%E6%95%B0%E6%8D%AE%E5%BA%8F%E5%88%97%E5%8C%96
-        config.setCodec(new StringCodec());
+        config.setCodec(new CustomJsonJacksonCodec(objectMapper));
         config.setThreads(5);
         config.setNettyThreads(5);
 

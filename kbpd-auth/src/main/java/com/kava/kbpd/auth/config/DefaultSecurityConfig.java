@@ -109,11 +109,12 @@ public class DefaultSecurityConfig {
             List<Module> securityModules = SecurityJackson2Modules.getModules(
                     DefaultSecurityConfig.class.getClassLoader() // 传入类加载器
             );
-            securityModules.add(new OAuth2AuthorizationServerJackson2Module());
 
             // 2. 创建自定义模块并注册反序列化器
             securityModules.add(new CustomerOauth2Module());
             securityModules.add(new CustomerUserDetailsModule());
+
+            securityModules.add(new OAuth2AuthorizationServerJackson2Module());
             // 使用modulesToInstall()追加模块，而非覆盖
             builder.modulesToInstall(securityModules.toArray(new Module[0]));
         };

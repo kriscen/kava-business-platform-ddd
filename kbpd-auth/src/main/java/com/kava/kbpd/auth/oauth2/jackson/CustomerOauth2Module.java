@@ -1,6 +1,7 @@
 package com.kava.kbpd.auth.oauth2.jackson;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.kava.kbpd.auth.model.ExtendAuthenticationToken;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
@@ -25,6 +26,6 @@ public class CustomerOauth2Module extends SimpleModule {
         this.setMixInAnnotation(OAuth2AccessToken.TokenType.class, OAuth2AccessTokenTypeMixin.class);
         this.setMixInAnnotation(OAuth2RefreshToken.class, OAuth2RefreshTokenMixin.class);
         this.setMixInAnnotation(Long.class, Object.class);
-
+        this.setMixInAnnotation(ExtendAuthenticationToken.class,ExtendAuthenticationTokenMixin.class);
     }
 }

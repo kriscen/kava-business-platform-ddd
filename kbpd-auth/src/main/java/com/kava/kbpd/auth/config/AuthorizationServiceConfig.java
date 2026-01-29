@@ -43,9 +43,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -366,9 +364,7 @@ public class AuthorizationServiceConfig {
                         claims.claim(JwtClaimConstants.DEPT_ID, userDetails.getDeptId());
 
                         // 这里存入角色至JWT，解析JWT的角色用于鉴权的位置: ResourceServerConfig#jwtAuthenticationConverter
-                        var authorities = AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities())
-                                .stream()
-                                .collect(Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet));
+                        Set<String> authorities = new HashSet<>(AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities()));
                         claims.claim(JwtClaimConstants.AUTHORITIES, authorities);
 
                     } else if (principal instanceof MemberDetails userDetails) {

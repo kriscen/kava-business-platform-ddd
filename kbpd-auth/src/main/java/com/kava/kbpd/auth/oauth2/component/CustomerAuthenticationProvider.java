@@ -1,5 +1,6 @@
 package com.kava.kbpd.auth.oauth2.component;
 
+import com.kava.kbpd.auth.model.ExtendAuthenticationToken;
 import com.kava.kbpd.auth.oauth2.service.PwdUserDetailsService;
 import jakarta.annotation.Resource;
 import lombok.Setter;
