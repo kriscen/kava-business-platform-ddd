@@ -20,8 +20,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <spring-boot.version>3.3.6</spring-boot.version>
-        <spring-cloud.version>2023.0.4</spring-cloud.version>
+        <spring-boot.version>3.3.13</spring-boot.version>
+        <spring-cloud.version>2023.0.6</spring-cloud.version>
         <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
         <!--字符编码-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
