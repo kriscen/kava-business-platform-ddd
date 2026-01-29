@@ -16,10 +16,13 @@ dubbo:
 # 日志
 logging:
   level:
-    root: info
+    root: debug
   config: classpath:logback-spring.xml
 
 kbpd:
   redis:
     host: 127.0.0.1
     port: 6379
+  auth:
+    tool-client-id:
+      - local

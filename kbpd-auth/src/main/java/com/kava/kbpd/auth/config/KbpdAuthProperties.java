@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +16,11 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "kbpd.auth")
 public class KbpdAuthProperties {
+
+    /**
+     * 工具类的client id,在返回token格式的时候，不会包装resp
+     */
+    private List<String> toolClientId;
 
     /**
      * 白名单路径列表

@@ -1,6 +1,8 @@
 package com.kava.kbpd.auth.oauth2.component;
 
+import com.kava.kbpd.auth.config.KbpdAuthProperties;
 import com.kava.kbpd.common.core.base.JsonResult;
+import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +32,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class AuthenticationSuccessEventHandler implements AuthenticationSuccessHandler {
+
+	@Resource
+	private KbpdAuthProperties authProperties;
 
 	/**
 	 * MappingJackson2HttpMessageConverter 是 Spring 框架提供的一个 HTTP 消息转换器，用于将 HTTP 请求和响应的 JSON 数据与 Java 对象之间进行转换
@@ -63,7 +68,7 @@ public class AuthenticationSuccessEventHandler implements AuthenticationSuccessH
 		ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
 
 		String clientId = accessTokenAuthentication.getRegisteredClient().getClientId();
-		if ("client".equals(clientId)) {
+		if (authProperties.getToolClientId()!=null && authProperties.getToolClientId().contains(clientId)) {
 			//  Knife4j测试客户端ID（Knife4j自动填充的 access_token 须原生返回，不能被包装成业务码数据格式）
 			this.accessTokenHttpResponseConverter.write(tokenResponseParameters, null, httpResponse);
 		} else {
