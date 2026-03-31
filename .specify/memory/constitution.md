@@ -1,38 +1,83 @@
 <!--
 同步影响报告
-版本变更：0.0.0 → 1.0.0（首次完整章程）
+版本变更：1.0.0 → 1.1.0（分层策略细化）
 修改原则列表：
-  - 新增：领域优先原则
-  - 新增：端口与适配器原则
-  - 新增：关键路径测试原则
-  - 新增：依赖内向原则
+  - 重构：领域优先原则 → 分级分层原则
+  - 新增：模块复杂度分类标准
+  - 保留：端口与适配器原则
+  - 保留：关键路径测试原则
+  - 保留：依赖内向原则
 添加章节：
-  - 技术约束（基于项目技术栈）
-  - 模块结构（基于现有 Maven 多模块）
-移除章节：无（首次创建）
+  - 模块分类示例（基于 UPMS 模块）
+移除章节：无
 模板更新状态：
-  - plan-template.md：已验证兼容（宪章检查节）
-  - spec-template.md：已验证兼容（用户场景节）
-  - tasks-template.md：已验证兼容（阶段结构）
+  - plan-template.md：待验证（新增分层决策节）
+  - spec-template.md：待验证（新增复杂度评估节）
+  - tasks-template.md：待验证（新增分层策略节）
 -->
 
 # Kava Business Platform DDD (KBPD) 宪章
 
 ## 核心原则
 
-### 一、领域优先
+### 一、分级分层（基于业务复杂度）
 
-每个业务模块的核心逻辑必须集中在领域层（domain 模块）。领域层包含：
-- 实体（Entity）：具有唯一标识的业务对象
-- 聚合（Aggregate）：一组相关实体的边界
-- 值对象（Value Object）：无标识的不可变对象
-- 领域服务（Domain Service）：跨实体的业务逻辑
-- 仓储接口（Repository Interface）：持久化抽象
+**反对形式主义**：不为简单 CRUD 强制创建空壳领域层，避免无意义的代码转发。
+
+模块按业务复杂度采用不同的分层策略：
+
+#### 简单 CRUD 模块
+
+**特征**：无业务规则，纯数据增删改查，无跨实体关联逻辑。
+
+**分层路径**：`adapter → application → repository → infrastructure`
 
 **约束**：
-- 领域层不得依赖任何外部技术框架（Spring、数据库驱动等）
-- 领域对象必须可独立测试
-- 业务规则必须在领域层实现，不得泄露到应用层或适配器层
+- 不创建空的 `ISysXxxService` 接口和实现
+- Application 直接调用 Repository
+- 仅保留必要的格式校验（如字段长度）在 Application 层
+
+**适用模块**：日志、行政区划、文件管理、国际化、公共参数、路由配置等
+
+#### 有约束 CRUD 模块
+
+**特征**：有单一实体内的校验规则（唯一性、父子关系、状态约束）。
+
+**分层路径**：`adapter → application → domain(service) → repository → infrastructure`
+
+**约束**：
+- Domain Service 实现校验规则（如父部门存在性、名称唯一性）
+- 不创建聚合根（单个实体即可表达完整约束）
+- Application 协调 Domain Service 和 Repository
+
+**适用模块**：部门（父级校验）、菜单（路由规则）、文件分类（层级约束）等
+
+#### 复杂业务模块
+
+**特征**：跨实体业务规则、聚合行为、状态流转、领域事件。
+
+**分层路径**：`adapter → application → domain(aggregate/service/event) → repository → infrastructure`
+
+**约束**：
+- 使用聚合根封装业务行为（如 `SysUserAggregate.assignRole()`）
+- 跨聚合通信使用领域事件
+- Domain 层不得依赖 Spring 或外部框架
+- 聚合根内部保证一致性边界
+
+**适用模块**：用户（角色分配、状态管理）、角色（权限绑定）、租户（隔离规则）、订单（状态流转）等
+
+#### 模块分类决策表
+
+| 判断条件 | 分层策略 |
+|----------|----------|
+| 仅 CRUD，无规则 | 简单 CRUD → 删除 domain/service |
+| 有唯一性/父子校验 | 有约束 CRUD → Domain Service |
+| 跨实体操作/状态流转 | 复杂业务 → 聚合根 + 领域事件 |
+
+**治理规则**：
+- 每个 PR 需在 `plan.md` 中声明模块复杂度分类
+- 新模块开发前需评估复杂度，选择合适分层
+- 已存在的空壳领域服务需逐步清理或补充业务逻辑
 
 ### 二、端口与适配器
 
@@ -94,12 +139,47 @@
 
 ### 业务模块内部结构
 
+根据复杂度分类选择结构：
+
+**简单 CRUD 模块**：
 ```text
 kbpd-{业务名}/
 ├── api/           # 端口定义（DTO、接口）
-├── application/   # 应用服务（协调领域对象）
-├── domain/        # 领域核心（实体、聚合、领域服务）
+├── application/   # 应用服务（直接调用 Repository）
+├── domain/        # 仅保留 types（值对象、查询对象），无 service
 ├── infrastructure/# 基础设施（持久化实现）
+├── adapter/       # 适配器（Controller、RPC 实现）
+└── types/         # 通用类型（枚举、常量）
+```
+
+**有约束 CRUD 模块**：
+```text
+kbpd-{业务名}/
+├── api/           # 端口定义（DTO、接口）
+├── application/   # 应用服务（协调 Domain Service）
+├── domain/
+│   ├── model/     # 实体、值对象
+│   ├── service/   # 领域服务（校验规则）
+│   └── repository/# 仓储接口
+├── infrastructure/# 基础设施（持久化实现）
+├── adapter/       # 适配器（Controller、RPC 实现）
+└── types/         # 通用类型（枚举、常量）
+```
+
+**复杂业务模块**：
+```text
+kbpd-{业务名}/
+├── api/           # 端口定义（DTO、接口）
+├── application/   # 应用服务（编排聚合、发布事件）
+├── domain/
+│   ├── model/
+│   │   ├── aggregate/  # 聚合根（封装业务行为）
+│   │   ├── entity/     # 实体
+│   │   └── valobj/     # 值对象
+│   ├── service/   # 领域服务（跨聚合逻辑）
+│   ├── event/     # 领域事件
+│   └── repository/# 仓储接口（CQRS 可分离读写）
+├── infrastructure/# 基础设施（持久化、事件发布实现）
 ├── adapter/       # 适配器（Controller、RPC 实现）
 └── types/         # 通用类型（枚举、常量）
 ```
@@ -107,10 +187,30 @@ kbpd-{业务名}/
 ### 公共模块职责
 
 - `kbpd-common-bom`：统一依赖版本管理
-- `kbpd-common-core`：核心基础类、错误码、通用模型
-- `kbpd-common-database`：数据库配置和工具
+- `kbpd-common-core`：核心基础类、错误码、通用模型、标记接口（Entity/Identifier/ValueObject）
+- `kbpd-common-database`：数据库配置和工具、PO 基类（TenantDeletablePO）
 - `kbpd-common-security`：安全配置和工具
 - `kbpd-common-cache`：缓存配置和工具
+- `kbpd-common-web`：Web 相关配置、统一响应封装
+
+### UPMS 模块分类示例
+
+| 模块 | 分类 | 分层路径 | 说明 |
+|------|------|----------|------|
+| SysLog | 简单 CRUD | Application → Repository | 系统日志，无业务规则 |
+| SysArea | 简单 CRUD | Application → Repository | 行政区划，纯数据查询 |
+| SysFileGroup | 简单 CRUD | Application → Repository | 文件分类，无约束 |
+| SysFile | 箇单 CRUD | Application → Repository | 文件管理，无约束 |
+| SysI18n | 简单 CRUD | Application → Repository | 国际化，纯字典 |
+| SysPublicParam | 简单 CRUD | Application → Repository | 公共参数，无约束 |
+| SysRouteConf | 箇单 CRUD | Application → Repository | 路由配置，无约束 |
+| SysAuditLog | 简单 CRUD | Application → Repository | 审计日志，无约束 |
+| SysDept | 有约束 CRUD | Application → Domain Service | 部门层级校验、父部门存在性 |
+| SysMenu | 有约束 CRUD | Application → Domain Service | 菜单路由规则、权限标识唯一性 |
+| SysOauthClient | 有约束 CRUD | Application → Domain Service | 客户端配置校验 |
+| SysTenant | 复杂业务 | 聚合根 + 领域事件 | 多租户隔离规则、菜单绑定 |
+| SysRole | 复杂业务 | 聚合根 + 领域事件 | 权限绑定、用户关联、数据范围 |
+| SysUser | 复杂业务 | 聚合根 + 领域事件 | 角色/部门分配、状态管理、密码策略 |
 
 ## 治理
 
@@ -141,4 +241,4 @@ kbpd-{业务名}/
   - MINOR：新增功能，向后兼容
   - PATCH：Bug 修复，向后兼容
 
-**版本**：1.0.0 | **批准日期**：2026-03-31 | **最后修订**：2026-03-31
+**版本**：1.1.0 | **批准日期**：2026-03-31 | **最后修订**：2026-03-31
