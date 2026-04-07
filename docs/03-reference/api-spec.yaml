@@ -1,0 +1,663 @@
+openapi: 3.0.3
+info:
+  title: Kava Business Platform API
+  description: |
+    Kava Business Platform DDD 系统 API 规范
+
+    ## 认证说明
+    所有 API 请求需要在 Header 中携带认证 Token：
+    - `Authorization: Bearer {access_token}`
+
+    ## 租户隔离
+    多租户场景下，需要在 Header 中指定租户 ID：
+    - `X-Tenant-Id: {tenant_id}`
+
+  version: 1.0.0
+  contact:
+    name: Kava Platform Team
+
+servers:
+  - url: http://localhost:8080
+    description: 本地开发环境
+  - url: https://api.kava.example.com
+    description: 生产环境
+
+tags:
+  - name: 用户管理
+    description: 用户 CRUD 操作
+  - name: 角色管理
+    description: 角色与权限管理
+  - name: 认证
+    description: 登录认证相关
+
+paths:
+  # ==================== 用户管理 ====================
+  /api/v1/users:
+    get:
+      tags:
+        - 用户管理
+      summary: 分页查询用户列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: username
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [ACTIVE, LOCKED, DELETED]
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResult'
+              example:
+                code: 200
+                message: success
+                data:
+                  records: []
+                  total: 100
+                  page: 1
+                  pageSize: 20
+
+    post:
+      tags:
+        - 用户管理
+      summary: 创建用户
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  /api/v1/users/{userId}:
+    get:
+      tags:
+        - 用户管理
+      summary: 获取用户详情
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+    put:
+      tags:
+        - 用户管理
+      summary: 更新用户
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+    delete:
+      tags:
+        - 用户管理
+      summary: 删除用户
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  /api/v1/users/{userId}/password:
+    put:
+      tags:
+        - 用户管理
+      summary: 重置密码
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  /api/v1/users/{userId}/lock:
+    put:
+      tags:
+        - 用户管理
+      summary: 锁定/解锁用户
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locked:
+                  type: boolean
+                  description: true=锁定，false=解锁
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  # ==================== 角色管理 ====================
+  /api/v1/roles:
+    get:
+      tags:
+        - 角色管理
+      summary: 分页查询角色列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: roleName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResult'
+
+    post:
+      tags:
+        - 角色管理
+      summary: 创建角色
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  /api/v1/roles/{roleId}:
+    get:
+      tags:
+        - 角色管理
+      summary: 获取角色详情
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+
+    put:
+      tags:
+        - 角色管理
+      summary: 更新角色
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+    delete:
+      tags:
+        - 角色管理
+      summary: 删除角色
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  /api/v1/roles/{roleId}/menus:
+    put:
+      tags:
+        - 角色管理
+      summary: 分配角色菜单权限
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menuIds:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  # ==================== 认证 ====================
+  /api/v1/auth/login:
+    post:
+      tags:
+        - 认证
+      summary: 用户登录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /api/v1/auth/logout:
+    post:
+      tags:
+        - 认证
+      summary: 用户登出
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  /api/v1/auth/refresh:
+    post:
+      tags:
+        - 认证
+      summary: 刷新 Token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+# ==================== 组件定义 ====================
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ----- 通用 -----
+    Result:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: 状态码，200 表示成功
+        message:
+          type: string
+          description: 消息
+        data:
+          type: object
+          description: 数据
+
+    PageResult:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            records:
+              type: array
+              items: { }
+            total:
+              type: integer
+            page:
+              type: integer
+            pageSize:
+              type: integer
+
+    # ----- 用户 -----
+    CreateUserRequest:
+      type: object
+      required:
+        - username
+        - password
+        - nickname
+      properties:
+        username:
+          type: string
+          maxLength: 64
+        password:
+          type: string
+          minLength: 6
+          maxLength: 32
+        nickname:
+          type: string
+          maxLength: 64
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          pattern: '^1[3-9]\\d{9}$'
+        deptId:
+          type: integer
+          format: int64
+        roleIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        nickname:
+          type: string
+          maxLength: 64
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          pattern: '^1[3-9]\\d{9}$'
+        deptId:
+          type: integer
+          format: int64
+        roleIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    UserResponse:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        nickname:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, LOCKED, DELETED]
+        deptId:
+          type: integer
+          format: int64
+        deptName:
+          type: string
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleResponse'
+        gmtCreate:
+          type: string
+          format: date-time
+
+    ResetPasswordRequest:
+      type: object
+      required:
+        - newPassword
+      properties:
+        newPassword:
+          type: string
+          minLength: 6
+          maxLength: 32
+
+    # ----- 角色 -----
+    CreateRoleRequest:
+      type: object
+      required:
+        - roleName
+        - roleCode
+      properties:
+        roleName:
+          type: string
+          maxLength: 64
+        roleCode:
+          type: string
+          maxLength: 64
+        roleDesc:
+          type: string
+          maxLength: 255
+        dataScope:
+          type: string
+          enum: [ALL, CUSTOM, DEPT_AND_CHILD, DEPT_SELF, ONLY_SELF]
+          default: DEPT_SELF
+
+    UpdateRoleRequest:
+      type: object
+      properties:
+        roleName:
+          type: string
+          maxLength: 64
+        roleDesc:
+          type: string
+          maxLength: 255
+        dataScope:
+          type: string
+          enum: [ALL, CUSTOM, DEPT_AND_CHILD, DEPT_SELF, ONLY_SELF]
+
+    RoleResponse:
+      type: object
+      properties:
+        roleId:
+          type: integer
+          format: int64
+        roleName:
+          type: string
+        roleCode:
+          type: string
+        roleDesc:
+          type: string
+        dataScope:
+          type: string
+        gmtCreate:
+          type: string
+          format: date-time
+
+    # ----- 认证 -----
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        clientId:
+          type: string
+          default: webapp
+
+    LoginResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+            expiresIn:
+              type: integer
+              description: 有效期（秒）
+            tokenType:
+              type: string
+              default: Bearer
