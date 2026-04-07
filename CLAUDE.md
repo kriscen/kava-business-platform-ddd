@@ -104,14 +104,24 @@ kbpd-{business}/
 3. **Critical path testing**: Tests required for operations involving funds, permissions, or data integrity
 4. **Dependency inward**: adapter/infrastructure → application → domain
 
-## Project Workflow Skills
+## Project Workflow Skills (OpenSpec)
 
-The project includes speckit skills in `.claude/skills/` for structured development workflow:
-- `/speckit.specify` - Define requirements specification
-- `/speckit.plan` - Create implementation plan
-- `/speckit.tasks` - Generate task list
-- `/speckit.implement` - Execute implementation
-- `/speckit.analyze` - Analyze existing code
-- `/speckit.checklist` - Generate checklist
-- `/speckit.clarify` - Clarify requirements
-- `/speckit.constitution` - Review constitution compliance
+The project uses OpenSpec for structured change management. Artifacts are stored in `openspec/` directory with subdirectories for each change.
+
+Available skills:
+- `/opsx:propose` - Propose a new change with all artifacts (proposal, specs, design, tasks)
+- `/opsx:new` - Start a new change using the OpenSpec workflow
+- `/opsx:continue` - Create the next artifact for an in-progress change
+- `/opsx:ff` - Fast-forward through artifact creation
+- `/opsx:verify` - Verify implementation matches change artifacts
+- `/opsx:archive` - Archive a completed change
+- `/opsx:sync` - Sync delta specs from a change to main specs
+- `/opsx:onboard` - Walk through a complete OpenSpec workflow cycle
+- `/openspec-explore` - Explore ideas and investigate problems
+
+OpenSpec artifact rules (from `openspec/config.yaml`):
+- Use Chinese language for all artifacts
+- Proposal: Explain Why and What, list affected files
+- Specs: Requirement/Scenario format with WHEN/THEN/AND structure
+- Design: Include Goals/Non-Goals, decisions with Because... reasoning
+- Tasks: Each task under 2 hours, last task is verification
