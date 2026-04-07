@@ -1,0 +1,67 @@
+schema: spec-driven
+
+# Project context - AI 创建 artifacts 时显示的上下文信息
+context: |
+  # 技术栈
+  Tech stack: Java 21, Spring Boot 3.3.x, Spring Cloud 2023.x, Spring Cloud Alibaba 2023.x
+  Build tool: Maven
+  RPC: Apache Dubbo 3.3.x
+
+  # 架构风格
+  Architecture: Domain-Driven Design (DDD) + Hexagonal Architecture
+  Dependency direction: adapter/infrastructure → application → domain
+
+  # 项目模块
+  Modules:
+    - kbpd-upms: 用户权限管理服务 (完整 DDD 结构)
+    - kbpd-member: 会员服务 (完整 DDD 结构)
+    - kbpd-auth: OAuth2 授权服务器 (独立 Spring Boot)
+    - kbpd-gateway: API 网关 (Spring Cloud Gateway)
+    - kbpd-common: 共享工具模块
+
+  # DDD 约束
+  DDD 约束:
+    - Domain 层不得依赖 Spring 或外部框架
+    - 所有业务规则必须位于 domain 层
+    - 涉及资金、权限、数据完整性的操作需要测试
+    - 使用值对象 ID (如 SysUserId, SysTenantId)
+    - Repository 采用读写分离 (ISysUserReadRepository, ISysUserWriteRepository)
+
+  # 提交规范
+  Commit style: conventional commits (feat:, fix:, docs:, chore:, refactor:)
+
+# Per-artifact rules - 各 artifact 的生成规则
+rules:
+  # Proposal 规则 - 捕获 Why 和 What
+  proposal:
+    - 使用中文撰写
+    - Why 部分说明问题和动机，1-2 句话
+    - What Changes 用要点列出主要变更
+    - Capabilities 区分新增能力和修改能力
+    - Impact 列出受影响的关键文件
+
+  # Specs 规则 - 详细的验收标准
+  specs:
+    - 使用中文撰写
+    - 采用 Requirement/Scenario 格式
+    - Scenario 使用 WHEN/THEN/AND 结构
+    - 每个 requirement 至少有一个 scenario
+    - 规格描述需可测试
+
+  # Design 规则 - 技术决策和实现方案
+  design:
+    - 使用中文撰写
+    - Context 简述当前状态
+    - Goals/Non-Goals 明确范围边界
+    - Decisions 每项决策需包含决策理由 (Because...)
+    - 涉及架构变更时需说明权衡
+    - 小改动保持简洁，不过度设计
+
+  # Tasks 规则 - 实现步骤清单
+  tasks:
+    - 使用中文撰写
+    - 按逻辑顺序排列任务
+    - 每个任务控制在 2 小时以内
+    - 按功能或文件分组
+    - 包含验证步骤
+    - 最后一项任务为验证或测试
