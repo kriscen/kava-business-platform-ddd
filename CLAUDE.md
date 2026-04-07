@@ -54,6 +54,17 @@ Dependencies must flow inward: `adapter/infrastructure → application → domai
 - **types**: Enums, constants, common type definitions
 - **bootstrap**: Spring Boot application entry point, wires all layers together
 
+### Domain Layer Details
+
+Domain entities use value object IDs (e.g., `SysUserId`, `SysTenantId`) from `kbpd-common-core`. Aggregates implement `AggregateRoot<ID>` interface. Repositories are split into read/write interfaces (`ISysUserReadRepository`, `ISysUserWriteRepository`) following the CQRS pattern.
+
+### Infrastructure Layer Details
+
+- `dao/`: MyBatis-Plus mappers
+- `dao/po/`: Persistence objects (database row mapping)
+- `adapter/repository/`: Repository interface implementations
+- `converter/`: PO ↔ Domain entity converters (MapStruct)
+
 ### Module Structure
 
 ```
@@ -69,11 +80,12 @@ kbpd-{business}/
 
 ### Key Modules
 
-- **kbpd-upms**: User permission management service
-- **kbpd-member**: Member service
-- **kbpd-auth**: OAuth2 authorization server
-- **kbpd-gateway**: API gateway (Spring Cloud Gateway)
+- **kbpd-upms**: User permission management service (full DDD structure)
+- **kbpd-member**: Member service (full DDD structure)
+- **kbpd-auth**: OAuth2 authorization server (standalone Spring Boot app, not DDD-structured)
+- **kbpd-gateway**: API gateway (Spring Cloud Gateway, standalone)
 - **kbpd-common**: Shared utilities (core, database, security, cache, web, bom)
+- **kbpd-demo**: Example service (commented out in root pom, not available)
 
 ## Technology Stack
 
