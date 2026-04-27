@@ -119,9 +119,9 @@ adapter/infrastructure  →  application  →  domain
 | 层级 | 技术 | 版本 | 用途 |
 |------|------|------|------|
 | 运行时 | Java | 21 | 主要开发语言 |
-| 框架 | Spring Boot | 3.3.x | 基础框架 |
-| 微服务 | Spring Cloud | 2023.x | 服务治理 |
-| 云生态 | Spring Cloud Alibaba | 2023.x | Nacos、Sentinel |
+| 框架 | Spring Boot | 3.3.13 | 基础框架 |
+| 微服务 | Spring Cloud | 2023.0.6 | 服务治理 |
+| 云生态 | Spring Cloud Alibaba | 2023.0.3.2 | Nacos、Sentinel |
 | RPC | Apache Dubbo | 3.3.x | 服务间通信 |
 | 数据库 | MySQL + MyBatis-Plus | 8.x / 3.5.x | 持久化 |
 | 缓存 | Redis | - | 缓存、分布式锁 |
@@ -137,23 +137,32 @@ adapter/infrastructure  →  application  →  domain
 ```
 kbpd-upms/
 ├── api/                    # 端口定义
-│   ├── dto/               # 数据传输对象
-│   └── service/            # 服务接口（ Dubbo 对外暴露）
+│   ├── model/
+│   │   ├── request/       # 请求对象（入参）
+│   │   ├── response/      # 响应对象（出参）
+│   │   ├── query/         # 列表查询参数
+│   │   └── dto/           # 数据传输对象（Dubbo 用）
+│   └── service/            # 服务接口（Dubbo 对外暴露）
 ├── application/            # 应用服务
-│   ├── command/           # 命令处理（CUD）
-│   └── query/              # 查询处理（读操作）
+│   ├── model/
+│   │   ├── command/       # 命令对象（CUD）
+│   │   └── dto/           # 应用层 DTO
+│   └── service/            # 应用服务实现
 ├── domain/                 # 领域层（核心）
-│   ├── entity/            # 领域实体
-│   ├── aggregate/         # 聚合根
-│   ├── vo/                # 值对象
+│   ├── model/
+│   │   ├── entity/        # 领域实体
+│   │   ├── aggregate/     # 聚合根
+│   │   └── valobj/        # 值对象
 │   ├── service/           # 领域服务
 │   └── repository/         # 仓储接口
 ├── infrastructure/         # 基础设施
 │   ├── dao/               # MyBatis Mapper
-│   ├── repository/         # 仓储实现
+│   │   └── po/            # 持久化对象
+│   ├── adapter/repository/ # 仓储实现
 │   └── converter/          # PO ↔ Entity 转换
 ├── adapter/                # 适配器
-│   └── controller/         # HTTP Controller
+│   ├── controller/         # HTTP Controller
+│   └── rpc/               # Dubbo RPC 实现
 └── bootstrap/              # 启动入口
 ```
 
@@ -176,9 +185,17 @@ Spring Cloud Gateway 实现，作为所有外部请求的统一入口。
 
 ### 1.4.4 kbpd-member（会员服务）
 
-会员管理领域服务，提供会员等级、权益等能力。
+> **状态：建设中**，domain 层尚未实现。
 
-### 1.4.5 kbpd-common（公共模块）
+会员管理领域服务，规划提供会员等级、权益等能力。当前模块结构已搭建，核心业务逻辑待补充。
+
+### 1.4.5 kbpd-demo（示例模块）
+
+> **状态：模板参考模块**，无业务逻辑，当前已从根 `pom.xml` 中禁用。
+
+作为新增业务模块的目录结构和依赖关系参考，展示了完整的 DDD 分层模块（api / application / domain / infrastructure / adapter / bootstrap / types）。
+
+### 1.4.6 kbpd-common（公共模块）
 
 ```
 kbpd-common/
@@ -207,16 +224,11 @@ dubbo:
 
 ### 异步通信（事件驱动）
 
-领域事件通过 Spring ApplicationEventPublisher 发布，基础设施层负责处理（如发送 MQ 消息）。
+> 🟡 规划中 — `BaseEvent` 基类已预留，MQ 选型与具体事件待后续落地
 
 ## 1.6 数据一致性
 
-采用 **Saga 模式** 处理跨服务数据一致性：
-
-1. 每个服务管理自己的数据库
-2. 通过领域事件触发下游服务操作
-3. 使用 MQ 实现最终一致性
-4. 补偿事务处理失败场景
+> 🟡 规划中 — 计划采用 Saga 模式，通过领域事件 + MQ 实现最终一致性
 
 ## 1.7 安全性
 
@@ -236,7 +248,29 @@ dubbo:
                 └───────────┘
 ```
 
-1. 客户端请求先到 Gateway，验证 JWT Token
-2. Token 有效则携带用户信息继续路由
-3. 业务服务通过 Security Context 获取当前用户
-4. 多租户场景通过 TenantFilter 解析租户上下文
+1. 客户端请求先到 Gateway，透传至下游服务
+2. 下游服务（Resource Server）验证 JWT Token 并填充安全上下文
+3. 业务服务通过 SecurityUtils 获取当前用户信息
+4. 多租户通过 OAuth2 Client 绑定的 tenantId 在登录阶段确定租户
+
+> 详细认证流程、JWT 结构、RBAC 模型见 [security-architecture.md](security-architecture.md)
+
+## 1.8 规划状态汇总
+
+| 能力 | 状态 | 说明 |
+|------|------|------|
+| Dubbo RPC 同步调用 | ✅ 已实现 | Auth ↔ UPMS/Member |
+| OAuth2 授权码模式 | ✅ 已实现 | Auth Server 完整流程 |
+| JWT 签发与验证 | ✅ 已实现 | RSA2048 |
+| RBAC 权限模型 | ✅ 已实现 | 用户→角色→菜单/按钮 |
+| 多租户登录隔离 | ✅ 已实现 | Client 绑定 tenantId |
+| Gateway HTTP 路由 | ✅ 已实现 | 静态配置，硬编码 localhost |
+| Gateway JWT 鉴权 | 🟡 规划中 | 当前透传，下游服务自行校验 |
+| Gateway 限流熔断 | 🟡 规划中 | Sentinel 依赖已引入 |
+| 领域事件 | 🟡 规划中 | BaseEvent 已预留，无 MQ |
+| Saga 分布式事务 | 🟡 规划中 | 等事件驱动架构落地 |
+| MyBatis-Plus 租户拦截器 | 🟡 规划中 | 当前查询手动过滤 tenant_id |
+| 防腐层 | 🟡 规划中 | 跨服务直接依赖 Dubbo DTO |
+| Member 服务 Resource Server | 🟡 规划中 | 未启用 JWT 校验 |
+
+> 🟡 表示已规划但尚未实现。详细通信约定见 [integration-patterns.md](integration-patterns.md)，安全细节见 [security-architecture.md](security-architecture.md)

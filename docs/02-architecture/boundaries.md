@@ -55,27 +55,33 @@ public class SysUserServiceImpl implements SysUserService {
 │  └── rpc/                  # Dubbo RPC 实现（出站适配器）     │
 ├─────────────────────────────────────────────────────────────┤
 │  api/                       # 端口层                          │
-│  ├── dto/                  # 数据传输对象（无业务逻辑）        │
+│  ├── model/                # 数据模型                          │
+│  │   ├── request/          # 请求对象（入参）                  │
+│  │   ├── response/         # 响应对象（出参）                  │
+│  │   ├── query/            # 列表查询参数                      │
+│  │   └── dto/              # 数据传输对象（无业务逻辑）        │
 │  └── service/              # 服务接口定义（Dubbo Interface）  │
 ├─────────────────────────────────────────────────────────────┤
 │  application/               # 应用层                          │
-│  ├── command/              # 命令处理器（CUD 操作）           │
-│  └── query/                # 查询处理器（读操作）             │
+│  ├── model/                # 数据模型                          │
+│  │   ├── command/          # 命令对象（CUD 操作）              │
+│  │   └── dto/              # 应用层 DTO                       │
+│  └── service/              # 应用服务实现                      │
 ├─────────────────────────────────────────────────────────────┤
 │  domain/                    # 领域层（核心）                  │
-│  ├── entity/               # 领域实体（具有身份标识）         │
-│  ├── aggregate/           # 聚合根（事务边界）               │
-│  ├── vo/                   # 值对象（不可变）                │
+│  ├── model/                # 领域模型                          │
+│  │   ├── entity/           # 领域实体（非聚合根）              │
+│  │   ├── aggregate/        # 聚合根（事务边界）               │
+│  │   └── valobj/           # 值对象（不可变）                │
 │  ├── service/              # 领域服务（无实体的操作）        │
 │  ├── repository/           # 仓储接口（抽象持久化）          │
-│  └── event/                # 领域事件定义                    │
+│  └── event/                # 领域事件定义（⚠️ 尚未实现）      │
 ├─────────────────────────────────────────────────────────────┤
 │  infrastructure/            # 基础设施层                     │
 │  ├── dao/                  # MyBatis Mapper/XML              │
-│  ├── po/                   # 持久化对象（数据库行映射）      │
-│  ├── repository/           # 仓储实现                        │
-│  ├── converter/            # PO ↔ Entity 转换器（MapStruct）│
-│  └── external/             # 外部服务调用实现                │
+│  │   └── po/               # 持久化对象（数据库行映射）      │
+│  ├── adapter/repository/   # 仓储实现                        │
+│  └── converter/            # PO ↔ Entity 转换器（MapStruct）│
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -83,15 +89,19 @@ public class SysUserServiceImpl implements SysUserService {
 
 | 层 | 命名规则 | 示例 |
 |---|---------|------|
-| Entity | `{AggregateName}Entity` | `SysUserEntity` |
-| Aggregate | `{AggregateName}Aggregate` | `SysUserAggregate` |
-| Value Object | `{Name}VO` 或 `{Name}Id` | `SysUserId`, `UserName` |
-| Repository Interface | `I{Entity}ReadRepository`, `I{Entity}WriteRepository` | `ISysUserReadRepository` |
-| Repository Impl | `{Entity}RepositoryImpl`（在 infrastructure） | `SysUserRepositoryImpl` |
-| ApplicationService | `{UsecaseName}AppService` | `UserManagementAppService` |
-| Command | `{Action}{Entity}Cmd` | `CreateUserCmd`, `UpdateUserCmd` |
-| Query | `{Entity}{Condition}Query` | `UserPageQuery` |
-| DTO | `{Entity}{Purpose}DTO` | `SysUserDTO`, `SysUserCreateDTO` |
+| Entity（非聚合根） | `{Name}Entity` | `SysDeptEntity` |
+| Aggregate（聚合根） | `{AggregateName}Entity` | `SysUserEntity` |
+| Value Object | `{Name}Id` / `{Name}ListQuery` | `SysUserId`, `SysUserListQuery` |
+| Repository（简单 CRUD） | `I{Entity}Repository` | `ISysDeptRepository` |
+| Repository（CQRS 读写分离） | `I{Entity}ReadRepository`, `I{Entity}WriteRepository` | `ISysUserReadRepository` |
+| Repository Impl | `{Entity}Repository`（在 infrastructure） | `SysUserReadRepository` |
+| ApplicationService | `{Entity}AppService` | `SysUserAppService` |
+| Command | `Sys{Entity}{Action}Command` | `SysUserCreateCommand`, `SysUserUpdateCommand` |
+| Application DTO | `Sys{Entity}App{Purpose}DTO` | `SysUserAppDetailDTO`, `SysUserAppListDTO` |
+| API Request | `Sys{Entity}Request` | `SysUserRequest` |
+| API Response | `Sys{Entity}{Detail/List}Response` | `SysUserDetailResponse`, `SysUserListResponse` |
+| API Query | `Sys{Entity}AdapterListQuery` | `SysUserAdapterListQuery` |
+| API DTO | `Sys{Entity}DTO` | `SysUserDTO` |
 
 ## 2.3 限界上下文（Bounded Context）
 
@@ -138,80 +148,119 @@ public class SysUserServiceImpl implements SysUserService {
 ### 聚合设计示例
 
 ```java
-// SysUserAggregate - 用户聚合
-public class SysUserAggregate {
+// SysUserEntity - 用户聚合根
+public class SysUserEntity implements AggregateRoot<SysUserId> {
     private SysUserId id;
-    private UserName name;
-    private Password password;           // 值对象
-    private PhoneNumber phone;
-    private Email email;
-    private SysUserStatus status;
-    private TenantId tenantId;
-    private List<SysUserRole> roles;     // 聚合内对象
+    private String username;
+    private String password;
+    private String phone;
+    private String email;
+    private Integer lockFlag;
+    private SysTenantId tenantId;
+    private List<SysRoleId> roles;
 
     // 聚合根方法 - 保证内部一致性
-    public void assignRole(RoleId roleId) {
+    public void assignRole(SysRoleId roleId) {
         // 业务规则校验
-        if (status.isLocked()) {
+        if (lockFlag == 1) {
             throw new DomainException("用户已锁定，不能分配角色");
         }
-        roles.add(new SysUserRole(roleId));
+        roles.add(roleId);
     }
 }
 ```
 
-## 2.5 包结构规范
+## 2.4.1 CQRS 策略
+
+并非所有聚合都需要读写分离。策略如下：
+
+| 场景 | 策略 | 示例 |
+|------|------|------|
+| **复杂领域** | 读写分离：`I{Entity}ReadRepository` + `I{Entity}WriteRepository` | `SysUser`、`SysRole` |
+| **简单 CRUD** | 单一接口：`I{Entity}Repository` | `SysDept`、`SysMenu`、`SysTenant` 等 |
+
+**判断标准**：聚合是否有复杂的业务规则、多表关联查询、或需要独立的查询优化？是则拆分，否则保持简单。
+
+## 2.5 包结构规范（实际代码）
 
 ```
 # 领域层（kbpd-upms-domain）
-cn.kava.upms.domain
-├── entity/              # 实体（非聚合根）
-├── aggregate/           # 聚合根
-│   └── sysuser/
-│       ├── SysUserAggregate.java
+com.kava.kbpd.upms.domain
+├── model/
+│   ├── entity/              # 实体（非聚合根）
+│   │   └── SysDeptEntity.java
+│   ├── aggregate/           # 聚合根
+│   │   └── SysUserEntity.java
+│   │   └── SysRoleEntity.java
+│   └── valobj/              # 值对象 / 查询参数
 │       ├── SysUserId.java
-│       └── SysUserStatus.java
-├── vo/                  # 值对象
-│   ├── Password.java
-│   ├── PhoneNumber.java
-│   └── Email.java
-├── service/             # 领域服务
-├── repository/          # 仓储接口（读写分离）
-│   ├── ISysUserReadRepository.java
-│   └── ISysUserWriteRepository.java
-└── event/               # 领域事件
-    ├── UserCreatedEvent.java
-    └── UserDeletedEvent.java
+│       ├── SysUserListQuery.java
+│       └── SysDeptId.java
+├── service/                 # 领域服务
+│   ├── ISysUserService.java
+│   └── impl/
+│       └── SysUserService.java
+└── repository/              # 仓储接口
+    ├── ISysUserReadRepository.java
+    ├── ISysUserWriteRepository.java
+    └── ISysDeptRepository.java
 
 # 应用层（kbpd-upms-application）
-cn.kava.upms.application
-├── command/            # 命令
-│   └── sysuser/
-│       ├── CreateUserCmd.java
-│       ├── UpdateUserCmd.java
-│       └── DeleteUserCmd.java
-├── query/              # 查询
-│   └── sysuser/
-│       ├── UserPageQuery.java
-│       └── UserDetailQuery.java
-└── service/            # 应用服务
-    └── sysuser/
-        └── SysUserApplicationService.java
+com.kava.kbpd.upms.application
+├── model/
+│   ├── command/             # 命令对象
+│   │   └── SysUserCreateCommand.java
+│   │   └── SysUserUpdateCommand.java
+│   └── dto/                 # 应用层 DTO
+│       ├── SysUserAppDetailDTO.java
+│       └── SysUserAppListDTO.java
+├── converter/               # App 层转换器
+│   └── SysUserAppConverter.java
+└── service/                 # 应用服务
+    ├── ISysUserAppService.java
+    └── impl/
+        └── SysUserAppService.java
 
-# 基础设施层
-cn.kava.upms.infrastructure
-├── dao/                # MyBatis Mapper
-├── po/                 # 持久化对象
-├── repository/         # 仓储实现
-│   └── sysuser/
-│       ├── SysUserReadRepositoryImpl.java
-│       └── SysUserWriteRepositoryImpl.java
-└── converter/         # MapStruct 转换器
-    └── sysuser/
-        └── SysUserConverter.java
+# 基础设施层（kbpd-upms-infrastructure）
+com.kava.kbpd.upms.infrastructure
+├── dao/                     # MyBatis Mapper
+│   ├── SysUserMapper.java
+│   └── po/                  # 持久化对象
+│       └── SysUserPO.java
+├── adapter/repository/      # 仓储实现
+│   ├── SysUserReadRepository.java
+│   ├── SysUserWriteRepository.java
+│   └── SysDeptRepository.java
+└── converter/               # MapStruct 转换器
+    └── SysUserConverter.java
+
+# API 层（kbpd-upms-api）
+com.kava.kbpd.upms.api
+├── model/
+│   ├── request/             # 入参请求
+│   │   └── SysUserRequest.java
+│   ├── response/            # 出参响应
+│   │   └── SysUserDetailResponse.java
+│   ├── query/               # 列表查询
+│   │   └── SysUserAdapterListQuery.java
+│   └── dto/                 # RPC 传输对象
+│       └── SysUserDTO.java
+└── service/                 # Dubbo 接口
+    └── IRemoteUserService.java
+
+# 适配器层（kbpd-upms-adapter）
+com.kava.kbpd.upms.adapter
+├── controller/              # HTTP 控制器
+│   └── SysUserController.java
+└── rpc/                     # Dubbo 服务实现
+    └── RemoteUserService.java
 ```
 
 ## 2.6 防腐层（Anticorruption Layer）
+
+> **⚠️ 尚未落地，规划中**
+>
+> 当前项目处于初期调试阶段，跨服务调用直接通过 Dubbo 接口完成。防腐层将在链路稳定后逐步引入。
 
 跨上下文引用时，必须通过防腐层隔离外部模型：
 

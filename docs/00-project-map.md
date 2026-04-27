@@ -34,8 +34,11 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
+| [README.md](02-architecture/README.md) | 架构目录导航，文档清单与推荐阅读顺序 |
 | [overview.md](02-architecture/overview.md) | 系统架构总览，描述 DDD + 六边形架构分层、微服务划分及基础设施选型（Gateway → Auth/UPMS/Member → Nacos/MySQL/Redis/MQ） |
-| [boundaries.md](02-architecture/boundaries.md) | 服务边界与职责划分，定义各服务的领域归属、服务间依赖关系及调用规则（上游调用下游，Dubbo RPC 通信） |
+| [boundaries.md](02-architecture/boundaries.md) | 服务边界与模块划分，定义 DDD 分层职责、命名约定、CQRS 策略、聚合边界及跨服务调用规则 |
+| [security-architecture.md](02-architecture/security-architecture.md) | 安全架构，描述认证流程、JWT Token 结构、RBAC 权限模型、多租户隔离策略及 Resource Server 配置 |
+| [integration-patterns.md](02-architecture/integration-patterns.md) | 服务间通信与集成模式，描述 Dubbo RPC 规范、接口版本管理、跨服务错误处理及事件驱动架构规划 |
 
 ---
 
@@ -67,6 +70,12 @@ docs/
 
 ## 06-modules/ — 模块文档
 
+### README
+
+| 文件 | 说明 |
+|------|------|
+| [README.md](06-modules/README.md) | 模块文档产出规范，定义业务模块与公共模块的文档要求及目录对应关系 |
+
 ### kbpd-auth/ — 认证服务
 
 | 文件 | 说明 |
@@ -93,7 +102,6 @@ docs/
 |------|------|
 | [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览（待填充） |
 | [api.md](06-modules/kbpd-member/api.md) | Member 模块接口文档（待填充） |
-| [database.md](06-modules/kbpd-member/database.md) | Member 模块数据库设计（待填充） |
 | [business-rules.md](06-modules/kbpd-member/business-rules.md) | Member 模块业务规则（待填充） |
 
 ### kbpd-upms/ — 用户权限管理服务
@@ -102,7 +110,6 @@ docs/
 |------|------|
 | [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览（待填充） |
 | [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块接口文档（待填充） |
-| [database.md](06-modules/kbpd-upms/database.md) | UPMS 模块数据库设计（待填充） |
 | [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则（待填充） |
 
 ---
@@ -117,4 +124,4 @@ docs/
 
 **架构变更**：`adr-template.md`（填写后提交到此目录）
 
-**模块开发**：`06-modules/kbpd-{模块}/overview.md` → `api.md` → `database.md` → `business-rules.md`
+**模块开发**：`06-modules/kbpd-{模块}/overview.md` → `api.md` → `business-rules.md`
