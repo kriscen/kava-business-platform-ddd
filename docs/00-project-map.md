@@ -55,8 +55,7 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [api-spec.yaml](04-reference/api-spec.yaml) | OpenAPI 3.0 接口规范，定义 REST API 契约，包含认证方式（Bearer Token）、多租户隔离（X-Tenant-Id）及用户/角色/认证等端点 |
-| [error-codes.md](04-reference/error-codes.md) | 错误码规范，定义 `{系统前缀}-{模块号}-{具体编号}` 格式（如 `UPMS-001-001`）及严重级别（FATAL/ERROR） |
+| [error-codes.md](04-reference/error-codes.md) | 错误码规范（待填充） |
 
 ---
 
@@ -80,15 +79,15 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-auth/overview.md) | Auth 模块概览（待填充） |
-| [api.md](06-modules/kbpd-auth/api.md) | Auth 模块接口文档（待填充） |
-| [business-rules.md](06-modules/kbpd-auth/business-rules.md) | Auth 模块业务规则（待填充） |
+| [overview.md](06-modules/kbpd-auth/overview.md) | Auth 模块概览，描述 OAuth2 认证授权中心定位、双 Security 过滤链、多租户认证流程、Token 存储策略与 JWT Claims |
+| [api.md](06-modules/kbpd-auth/api.md) | Auth 模块接口文档，包含页面接口（登录/授权确认）和 OAuth2 协议端点说明 |
+| [business-rules.md](06-modules/kbpd-auth/business-rules.md) | Auth 模块业务规则，定义多租户认证路由、Token 生命周期管理、客户端校验等规则 |
 
 ### kbpd-common/ — 公共模块
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-common/overview.md) | Common 模块概览（待填充） |
+| [overview.md](06-modules/kbpd-common/overview.md) | Common 模块概览，描述 BOM 版本管理、DDD 类型体系、Redis/数据库/安全/Web 基础设施封装 |
 
 ### kbpd-gateway/ — API 网关
 
@@ -118,7 +117,7 @@ docs/
 
 **新人上手**：`overview.md` → `boundaries.md` → `code-style.md` → `git.md`
 
-**开发接口**：`api-spec.yaml` → `error-codes.md`
+**开发接口**：`error-codes.md`
 
 **建库建表**：`01-sql/kbpd-upms.sql`
 
