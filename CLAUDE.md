@@ -84,7 +84,13 @@ kbpd-{business}/
 - **kbpd-member**: Member service (full DDD structure)
 - **kbpd-auth**: OAuth2 authorization server (standalone Spring Boot app, not DDD-structured)
 - **kbpd-gateway**: API gateway (Spring Cloud Gateway, standalone)
-- **kbpd-common**: Shared utilities (core, database, security, cache, web, bom)
+- **kbpd-common**: Shared utilities
+  - `kbpd-common-bom`: Dependency version management
+  - `kbpd-common-core`: Base classes, value object IDs, enums, error codes
+  - `kbpd-common-database`: MyBatis-Plus and Druid configuration
+  - `kbpd-common-security`: Spring Security utilities
+  - `kbpd-common-cache`: Redis configuration
+  - `kbpd-common-web`: Web-layer utilities
 - **kbpd-demo**: Example service (commented out in root pom, not available)
 
 ## Technology Stack
@@ -93,9 +99,12 @@ kbpd-{business}/
 - **Apache Dubbo 3.3.x** for RPC between services
 - **Nacos** for service discovery and configuration
 - **MyBatis-Plus 3.5.x** for data access
+- **Druid** for database connection pooling
+- **Redis** for caching
 - **Spring Security + OAuth2** for authentication
 - **MapStruct** for object mapping
 - **Lombok** for reducing boilerplate
+- **Hutool** for common utilities
 
 ## DDD Constraints (from constitution.md)
 
@@ -103,6 +112,9 @@ kbpd-{business}/
 2. **Business logic location**: All business rules must be in domain layer, not leaked to application or adapter
 3. **Critical path testing**: Tests required for operations involving funds, permissions, or data integrity
 4. **Dependency inward**: adapter/infrastructure → application → domain
+
+<!-- KAVA-PROJECT-RULES: do NOT remove next line on /init — keeps project-specific docs/openspec rules -->
+@.claude/rules/project-docs.md
 
 ## Project Workflow Skills (OpenSpec)
 
