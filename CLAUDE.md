@@ -125,3 +125,7 @@ OpenSpec artifact rules (from `openspec/config.yaml`):
 - Specs: Requirement/Scenario format with WHEN/THEN/AND structure
 - Design: Include Goals/Non-Goals, decisions with Because... reasoning
 - Tasks: Each task under 2 hours, last task is verification
+
+## Utility Skills
+
+- `/update-docs-map` - 扫描 docs/ 目录，自动更新 `docs/00-project-map.md` 文档地图索引
