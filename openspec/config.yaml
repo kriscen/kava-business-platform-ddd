@@ -11,6 +11,15 @@ context: |
   Architecture: Domain-Driven Design (DDD) + Hexagonal Architecture
   Dependency direction: adapter/infrastructure → application → domain
 
+  # 产品定位
+  Product: Kava — 家庭应用后端基础设施平台（Family SaaS Platform）
+  核心模型: 一个家庭 = 一个租户，强数据隔离，单账号单租户
+  用户类型:
+    - B端: 平台管理员（全局管理）、租户管理员/家庭管理员（家庭后台管理）
+    - C端: App 终端用户（通过 OAuth2 接入，开放注册）
+  App 架构: 各家庭独立开发垂直 App，通过 OAuth2 接入 Kava，Kava 提供认证和后台管理
+  当前阶段: 夯实基础模块（UPMS、Member）
+
   # 项目模块
   Modules:
     - kbpd-upms: 用户权限管理服务 (完整 DDD 结构)

@@ -12,12 +12,13 @@ docs/
 ├── 03-conventions/          # 开发规范
 ├── 04-reference/            # 参考手册
 ├── 05-history/              # 决策历史
-└── 06-modules/              # 模块文档
-    ├── kbpd-auth/           # 认证服务
-    ├── kbpd-common/         # 公共模块
-    ├── kbpd-gateway/        # API 网关
-    ├── kbpd-member/         # 会员服务
-    └── kbpd-upms/           # 用户权限管理服务
+├── 06-modules/              # 模块文档
+│   ├── kbpd-auth/           # 认证服务
+│   ├── kbpd-common/         # 公共模块
+│   ├── kbpd-gateway/        # API 网关
+│   ├── kbpd-member/         # 会员服务
+│   └── kbpd-upms/           # 用户权限管理服务
+└── 07-product/              # 产品文档
 ```
 
 ---
@@ -113,9 +114,22 @@ docs/
 
 ---
 
+## 07-product/ — 产品文档
+
+| 文件 | 说明 |
+|------|------|
+| [README.md](07-product/README.md) | 产品文档导航 |
+| [vision.md](07-product/vision.md) | 产品愿景与定位 — Kava 是什么、解决什么问题、核心价值、平台边界、发展阶段 |
+| [user-roles.md](07-product/user-roles.md) | 用户角色定义 — B端（平台管理员、租户管理员）/ C端（App 终端用户）的角色、权限、使用场景 |
+| [platform-architecture.md](07-product/platform-architecture.md) | 平台架构概念 — 租户模型、数据隔离策略、OAuth2 接入流程、模块职责与产品关系 |
+
+---
+
 ## 快速导航
 
 **新人上手**：`overview.md` → `boundaries.md` → `code-style.md` → `git.md`
+
+**了解产品**：`07-product/vision.md` → `user-roles.md` → `platform-architecture.md`
 
 **开发接口**：`error-codes.md`
 

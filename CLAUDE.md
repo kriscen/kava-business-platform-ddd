@@ -115,6 +115,8 @@ kbpd-{business}/
 
 <!-- KAVA-PROJECT-RULES: do NOT remove next line on /init — keeps project-specific docs/openspec rules -->
 @.claude/rules/project-docs.md
+<!-- KAVA-PROJECT-RULES: do NOT remove next line on /init — keeps product vision rules -->
+@.claude/rules/product-vision.md
 
 ## Project Workflow Skills (OpenSpec)
 
