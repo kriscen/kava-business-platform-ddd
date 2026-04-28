@@ -86,7 +86,7 @@ kbpd-auth/
 用户访问 /oauth2/authorize
   → CustomLoginUrlAuthenticationEntryPoint 携带 client_id 跳转登录页
   → OauthController 通过 client_id 查询 tenantId、userType，渲染登录表单
-  → TenantAwareAuthenticationFilter 提取 tenantId、userType，构建 ExtendAuthenticationToken
+  → TenantAwareAuthenticationFilter 用 clientId 查询 RegisteredClient，从 ClientSettings 提取可信 tenantId、userType，构建 ExtendAuthenticationToken
   → CustomerAuthenticationProvider 调用 PwdUserDetailsService
   → PwdUserDetailsService 按 userType 路由：
       - TO_B → IRemoteUserService (Dubbo → kbpd-upms)
@@ -150,7 +150,5 @@ cd kbpd-auth && mvn spring-boot:run
 
 ## 当前开发状态（TODO）
 
-- `PwdUserDetailsService` 返回硬编码用户数据，尚未对接真实 RPC 返回值
-- `TenantAwareAuthenticationFilter` 未校验 `userType`、`tenantId`、`clientId` 的匹配关系
 - `OauthController` 计划根据 `userType` 和 `tenantId` 动态加载不同的登录/授权页面
 - 第三方登录（微信、Gitee、Github、QQ）依赖已声明但注释掉，尚未启用

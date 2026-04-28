@@ -1,5 +1,6 @@
 package com.kava.kbpd.upms.adapter.converter;
 
+import com.kava.kbpd.upms.api.model.dto.SysUserDTO;
 import com.kava.kbpd.upms.api.model.query.SysUserAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysUserRequest;
 import com.kava.kbpd.upms.api.model.response.SysUserListResponse;
@@ -24,4 +25,6 @@ public interface SysUserAdapterConverter {
     SysUserUpdateCommand convertRequest2UpdateCommand(SysUserRequest req);
 
     SysUserDetailResponse convertDetailDTO2DetailResp(SysUserAppDetailDTO dto);
+
+    SysUserDTO convertAppDetail2RemoteDTO(SysUserAppDetailDTO appDetailDTO);
 }

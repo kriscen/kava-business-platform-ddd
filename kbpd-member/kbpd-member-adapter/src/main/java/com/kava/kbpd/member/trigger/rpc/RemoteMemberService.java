@@ -13,9 +13,8 @@ import org.apache.dubbo.config.annotation.DubboService;
 public class RemoteMemberService implements IRemoteMemberService {
     @Override
     public MemberInfoDTO findMemberByMobile(String tenantId,String mobile) {
-        MemberInfoDTO dto = new MemberInfoDTO();
-        dto.setId(1L);
-        return dto;
+        //TODO Member 模块 DDD 结构尚未搭建（无 domain/infrastructure/application 层），待搭建后接通真实查询
+        return null;
     }
 
 }

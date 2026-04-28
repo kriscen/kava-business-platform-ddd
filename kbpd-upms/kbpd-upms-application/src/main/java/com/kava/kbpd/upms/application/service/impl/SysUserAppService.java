@@ -66,4 +66,23 @@ public class SysUserAppService implements ISysUserAppService {
         SysUserEntity sysUserEntity = readRepository.queryById(id);
         return sysUserAppConverter.convertEntity2Detail(sysUserEntity);
     }
+
+    @Override
+    public SysUserAppDetailDTO queryUserByUsername(Long tenantId, String username) {
+        SysUserEntity sysUserEntity = readRepository.queryByUsername(tenantId, username);
+        if (sysUserEntity == null) {
+            return null;
+        }
+        return sysUserAppConverter.convertEntity2Detail(sysUserEntity);
+    }
+
+    @Override
+    public List<String> queryRoleCodesByUserId(Long userId) {
+        return readRepository.queryRoleCodesByUserId(userId);
+    }
+
+    @Override
+    public List<String> queryPermissionsByUserId(Long userId) {
+        return readRepository.queryPermissionsByUserId(userId);
+    }
 }

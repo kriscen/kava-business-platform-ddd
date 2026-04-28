@@ -5,52 +5,35 @@ import lombok.Data;
 /**
  * @author Kris
  * @date 2025/9/28
- * @description: area application detail
+ * @description: 用户应用层详情 DTO
  */
 @Data
 public class SysUserAppDetailDTO {
-    /**
-     * 父ID
-     */
-    private Long pid;
+    private Long id;
+
+    private String username;
 
     /**
-     * 地区名称
+     * 密码哈希值
      */
+    private String password;
+
+    private Long deptId;
+
+    private Long tenantId;
+
+    /**
+     * 锁定标记："0"正常，"1"锁定
+     */
+    private String lockFlag;
+
+    private String phone;
+
+    private String nickname;
+
     private String name;
 
-    /**
-     * 地区字母
-     */
-    private String letter;
+    private String email;
 
-    /**
-     * 高德地区code
-     */
-    private Long adcode;
-
-    /**
-     * 经纬度
-     */
-    private String location;
-
-    /**
-     * 排序值
-     */
-    private Long areaSort;
-
-    /**
-     * 0:未生效，1:生效
-     */
-    private String areaStatus;
-
-    /**
-     * 0:国家,1:省,2:城市,3:区县
-     */
-    private String areaType;
-
-    /**
-     * 城市编码
-     */
-    private String cityCode;
+    private String avatar;
 }

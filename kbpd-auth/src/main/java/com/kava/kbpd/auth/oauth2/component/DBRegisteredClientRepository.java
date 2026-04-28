@@ -45,7 +45,7 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
 
     @Override
     public RegisteredClient findById(String id) {
-        throw new UnsupportedOperationException();
+        return findByClientId(id);
     }
 
     @Override

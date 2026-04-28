@@ -8,17 +8,19 @@ import com.kava.kbpd.member.api.service.IRemoteMemberService;
 import com.kava.kbpd.upms.api.model.dto.SysUserDTO;
 import com.kava.kbpd.upms.api.service.IRemoteUserService;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Kris
  * @date 2025/4/14
- * @description:
+ * @description: 密码登录用户详情服务
  */
 @Service
 public class PwdUserDetailsService implements UserDetailsService {
@@ -34,18 +36,37 @@ public class PwdUserDetailsService implements UserDetailsService {
         throw new UsernameNotFoundException("user not found");
     }
 
-    public UserDetails loadUserByUsername(String username,String tenantId,String userType) throws UsernameNotFoundException {
-        if(UserType.TO_B.getCode().equals(userType)){
-            SysUserDTO user = remoteUserService.findByUsername(username, tenantId);
-            //TODO 使用真实的user
-            return new SysUserDetails(1L, "admin", "{noop}123456", 1L, true, Set.of());
-        }else if(UserType.TO_C.getCode().equals(userType)) {
-            MemberInfoDTO member = remoteMemberService.findMemberByMobile(username, tenantId);
-            //TODO 使用真实的member
-            return new MemberDetails(1L, "admin", "{noop}123456", true);
-        }else {
-            throw new UsernameNotFoundException("user not found");
+    public UserDetails loadUserByUsername(String username, String tenantId, String userType) throws UsernameNotFoundException {
+        if (UserType.TO_B.getCode().equals(userType)) {
+            SysUserDTO user = remoteUserService.findByUsername(tenantId, username);
+            if (user == null) {
+                throw new UsernameNotFoundException("User not found: " + username);
+            }
+            Set<SimpleGrantedAuthority> authorities = user.getPermissions().stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toSet());
+            boolean enabled = !"1".equals(user.getLockFlag());
+            return new SysUserDetails(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getPassword(),
+                    user.getDeptId(),
+                    enabled,
+                    authorities
+            );
+        } else if (UserType.TO_C.getCode().equals(userType)) {
+            MemberInfoDTO member = remoteMemberService.findMemberByMobile(tenantId, username);
+            if (member == null) {
+                throw new UsernameNotFoundException("Member not found: " + username);
+            }
+            return new MemberDetails(
+                    member.getId(),
+                    member.getMobile(),
+                    member.getPassword(),
+                    member.getEnabled()
+            );
+        } else {
+            throw new UsernameNotFoundException("Unknown userType: " + userType);
         }
-
     }
 }

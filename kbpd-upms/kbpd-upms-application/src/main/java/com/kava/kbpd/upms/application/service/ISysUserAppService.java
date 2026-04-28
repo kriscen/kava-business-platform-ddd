@@ -25,4 +25,19 @@ public interface ISysUserAppService {
     PagingInfo<SysUserAppListDTO> queryUserPage(SysUserListQuery query);
 
     SysUserAppDetailDTO queryUserById(SysUserId id);
+
+    /**
+     * 根据租户ID和用户名查询用户详情
+     */
+    SysUserAppDetailDTO queryUserByUsername(Long tenantId, String username);
+
+    /**
+     * 根据用户ID查询角色标识列表
+     */
+    List<String> queryRoleCodesByUserId(Long userId);
+
+    /**
+     * 根据用户ID查询权限标识列表
+     */
+    List<String> queryPermissionsByUserId(Long userId);
 }
