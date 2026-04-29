@@ -1,8 +1,8 @@
 package com.kava.kbpd.auth.oauth2.service;
 
-import com.kava.kbpd.common.core.enums.UserType;
 import com.kava.kbpd.auth.model.MemberDetails;
 import com.kava.kbpd.auth.model.SysUserDetails;
+import com.kava.kbpd.common.core.enums.UserType;
 import com.kava.kbpd.member.api.model.dto.MemberInfoDTO;
 import com.kava.kbpd.member.api.service.IRemoteMemberService;
 import com.kava.kbpd.upms.api.model.dto.SysUserDTO;
@@ -42,10 +42,12 @@ public class PwdUserDetailsService implements UserDetailsService {
             if (user == null) {
                 throw new UsernameNotFoundException("User not found: " + username);
             }
-            Set<SimpleGrantedAuthority> authorities = user.getPermissions().stream()
+            // roles 转换为 GrantedAuthority（用于 JWT）
+            Set<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toSet());
             boolean enabled = !"1".equals(user.getLockFlag());
+
             return new SysUserDetails(
                     user.getId(),
                     user.getUsername(),
@@ -59,6 +61,7 @@ public class PwdUserDetailsService implements UserDetailsService {
             if (member == null) {
                 throw new UsernameNotFoundException("Member not found: " + username);
             }
+            // C端用户不触发权限缓存
             return new MemberDetails(
                     member.getId(),
                     member.getMobile(),

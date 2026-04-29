@@ -1,0 +1,2 @@
+consumerUserContext=com.kava.kbpd.common.security.dubbo.ConsumerUserContextFilter
+providerUserContext=com.kava.kbpd.common.security.dubbo.ProviderUserContextFilter

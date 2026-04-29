@@ -31,4 +31,19 @@ public interface JwtClaimConstants {
      * 会员ID
      */
     String MEMBER_ID = "memberId";
+
+    /**
+     * 租户ID
+     */
+    String TENANT_ID = "tenantId";
+
+    /**
+     * 用户类型 ("1"=B端, "2"=C端)
+     */
+    String USER_TYPE = "userType";
+
+    /**
+     * 角色代码集合
+     */
+    String ROLES = "roles";
 }

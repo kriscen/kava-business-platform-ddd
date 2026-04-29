@@ -2,6 +2,7 @@ package com.kava.kbpd.auth.config;
 
 import cn.hutool.core.util.StrUtil;
 import com.kava.kbpd.auth.constants.AuthConstants;
+import com.kava.kbpd.auth.model.ExtendAuthenticationToken;
 import com.kava.kbpd.auth.model.MemberDetails;
 import com.kava.kbpd.auth.model.SysUserDetails;
 import com.kava.kbpd.auth.oauth2.component.*;
@@ -346,30 +347,37 @@ public class AuthorizationServiceConfig {
     }
 
     /**
-     * JWT 自定义字段
+     * JWT 自定义字段：从 ExtendAuthenticationToken 读取 tenantId/userType，将 authorities 替换为 roles
      * @see <a href="https://docs.spring.io/spring-authorization-server/reference/guides/how-to-custom-claims-authorities.html">Add custom claims to JWT access tokens</a>
      */
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer() {
         return context -> {
             if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType()) && context.getPrincipal() instanceof UsernamePasswordAuthenticationToken) {
-                // Customize headers/claims for access_token
+
+                // 从 ExtendAuthenticationToken 提取 tenantId 和 userType
+                if (context.getPrincipal() instanceof ExtendAuthenticationToken extendToken) {
+                    JwtClaimsSet.Builder claims = context.getClaims();
+                    claims.claim(JwtClaimConstants.TENANT_ID, extendToken.getTenantId());
+                    claims.claim(JwtClaimConstants.USER_TYPE, extendToken.getUserType());
+                }
+
                 Optional.ofNullable(context.getPrincipal().getPrincipal()).ifPresent(principal -> {
                     JwtClaimsSet.Builder claims = context.getClaims();
 
-                    if (principal instanceof SysUserDetails userDetails) { // 系统用户添加自定义字段
-
+                    if (principal instanceof SysUserDetails userDetails) {
                         claims.claim(JwtClaimConstants.USER_ID, userDetails.getUserId());
                         claims.claim(JwtClaimConstants.USERNAME, userDetails.getUsername());
                         claims.claim(JwtClaimConstants.DEPT_ID, userDetails.getDeptId());
 
-                        // 这里存入角色至JWT，解析JWT的角色用于鉴权的位置: ResourceServerConfig#jwtAuthenticationConverter
-                        Set<String> authorities = new HashSet<>(AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities()));
-                        claims.claim(JwtClaimConstants.AUTHORITIES, authorities);
+                        // 仅写入角色代码（不含细粒度权限），用于下游鉴权
+                        Set<String> roles = AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities());
+                        claims.claim(JwtClaimConstants.ROLES, roles);
 
                     } else if (principal instanceof MemberDetails userDetails) {
-                        // 会员添加自定义字段
                         claims.claim(JwtClaimConstants.MEMBER_ID, String.valueOf(userDetails.getId()));
+                        // C端用户无角色体系，写入空数组
+                        claims.claim(JwtClaimConstants.ROLES, Collections.emptyList());
                     }
                 });
             }

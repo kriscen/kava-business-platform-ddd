@@ -42,15 +42,17 @@
 #### Scenario: B端用户认证 — 使用真实 SysUserDTO
 - **WHEN** `loadUserByUsername(username, tenantId, userType)` 被调用且 userType 为 TO_B
 - **AND** `remoteUserService.findByUsername(tenantId, username)` 返回非 null 的 `SysUserDTO`
-- **THEN** MUST 使用 DTO 中的 id、username、password、deptId、enabled、permissions 构造 `SysUserDetails`
+- **THEN** MUST 使用 DTO 中的 id、username、password、deptId、enabled 构造 `SysUserDetails`
 - **AND** password 字段 MUST 为 DTO 中的原始哈希值，不得修改或替换
-- **AND** permissions 列表 MUST 转换为 `GrantedAuthority` 集合
+- **AND** DTO 中的 roles 列表 MUST 转换为 `GrantedAuthority` 集合（用于构造 SysUserDetails）
+- **AND** DTO 中的 permissions 列表暂不处理（权限缓存机制由后续 UPMS 权限领域 change 实现）
 
 #### Scenario: C端用户认证 — 使用真实 MemberInfoDTO
 - **WHEN** `loadUserByUsername(username, tenantId, userType)` 被调用且 userType 为 TO_C
 - **AND** `remoteMemberService.findMemberByMobile(tenantId, username)` 返回非 null 的 `MemberInfoDTO`
 - **THEN** MUST 使用 DTO 中的 id、mobile、password、enabled 构造 `MemberDetails`
 - **AND** password 字段 MUST 为 DTO 中的原始哈希值
+- **AND** MUST NOT 触发权限缓存写入
 
 #### Scenario: 用户不存在时抛出 UsernameNotFoundException
 - **WHEN** `loadUserByUsername` 被调用

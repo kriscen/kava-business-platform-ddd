@@ -2,6 +2,9 @@ package com.kava.kbpd.common.security.config;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.kava.kbpd.common.core.constants.JwtClaimConstants;
+import com.kava.kbpd.common.core.model.UserContext;
+import com.kava.kbpd.common.security.context.UserContextCleanupFilter;
+import com.kava.kbpd.common.security.context.UserContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
@@ -25,6 +28,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.List;
@@ -89,12 +93,17 @@ public class ResourceServerConfiguration {
     }
 
     @Bean
+    public UserContextCleanupFilter userContextCleanupFilter() {
+        return new UserContextCleanupFilter();
+    }
+
+    @Bean
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
 
     /**
-     * 自定义JWT Converter
+     * 自定义JWT Converter：从 JWT claims 构造 UserContext 并设置到 UserContextHolder
      *
      * @return Converter
      * @see JwtAuthenticationProvider#setJwtAuthenticationConverter(Converter)
@@ -103,11 +112,18 @@ public class ResourceServerConfiguration {
     public Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix(Strings.EMPTY);
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName(JwtClaimConstants.AUTHORITIES);
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName(JwtClaimConstants.ROLES);
 
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-        return jwtAuthenticationConverter;
+        JwtAuthenticationConverter delegateConverter = new JwtAuthenticationConverter();
+        delegateConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+
+        // 包装 delegate：JWT 验证成功后构造 UserContext 并设置到 UserContextHolder
+        return jwt -> {
+            AbstractAuthenticationToken authentication = delegateConverter.convert(jwt);
+            UserContext userContext = UserContext.fromJwtClaims(jwt.getClaims());
+            UserContextHolder.set(userContext);
+            return authentication;
+        };
     }
 
     @Bean

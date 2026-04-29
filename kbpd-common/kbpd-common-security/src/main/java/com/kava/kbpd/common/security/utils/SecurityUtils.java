@@ -1,7 +1,7 @@
 package com.kava.kbpd.common.security.utils;
 
-import cn.hutool.core.convert.Convert;
-import com.kava.kbpd.common.core.constants.JwtClaimConstants;
+import com.kava.kbpd.common.core.model.UserContext;
+import com.kava.kbpd.common.security.context.UserContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,20 +19,37 @@ import java.util.stream.Collectors;
  */
 public class SecurityUtils {
 
+    /**
+     * 获取统一用户上下文
+     */
+    public static UserContext getUserContext() {
+        return UserContextHolder.get();
+    }
+
+    /**
+     * 获取租户ID
+     */
+    public static Long getTenantId() {
+        UserContext ctx = getUserContext();
+        return ctx != null ? ctx.getTenantId() : null;
+    }
+
+    /**
+     * 获取用户类型
+     */
+    public static String getUserType() {
+        UserContext ctx = getUserContext();
+        return ctx != null ? ctx.getUserType() : null;
+    }
+
     public static Long getUserId() {
-        Map<String, Object> tokenAttributes = getTokenAttributes();
-        if (tokenAttributes != null) {
-            return Convert.toLong(tokenAttributes.get(JwtClaimConstants.USER_ID));
-        }
-        return null;
+        UserContext ctx = getUserContext();
+        return ctx != null ? ctx.getUserId() : null;
     }
 
     public static String getUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            return authentication.getName();
-        }
-        return null;
+        UserContext ctx = getUserContext();
+        return ctx != null ? ctx.getUsername() : null;
     }
 
     public static Map<String, Object> getTokenAttributes() {
@@ -48,6 +65,11 @@ public class SecurityUtils {
      * 获取用户角色集合
      */
     public static Set<String> getRoles() {
+        UserContext ctx = getUserContext();
+        if (ctx != null && ctx.getRoles() != null) {
+            return ctx.getRoles();
+        }
+        // fallback: 从 Authentication authorities 提取
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             return AuthorityUtils.authorityListToSet(authentication.getAuthorities())
@@ -61,21 +83,15 @@ public class SecurityUtils {
      * 获取部门ID
      */
     public static Long getDeptId() {
-        Map<String, Object> tokenAttributes = getTokenAttributes();
-        if (tokenAttributes != null) {
-            return Convert.toLong(tokenAttributes.get(JwtClaimConstants.DEPT_ID));
-        }
-        return null;
+        UserContext ctx = getUserContext();
+        return ctx != null ? ctx.getDeptId() : null;
     }
 
     /**
      * 获取会员ID
      */
     public static Long getMemberId() {
-        Map<String, Object> tokenAttributes = getTokenAttributes();
-        if (tokenAttributes != null) {
-            return Convert.toLong(tokenAttributes.get(JwtClaimConstants.MEMBER_ID));
-        }
-        return null;
+        UserContext ctx = getUserContext();
+        return ctx != null ? ctx.getMemberId() : null;
     }
 }

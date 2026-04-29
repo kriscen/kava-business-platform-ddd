@@ -23,17 +23,6 @@ public interface SecurityConstants {
 	String HTTP_HEARD_USER_TYPE = "user_type";
 
 	/**
-	 * jwt 用户类型
-	 */
-	String JWT_USER_TYPE = "userType";
-
-	String JWT_USER_ID = "userId";
-	String JWT_USERNAME = "username";
-	String JWT_DEPT_ID = "deptId";
-	String JWT_AUTHORITIES = "authorities";
-	String JWT_MEMBER_ID = "memberId";
-
-	/**
 	 * 登录页
 	 */
 	String OAUTH2_VIEW_LOGIN_URL = "login.html";

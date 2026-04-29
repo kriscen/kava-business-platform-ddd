@@ -38,5 +38,19 @@
             <artifactId>kbpd-common-core</artifactId>
         </dependency>
 
+        <!-- Servlet API (provided - for UserContextCleanupFilter) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Dubbo (optional - for UserContext propagation filters) -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 </project>

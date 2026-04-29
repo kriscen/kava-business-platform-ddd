@@ -63,6 +63,12 @@
             <groupId>com.kava.kbpd</groupId>
             <artifactId>kbpd-member-infrastructure</artifactId>
         </dependency>
+
+        <!-- 安全模块：ResourceServer JWT 认证 -->
+        <dependency>
+            <groupId>com.kava.kbpd</groupId>
+            <artifactId>kbpd-common-security</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

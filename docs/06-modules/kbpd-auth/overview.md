@@ -66,7 +66,7 @@ kbpd-auth/
         │   ├── CustomerUserDetailsModule.java               # UserDetails Jackson Module
         │   └── ...Mixin.java / ...Deserializer.java         # 各类的 Mixin 与反序列化器
         └── service/
-            └── PwdUserDetailsService.java                   # 按用户类型路由加载
+            └── PwdUserDetailsService.java                   # 按用户类型路由加载（位于 oauth2/service）
 ```
 
 ## 架构设计
@@ -111,10 +111,17 @@ kbpd-auth/
 
 根据认证用户类型，在 Access Token 中注入不同 Claims：
 
-| 用户类型 | Claims |
-|----------|--------|
-| B 端（SysUserDetails） | `userId`、`username`、`deptId`、`authorities` |
-| C 端（MemberDetails） | `memberId` |
+| Claim | 来源 | 说明 |
+|-------|------|------|
+| `tenantId` | `ExtendAuthenticationToken` | 租户 ID，始终存在 |
+| `userType` | `ExtendAuthenticationToken` | 用户类型（"1"=B端，"2"=C端） |
+| `roles` | `SysUserDetails.authorities` / 空 | 角色代码集合（如 `["ROLE_ADMIN"]`），C端为 `[]` |
+| `userId` | `SysUserDetails` | B端用户 ID |
+| `username` | `SysUserDetails` | B端用户名 |
+| `deptId` | `SysUserDetails` | B端部门 ID |
+| `memberId` | `MemberDetails` | C端会员 ID |
+
+> **注意**：JWT 仅携带角色（`roles`），不携带细粒度权限。权限查询由下游服务通过 RPC 调用 UPMS 按需获取。
 
 ### 外部依赖
 

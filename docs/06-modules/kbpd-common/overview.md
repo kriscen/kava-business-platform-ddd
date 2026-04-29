@@ -121,7 +121,7 @@ BaseBizException (运行时异常, 支持 MessageFormat 参数替换)
 
 ### 常量与枚举
 
-**常量**：`CoreConstant`（时区、日期格式）、`CollectionSize`、`PathType`、`JwtClaimConstants`（JWT Claim 键名）、`SecretConstants`
+**常量**：`CoreConstant`（时区、日期格式）、`CollectionSize`、`PathType`、`JwtClaimConstants`（JWT Claim 键名：userId、username、deptId、dataScope、authorities、memberId、tenantId、userType、roles）、`SecretConstants`
 
 **枚举**：`YesNoEnum`、`Status`（启用/禁用）、`UserType`（B 端/C 端用户）、`ScopeType`（认证范围分类）
 
@@ -197,13 +197,9 @@ BasePO (Serializable 空基类)
 
 ### 激活方式
 
-不使用自动装配，而是通过注解按需激活：
+业务模块引入 `kbpd-common-security` 依赖后，`ResourceServerConfiguration` 自动生效（`@Profile("!dev")`），提供 JWT 验证 + 用户上下文注入。开发环境下通过各模块自定义的 `DevSecurityConfig`（`@Profile("dev")`）跳过认证。
 
-```java
-@EnableResourceServer  // 在任意 @Configuration 类上添加此注解
-```
-
-> **注意**：安全配置通过 `@Profile("!dev")` 控制，开发环境（`dev` profile）下不生效。
+> **注意**：需在 `application-dev.yml` 中配置 `spring.security.oauth2.resourceserver.jwt.jwk-set-uri` 指向 Auth 服务的 JWKS endpoint。
 
 ### 配置项
 
@@ -216,21 +212,42 @@ BasePO (Serializable 空基类)
 ### 核心行为
 
 - **Security Filter Chain**：白名单路径放行，其余请求需 JWT 认证，禁用 CSRF
-- **JWT 解析**：从 `authorities` Claim 提取权限，无前缀
+- **JWT 解析**：从 `roles` Claim 提取角色，无前缀；同时构造 `UserContext` 设置到 `UserContextHolder`
+- **上下文清理**：`UserContextCleanupFilter` 在请求结束后清理 ThreadLocal，防止线程池复用泄漏
+- **Dubbo 上下文传播**：Consumer/Provider Filter 自动将 UserContext 写入/读取 RpcContext attachment
 - **Swagger 放行**：自动忽略 `/webjars/**`、`/doc.html`、`/swagger-resources/**`、`/v3/api-docs/**` 等路径
 - **密码编码器**：`DelegatingPasswordEncoder`（支持多种编码格式，推荐 BCrypt）
 
+### 统一用户上下文
+
+JWT 验证成功后，系统自动构造 `UserContext` 对象（位于 `kbpd-common-core`），封装完整用户信息：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `tenantId` | `Long` | 租户 ID |
+| `userType` | `String` | 用户类型（"1"=B端，"2"=C端） |
+| `userId` | `Long` | B端用户 ID |
+| `memberId` | `Long` | C端会员 ID |
+| `username` | `String` | 用户名 |
+| `deptId` | `Long` | 部门 ID（仅 B端） |
+| `roles` | `Set<String>` | 角色集合 |
+
+`UserContext` 持有在 `UserContextHolder`（ThreadLocal），通过 Dubbo Filter 在 RPC 调用时自动传播。
+
 ### 工具类
 
-`SecurityUtils` 提供静态方法从 JWT 中提取当前用户信息：
+`SecurityUtils` 提供静态方法从 `UserContext` 提取当前用户信息：
 
 | 方法 | 返回值来源 |
 |------|-----------|
-| `getUserId()` | JWT `userId` Claim |
-| `getUsername()` | `Authentication.getName()` |
-| `getDeptId()` | JWT `deptId` Claim |
-| `getMemberId()` | JWT `memberId` Claim |
-| `getRoles()` | Authorities 集合 |
+| `getUserContext()` | `UserContextHolder`（完整上下文对象） |
+| `getTenantId()` | `UserContext.tenantId` |
+| `getUserType()` | `UserContext.userType` |
+| `getUserId()` | `UserContext.userId` |
+| `getUsername()` | `UserContext.username` |
+| `getDeptId()` | `UserContext.deptId` |
+| `getMemberId()` | `UserContext.memberId` |
+| `getRoles()` | `UserContext.roles`（fallback: Authentication authorities） |
 | `getTokenAttributes()` | 完整 JWT Claims Map |
 
 ## kbpd-common-web
