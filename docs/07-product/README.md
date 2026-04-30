@@ -11,3 +11,4 @@
 | [vision.md](vision.md) | 产品愿景与定位 — Kava 是什么、解决什么问题、核心价值 |
 | [user-roles.md](user-roles.md) | 用户角色定义 — B端/C端角色、权限边界、使用场景 |
 | [platform-architecture.md](platform-architecture.md) | 平台架构概念 — 租户模型、App 接入方式、OAuth2 流程、数据隔离策略 |
+| [auth-chain.md](auth-chain.md) | 认证链路 — JWT Token 结构、验证流程、租户上下文传播机制 |
