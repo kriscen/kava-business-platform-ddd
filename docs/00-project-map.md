@@ -119,9 +119,10 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [README.md](07-product/README.md) | 产品文档导航 |
-| [vision.md](07-product/vision.md) | 产品愿景与定位 — Kava 是什么、解决什么问题、核心价值、平台边界、发展阶段 |
+| [vision.md](07-product/vision.md) | 产品愿景与定位 — Kava 是什么、解决什么问题、核心价值、App 接入模型、平台边界、发展阶段 |
 | [user-roles.md](07-product/user-roles.md) | 用户角色定义 — B端（平台管理员、租户管理员）/ C端（App 终端用户）的角色、权限、使用场景 |
-| [platform-architecture.md](07-product/platform-architecture.md) | 平台架构概念 — 租户模型、数据隔离策略、OAuth2 接入流程、模块职责与产品关系 |
+| [auth-chain.md](07-product/auth-chain.md) | 认证链路 — JWT Token 结构（标准/自定义 Claims）、验证流程、租户上下文传播机制 |
+| [platform-architecture.md](07-product/platform-architecture.md) | 平台架构概念 — Gateway 纯路由设计、租户模型、App 与 OAuth2 Client 关系、密码模式登录流程、数据隔离策略 |
 
 ---
 
@@ -129,7 +130,7 @@ docs/
 
 **新人上手**：`overview.md` → `boundaries.md` → `code-style.md` → `git.md`
 
-**了解产品**：`07-product/vision.md` → `user-roles.md` → `platform-architecture.md`
+**了解产品**：`07-product/vision.md` → `user-roles.md` → `platform-architecture.md` → `auth-chain.md`
 
 **开发接口**：`error-codes.md`
 
