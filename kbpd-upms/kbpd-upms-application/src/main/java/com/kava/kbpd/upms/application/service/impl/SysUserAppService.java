@@ -41,17 +41,17 @@ public class SysUserAppService implements ISysUserAppService {
 
     @Override
     public SysUserId createUser(SysUserCreateCommand command) {
-        return writeRepository.create(sysUserAppConverter.convertCreateCommand2Entity(command));
+        return sysUserService.create(sysUserAppConverter.convertCreateCommand2Entity(command));
     }
 
     @Override
     public void updateUser(SysUserUpdateCommand command) {
-        writeRepository.update(sysUserAppConverter.convertUpdateCommand2Entity(command));
+        sysUserService.update(sysUserAppConverter.convertUpdateCommand2Entity(command));
     }
 
     @Override
     public void removeUserBatchByIds(List<SysUserId> ids) {
-        writeRepository.removeBatchByIds(ids);
+        sysUserService.removeBatchByIds(ids);
     }
 
     @Override
@@ -84,5 +84,15 @@ public class SysUserAppService implements ISysUserAppService {
     @Override
     public List<String> queryPermissionsByUserId(Long userId) {
         return readRepository.queryPermissionsByUserId(userId);
+    }
+
+    @Override
+    public String queryDataScopeByUserId(Long userId) {
+        return readRepository.queryDataScopeByUserId(userId);
+    }
+
+    @Override
+    public List<Long> queryMenuIdsByUserId(Long userId) {
+        return readRepository.queryMenuIdsByUserId(userId);
     }
 }

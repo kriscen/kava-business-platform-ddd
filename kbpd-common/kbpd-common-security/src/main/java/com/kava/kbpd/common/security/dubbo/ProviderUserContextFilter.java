@@ -30,6 +30,8 @@ public class ProviderUserContextFilter implements Filter {
                         .username(RpcContext.getServerAttachment().getAttachment("ctx_username"))
                         .deptId(parseLong(RpcContext.getServerAttachment().getAttachment("ctx_deptId")))
                         .roles(parseRoles(RpcContext.getServerAttachment().getAttachment("ctx_roles")))
+                        .dataScope(RpcContext.getServerAttachment().getAttachment("ctx_dataScope"))
+                        .permissions(parseRoles(RpcContext.getServerAttachment().getAttachment("ctx_permissions")))
                         .build();
                 UserContextHolder.set(userContext);
             }

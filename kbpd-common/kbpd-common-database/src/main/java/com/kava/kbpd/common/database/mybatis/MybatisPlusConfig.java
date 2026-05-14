@@ -4,9 +4,14 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.kava.kbpd.common.database.scope.DataScopeInnerInterceptor;
 import com.kava.kbpd.common.database.typeHandler.StringArrayTypeHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author Kris
@@ -17,14 +22,30 @@ import org.springframework.context.annotation.Configuration;
 public class MybatisPlusConfig {
 
     /**
-     * 添加分页插件
+     * 添加插件：拦截器执行顺序 TenantLine → DataScope → Pagination
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL)); // 如果配置多个插件, 切记分页最后添加
-        // 如果有多数据源可以不配具体类型, 否则都建议配上具体的 DbType
+
+        // 1. 租户隔离拦截器
+        Set<String> ignoreTables = getIgnoreTenantTables();
+        interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(
+                new KavaTenantLineInnerInterceptor(ignoreTables)));
+
+        // 2. 数据权限拦截器
+        interceptor.addInnerInterceptor(new DataScopeInnerInterceptor());
+
+        // 3. 分页插件（最后添加）
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
+    }
+
+    /**
+     * 配置忽略租户隔离的表列表，子类可覆盖
+     */
+    protected Set<String> getIgnoreTenantTables() {
+        return Collections.emptySet();
     }
 
     /**

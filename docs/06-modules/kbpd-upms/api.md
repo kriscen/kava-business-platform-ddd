@@ -37,6 +37,7 @@
 | POST | — | `SysMenuRequest` (body) | `JsonResult<Long>` | 创建菜单 |
 | PUT | `/{id}` | `id` (path) + `SysMenuRequest` (body) | `JsonResult<Boolean>` | 更新菜单 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Boolean>` | 批量删除菜单 |
+| GET | `/tree` | — (从 UserContext 解析) | `JsonResult<List<SysMenuListResponse>>` | 当前用户菜单树（按 scope 和角色过滤，sortOrder 排序） |
 
 ### 部门管理 `/api/{version}/sys/dept/`
 
@@ -163,7 +164,7 @@
 
 | 方法签名 | 参数 | 返回值 | 说明 |
 |---|---|---|---|
-| `findByUsername` | `String tenantId, String username` | `SysUserDTO` | 根据租户+用户名查询用户（⚠️ 桩实现，返回 null） |
+| `findByUsername` | `String tenantId, String username` | `SysUserDTO` | 根据租户+用户名查询用户，返回含 roles、permissions、dataScope 的完整 DTO |
 | `loginByPwd` | `String name, String pwd` | `SysUserDTO` | 密码登录（⚠️ 桩实现，返回硬编码 id=1） |
 
 ### IRemoteOauthClientService
@@ -187,8 +188,14 @@
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `id` | `Long` | 用户 ID |
-| `permissions` | `List<String>` | 权限标识列表 |
+| `username` | `String` | 用户名 |
+| `password` | `String` | 密码（加密） |
+| `deptId` | `Long` | 部门 ID |
+| `tenantId` | `Long` | 租户 ID |
+| `lockFlag` | `String` | 锁定标记 |
+| `permissions` | `List<String>` | 权限标识列表（通过 User → UserRole → Role → RoleMenu → Menu 解析） |
 | `roles` | `List<String>` | 角色编码列表 |
+| `dataScope` | `String` | 数据权限范围（取用户主角色的 dsType） |
 
 ### SysOauthClientDTO
 

@@ -54,7 +54,8 @@ public class PwdUserDetailsService implements UserDetailsService {
                     user.getPassword(),
                     user.getDeptId(),
                     enabled,
-                    authorities
+                    authorities,
+                    user.getDataScope()
             );
         } else if (UserType.TO_C.getCode().equals(userType)) {
             MemberInfoDTO member = remoteMemberService.findMemberByMobile(tenantId, username);

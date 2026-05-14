@@ -2,6 +2,8 @@ package com.kava.kbpd.upms.adapter.http;
 
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.common.core.model.UserContext;
+import com.kava.kbpd.common.security.context.UserContextHolder;
 import com.kava.kbpd.upms.adapter.converter.SysMenuAdapterConverter;
 import com.kava.kbpd.upms.api.model.query.SysMenuAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysMenuRequest;
@@ -90,6 +92,18 @@ public class SysMenuController {
         List<SysMenuId> idList = ids.stream().map(SysMenuId::of).toList();
         appService.removeMenuBatchByIds(idList);
         return JsonResult.buildSuccess();
+    }
+
+    /**
+     * 获取当前用户的菜单树
+     */
+    @GetMapping("/tree")
+    public JsonResult<List<SysMenuAppListDTO>> getMenuTree() {
+        UserContext ctx = UserContextHolder.get();
+        Long userId = ctx != null ? ctx.getUserId() : null;
+        java.util.Set<String> roles = ctx != null ? ctx.getRoles() : null;
+        List<SysMenuAppListDTO> tree = appService.queryMenuTree(userId, roles);
+        return JsonResult.buildSuccess(tree);
     }
 
 }

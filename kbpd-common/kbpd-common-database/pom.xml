@@ -21,6 +21,11 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.kava.kbpd</groupId>
+            <artifactId>kbpd-common-security</artifactId>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
 

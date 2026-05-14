@@ -60,4 +60,24 @@ public class SysMenuRepository implements ISysMenuRepository {
         List<Long> idList = ids.stream().map(SysMenuId::getId).toList();
         return SqlHelper.retBool(sysMenuMapper.deleteByIds(idList));
     }
+
+    @Override
+    public List<SysMenuEntity> queryAll() {
+        return sysMenuMapper.selectList(Wrappers.lambdaQuery(SysMenuPO.class))
+                .stream()
+                .map(sysMenuConverter::convertPO2Entity)
+                .toList();
+    }
+
+    @Override
+    public List<SysMenuEntity> queryByIds(List<SysMenuId> ids) {
+        List<Long> idList = ids.stream().map(SysMenuId::getId).toList();
+        if (idList.isEmpty()) {
+            return List.of();
+        }
+        return sysMenuMapper.selectBatchIds(idList)
+                .stream()
+                .map(sysMenuConverter::convertPO2Entity)
+                .toList();
+    }
 }

@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2025/3/18
  * @description: 用户 聚合根
  */
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

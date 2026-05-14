@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Kris
@@ -39,6 +40,11 @@ public class SysRoleDetailResponse implements Serializable {
 	 * 数据权限作用范围
 	 */
 	private String dsScope;
+
+	/**
+	 * 关联的菜单ID列表
+	 */
+	private List<Long> menuIds;
 
 	/**
 	 * 创建人

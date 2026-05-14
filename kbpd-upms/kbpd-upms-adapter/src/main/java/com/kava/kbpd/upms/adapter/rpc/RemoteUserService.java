@@ -38,6 +38,7 @@ public class RemoteUserService implements IRemoteUserService {
         // 查询用户的角色标识和权限标识
         sysUserDTO.setRoles(sysUserAppService.queryRoleCodesByUserId(appDetail.getId()));
         sysUserDTO.setPermissions(sysUserAppService.queryPermissionsByUserId(appDetail.getId()));
+        sysUserDTO.setDataScope(sysUserAppService.queryDataScopeByUserId(appDetail.getId()));
 
         if (sysUserDTO.getRoles() == null) {
             sysUserDTO.setRoles(Collections.emptyList());

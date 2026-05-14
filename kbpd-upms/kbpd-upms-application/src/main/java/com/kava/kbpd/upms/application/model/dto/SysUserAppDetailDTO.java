@@ -2,6 +2,8 @@ package com.kava.kbpd.upms.application.model.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Kris
  * @date 2025/9/28
@@ -36,4 +38,9 @@ public class SysUserAppDetailDTO {
     private String email;
 
     private String avatar;
+
+    /**
+     * 关联的角色ID列表
+     */
+    private List<Long> roleIds;
 }

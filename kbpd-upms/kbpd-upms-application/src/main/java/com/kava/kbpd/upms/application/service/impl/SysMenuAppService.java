@@ -11,12 +11,16 @@ import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysMenuRepository;
+import com.kava.kbpd.upms.domain.repository.ISysRoleReadRepository;
+import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
 import com.kava.kbpd.upms.domain.service.ISysMenuService;
+import com.kava.kbpd.upms.types.enums.SysMenuScope;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Kris
@@ -34,6 +38,9 @@ public class SysMenuAppService implements ISysMenuAppService {
 
     @Resource
     private SysMenuAppConverter sysMenuAppConverter;
+
+    @Resource
+    private ISysUserReadRepository sysUserReadRepository;
 
     @Override
     public SysMenuId createMenu(SysMenuCreateCommand command) {
@@ -63,6 +70,85 @@ public class SysMenuAppService implements ISysMenuAppService {
     public SysMenuAppDetailDTO queryMenuById(SysMenuId id) {
         SysMenuEntity MenuEntity = sysMenuRepository.queryById(id);
         return sysMenuAppConverter.convertEntityToDetailDTO(MenuEntity);
+    }
+
+    @Override
+    public List<SysMenuAppListDTO> queryMenuTree(Long userId, Set<String> roles) {
+        List<SysMenuEntity> allMenus = sysMenuRepository.queryAll();
+
+        // 按 scope 过滤可见菜单
+        List<SysMenuEntity> visibleMenus = filterByScope(allMenus, userId, roles);
+
+        // 按 sortOrder 排序
+        visibleMenus.sort(Comparator.comparingInt(m -> m.getSortOrder() != null ? m.getSortOrder() : 0));
+
+        // 构建树结构
+        return buildTree(visibleMenus);
+    }
+
+    /**
+     * 根据用户角色和菜单 scope 过滤
+     */
+    private List<SysMenuEntity> filterByScope(List<SysMenuEntity> allMenus, Long userId, Set<String> roles) {
+        boolean isAdmin = roles != null && roles.contains("ROLE_ADMIN");
+
+        if (isAdmin) {
+            // 平台管理员看 SYSTEM + SYSTEM_TENANT
+            return allMenus.stream()
+                    .filter(m -> SysMenuScope.SYSTEM.getCode().equals(m.getScope())
+                            || SysMenuScope.SYSTEM_TENANT.getCode().equals(m.getScope()))
+                    .toList();
+        }
+
+        // 租户用户可见: TENANT + 已分配的 SYSTEM_TENANT
+        Set<Long> assignedMenuIds = getAssignedMenuIds(userId);
+        return allMenus.stream()
+                .filter(m -> {
+                    String scope = m.getScope();
+                    // TENANT 菜单始终可见
+                    if (SysMenuScope.TENANT.getCode().equals(scope)) {
+                        return true;
+                    }
+                    // SYSTEM_TENANT 菜单只有被分配了才可见
+                    if (SysMenuScope.SYSTEM_TENANT.getCode().equals(scope)) {
+                        return m.getId() != null && assignedMenuIds.contains(m.getId().getId());
+                    }
+                    // SYSTEM 菜单租户用户不可见
+                    return false;
+                })
+                .toList();
+    }
+
+    private Set<Long> getAssignedMenuIds(Long userId) {
+        List<Long> menuIds = sysUserReadRepository.queryMenuIdsByUserId(userId);
+        return new HashSet<>(menuIds);
+    }
+
+    private List<SysMenuAppListDTO> buildTree(List<SysMenuEntity> menus) {
+        List<SysMenuAppListDTO> dtos = menus.stream()
+                .map(sysMenuAppConverter::convertEntityToListQueryDTO)
+                .toList();
+
+        // 用 id -> dto 映射
+        Map<Long, SysMenuAppListDTO> dtoMap = new LinkedHashMap<>();
+        for (SysMenuAppListDTO dto : dtos) {
+            dtoMap.put(dto.getId(), dto);
+        }
+
+        List<SysMenuAppListDTO> roots = new ArrayList<>();
+        for (SysMenuAppListDTO dto : dtos) {
+            Long parentId = dto.getParentId();
+            if (parentId == null || parentId == 0L || !dtoMap.containsKey(parentId)) {
+                roots.add(dto);
+            } else {
+                SysMenuAppListDTO parent = dtoMap.get(parentId);
+                if (parent.getChildren() == null) {
+                    parent.setChildren(new ArrayList<>());
+                }
+                parent.getChildren().add(dto);
+            }
+        }
+        return roots;
     }
 
 }

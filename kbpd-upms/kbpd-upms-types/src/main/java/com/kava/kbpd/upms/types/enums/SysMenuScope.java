@@ -12,7 +12,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SysMenuScope {
     SYSTEM("system", "平台级别"),
-    TENANT("tenant", "租户级别");
+    TENANT("tenant", "租户级别"),
+    SYSTEM_TENANT("system_tenant", "平台及租户");
 
     /**
      * 编码

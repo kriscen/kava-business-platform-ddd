@@ -57,6 +57,16 @@ public class UserContext {
     private Set<String> roles;
 
     /**
+     * 数据权限范围（取用户主角色的 dsType）
+     */
+    private String dataScope;
+
+    /**
+     * 权限字符串集合
+     */
+    private Set<String> permissions;
+
+    /**
      * 从 JWT claims 构造 UserContext
      */
     @SuppressWarnings("unchecked")
@@ -79,6 +89,7 @@ public class UserContext {
                 .username(Convert.toStr(claims.get(JwtClaimConstants.USERNAME)))
                 .deptId(Convert.toLong(claims.get(JwtClaimConstants.DEPT_ID)))
                 .roles(roles)
+                .dataScope(Convert.toStr(claims.get(JwtClaimConstants.DATA_SCOPE)))
                 .build();
     }
 }

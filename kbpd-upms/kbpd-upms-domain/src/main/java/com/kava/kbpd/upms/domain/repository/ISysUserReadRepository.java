@@ -26,4 +26,14 @@ public interface ISysUserReadRepository extends IBaseReadRepository<SysUserId, S
      * 根据用户ID查询权限标识列表
      */
     List<String> queryPermissionsByUserId(Long userId);
+
+    /**
+     * 根据用户ID查询数据权限范围（取主角色的 dsType）
+     */
+    String queryDataScopeByUserId(Long userId);
+
+    /**
+     * 根据用户ID查询关联的菜单ID列表（通过 sys_user_role → sys_role_menu）
+     */
+    List<Long> queryMenuIdsByUserId(Long userId);
 }

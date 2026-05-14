@@ -41,4 +41,9 @@ public class SysUserDTO implements Serializable {
 	 */
 	private List<String> roles;
 
+	/**
+	 * 数据权限范围（取用户主角色的 dsType）
+	 */
+	private String dataScope;
+
 }

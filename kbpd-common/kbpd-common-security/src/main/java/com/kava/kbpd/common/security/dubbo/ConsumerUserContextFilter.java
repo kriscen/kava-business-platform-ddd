@@ -23,7 +23,9 @@ public class ConsumerUserContextFilter implements Filter {
                     .setAttachment("ctx_memberId", userContext.getMemberId() != null ? String.valueOf(userContext.getMemberId()) : null)
                     .setAttachment("ctx_username", userContext.getUsername())
                     .setAttachment("ctx_deptId", userContext.getDeptId() != null ? String.valueOf(userContext.getDeptId()) : null)
-                    .setAttachment("ctx_roles", userContext.getRoles() != null ? String.join(",", userContext.getRoles()) : null);
+                    .setAttachment("ctx_roles", userContext.getRoles() != null ? String.join(",", userContext.getRoles()) : null)
+                    .setAttachment("ctx_dataScope", userContext.getDataScope())
+                    .setAttachment("ctx_permissions", userContext.getPermissions() != null ? String.join(",", userContext.getPermissions()) : null);
         }
         return invoker.invoke(invocation);
     }

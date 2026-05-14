@@ -9,6 +9,7 @@ import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Kris
@@ -25,5 +26,10 @@ public interface ISysMenuAppService {
     PagingInfo<SysMenuAppListDTO> queryMenuPage(SysMenuListQuery query);
 
     SysMenuAppDetailDTO queryMenuById(SysMenuId id);
+
+    /**
+     * 根据用户角色解析可见菜单并构建树结构
+     */
+    List<SysMenuAppListDTO> queryMenuTree(Long userId, Set<String> roles);
 
 }

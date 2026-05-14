@@ -42,8 +42,14 @@ public class SysUserDetails implements UserDetails, CredentialsContainer {
 
     private Set<String> perms;
 
+    /**
+     * 数据权限范围（取用户主角色的 dsType）
+     */
+    private String dataScope;
+
     public SysUserDetails(Long userId,String username,String password,
-            Long deptId,boolean enabled,Set<? extends GrantedAuthority> authorities
+            Long deptId,boolean enabled,Set<? extends GrantedAuthority> authorities,
+            String dataScope
     ) {
         Assert.isTrue(username != null && !username.isEmpty() && password != null,
                 "Cannot pass null or empty values to constructor");
@@ -53,6 +59,7 @@ public class SysUserDetails implements UserDetails, CredentialsContainer {
         this.deptId = deptId;
         this.enabled = enabled;
         this.authorities = Collections.unmodifiableSet(authorities);
+        this.dataScope = dataScope;
     }
 
     @Override

@@ -374,6 +374,11 @@ public class AuthorizationServiceConfig {
                         Set<String> roles = AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities());
                         claims.claim(JwtClaimConstants.ROLES, roles);
 
+                        // 写入数据权限范围（取用户主角色的 dsType）
+                        if (userDetails.getDataScope() != null) {
+                            claims.claim(JwtClaimConstants.DATA_SCOPE, userDetails.getDataScope());
+                        }
+
                     } else if (principal instanceof MemberDetails userDetails) {
                         claims.claim(JwtClaimConstants.MEMBER_ID, String.valueOf(userDetails.getId()));
                         // C端用户无角色体系，写入空数组

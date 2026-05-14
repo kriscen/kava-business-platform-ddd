@@ -41,17 +41,17 @@ public class SysRoleAppService implements ISysRoleAppService {
 
     @Override
     public SysRoleId createRole(SysRoleCreateCommand command) {
-        return writeRepository.create(appConverter.convertCreateCommand2Entity(command));
+        return sysRoleService.create(appConverter.convertCreateCommand2Entity(command));
     }
 
     @Override
     public void updateRole(SysRoleUpdateCommand command) {
-        writeRepository.update(appConverter.convertUpdateCommand2Entity(command));
+        sysRoleService.update(appConverter.convertUpdateCommand2Entity(command));
     }
 
     @Override
     public void removeRoleBatchByIds(List<SysRoleId> ids) {
-        writeRepository.removeBatchByIds(ids);
+        sysRoleService.removeBatchByIds(ids);
     }
 
     @Override

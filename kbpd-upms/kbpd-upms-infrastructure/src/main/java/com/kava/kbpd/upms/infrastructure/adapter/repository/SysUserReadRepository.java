@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.common.core.model.valobj.SysUserId;
 import com.kava.kbpd.upms.domain.model.aggregate.SysUserEntity;
+import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
 import com.kava.kbpd.upms.infrastructure.converter.SysUserConverter;
@@ -53,7 +54,19 @@ public class SysUserReadRepository implements ISysUserReadRepository {
     @Override
     public SysUserEntity queryById(SysUserId id) {
         SysUserPO sysUserPO = sysUserMapper.selectById(id.getId());
-        return sysUserConverter.convertPO2Entity(sysUserPO);
+        if (sysUserPO == null) {
+            return null;
+        }
+        SysUserEntity entity = sysUserConverter.convertPO2Entity(sysUserPO);
+        // 查询关联的角色ID列表
+        List<SysRoleId> roleIds = sysUserRoleMapper.selectList(
+                        Wrappers.lambdaQuery(SysUserRolePO.class)
+                                .eq(SysUserRolePO::getUserId, id.getId()))
+                .stream()
+                .map(po -> SysRoleId.builder().id(po.getRoleId()).build())
+                .toList();
+        entity.setRoleIds(roleIds);
+        return entity;
     }
 
     @Override
@@ -107,6 +120,45 @@ public class SysUserReadRepository implements ISysUserReadRepository {
         return sysMenuMapper.selectBatchIds(menuIds).stream()
                 .map(SysMenuPO::getPermission)
                 .filter(p -> p != null && !p.isEmpty())
+                .distinct()
+                .toList();
+    }
+
+    @Override
+    public String queryDataScopeByUserId(Long userId) {
+        List<Long> roleIds = sysUserRoleMapper.selectList(
+                        Wrappers.lambdaQuery(SysUserRolePO.class)
+                                .eq(SysUserRolePO::getUserId, userId))
+                .stream().map(SysUserRolePO::getRoleId).toList();
+
+        if (roleIds.isEmpty()) {
+            return null;
+        }
+
+        // 取第一个角色的 dsType（多角色合并由后续专项处理）
+        SysRolePO role = sysRoleMapper.selectById(roleIds.get(0));
+        if (role == null || role.getDsType() == null) {
+            return null;
+        }
+        return String.valueOf(role.getDsType());
+    }
+
+    @Override
+    public List<Long> queryMenuIdsByUserId(Long userId) {
+        List<Long> roleIds = sysUserRoleMapper.selectList(
+                        Wrappers.lambdaQuery(SysUserRolePO.class)
+                                .eq(SysUserRolePO::getUserId, userId))
+                .stream().map(SysUserRolePO::getRoleId).toList();
+
+        if (roleIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return sysRoleMenuMapper.selectList(
+                        Wrappers.lambdaQuery(SysRoleMenuPO.class)
+                                .in(SysRoleMenuPO::getRoleId, roleIds))
+                .stream()
+                .map(SysRoleMenuPO::getMenuId)
                 .distinct()
                 .toList();
     }
