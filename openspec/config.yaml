@@ -39,6 +39,14 @@ context: |
   # 提交规范
   Commit style: conventional commits (feat:, fix:, docs:, chore:, refactor:)
 
+# Change 拆分规则
+change_rules:
+  # 当需求跨越多个 Maven 子模块时，必须拆分为多个独立 change
+  # 每个 change 只涉及一个 Maven 子模块（如 kbpd-upms、kbpd-auth、kbpd-gateway）
+  # 跨模块的共享改动（如 kbpd-common）作为独立 change，并在 proposal 中标注依赖关系
+  # 拆分后的多个 change 之间通过 Dependencies 字段声明先后顺序
+  split_by_maven_module: true
+
 # Per-artifact rules - 各 artifact 的生成规则
 rules:
   # Proposal 规则 - 捕获 Why 和 What
@@ -48,6 +56,8 @@ rules:
     - What Changes 用要点列出主要变更
     - Capabilities 区分新增能力和修改能力
     - Impact 列出受影响的关键文件
+    - 当需求涉及多个 Maven 子模块时，必须按模块拆分为多个 change，每个 change 的 Impact 仅限一个子模块
+    - 跨模块的共享改动（如 kbpd-common）作为独立 change，在 Dependencies 中标注前置依赖
 
   # Specs 规则 - 详细的验收标准
   specs:
@@ -74,3 +84,4 @@ rules:
     - 按功能或文件分组
     - 包含验证步骤
     - 最后一项任务为验证或测试
+    - 如果发现 tasks 涉及多个 Maven 子模块，应停止并提示用户按模块拆分 change
