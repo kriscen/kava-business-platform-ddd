@@ -51,6 +51,9 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
     @Override
     public RegisteredClient findByClientId(String clientId) {
         SysOauthClientDTO clientDetails = remoteOauthClientDetailService.queryByClientId(clientId);
+        if (clientDetails == null) {
+            return null;
+        }
 
         RegisteredClient.Builder builder = RegisteredClient.withId(clientDetails.getClientId())
                 .clientId(clientDetails.getClientId())

@@ -16,7 +16,7 @@ dubbo:
 # 日志
 logging:
   level:
-    root: debug
+    root: info
   config: classpath:logback-spring.xml
 
 kbpd:

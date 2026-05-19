@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_file_group")
+@TableName("sys_log")
 public class SysLogPO extends TenantDeletablePO {
 	/**
 	 * 日志类型

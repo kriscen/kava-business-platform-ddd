@@ -63,11 +63,6 @@ public class SysUserPO extends TenantDeletablePO {
 	private Long deptId;
 
 	/**
-	 * 租户ID
-	 */
-	private Long tenantId;
-
-	/**
 	 * 微信openid
 	 */
 	private String wxOpenid;

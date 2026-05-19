@@ -1,5 +1,6 @@
 package com.kava.kbpd.upms.api.model.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,6 +27,7 @@ public class SysUserListResponse implements Serializable {
 	/**
 	 * 密码
 	 */
+	@JsonIgnore
 	private String password;
 
 

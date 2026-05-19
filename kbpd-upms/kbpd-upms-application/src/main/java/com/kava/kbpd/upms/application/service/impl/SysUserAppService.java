@@ -16,6 +16,7 @@ import com.kava.kbpd.upms.domain.service.ISysUserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,16 +41,19 @@ public class SysUserAppService implements ISysUserAppService {
     private SysUserAppConverter sysUserAppConverter;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SysUserId createUser(SysUserCreateCommand command) {
         return sysUserService.create(sysUserAppConverter.convertCreateCommand2Entity(command));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateUser(SysUserUpdateCommand command) {
         sysUserService.update(sysUserAppConverter.convertUpdateCommand2Entity(command));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void removeUserBatchByIds(List<SysUserId> ids) {
         sysUserService.removeBatchByIds(ids);
     }

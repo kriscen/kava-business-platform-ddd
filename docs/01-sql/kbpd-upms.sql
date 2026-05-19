@@ -64,7 +64,7 @@ CREATE TABLE `sys_audit_log` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept` (
-                            `dept_id` bigint NOT NULL COMMENT '部门ID',
+                            `id` bigint NOT NULL COMMENT '部门ID',
                             `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门名称',
                             `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
                             `parent_id` bigint DEFAULT NULL COMMENT '父级部门ID',
@@ -74,7 +74,7 @@ CREATE TABLE `sys_dept` (
                             `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                             `modifier` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
                             `gmt_modified` datetime DEFAULT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                            PRIMARY KEY (`dept_id`) USING BTREE
+                            PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='部门管理';
 
 -- ----------------------------
@@ -168,7 +168,7 @@ CREATE TABLE `sys_log` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu` (
-                            `menu_id` bigint NOT NULL COMMENT '菜单ID',
+                            `id` bigint NOT NULL COMMENT '菜单ID',
                             `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单名称',
                             `permission` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限标识',
                             `path` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '路由路径',
@@ -186,14 +186,14 @@ CREATE TABLE `sys_menu` (
                             `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                             `modifier` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
                             `gmt_modified` datetime DEFAULT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                            PRIMARY KEY (`menu_id`) USING BTREE
+                            PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单权限表';
 
 -- ----------------------------
 -- Table structure for sys_oauth_client_details
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_oauth_client_details`;
-CREATE TABLE `sys_oauth_client_details` (
+DROP TABLE IF EXISTS `sys_oauth_client`;
+CREATE TABLE `sys_oauth_client` (
                                             `id` bigint NOT NULL COMMENT 'ID',
                                             `client_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端ID',
                                             `resource_ids` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '资源ID集合',
@@ -221,7 +221,7 @@ CREATE TABLE `sys_oauth_client_details` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-                            `role_id` bigint NOT NULL COMMENT '角色ID',
+                            `id` bigint NOT NULL COMMENT '角色ID',
                             `role_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色名称',
                             `role_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色编码',
                             `role_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色描述',
@@ -233,7 +233,7 @@ CREATE TABLE `sys_role` (
                             `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                             `modifier` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
                             `gmt_modified` datetime DEFAULT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                            PRIMARY KEY (`role_id`) USING BTREE,
+                            PRIMARY KEY (`id`) USING BTREE,
                             KEY `role_idx1_role_code` (`role_code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统角色表';
 
@@ -297,7 +297,7 @@ CREATE TABLE `sys_tenant` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
-                            `user_id` bigint NOT NULL COMMENT '用户ID',
+                            `id` bigint NOT NULL COMMENT '用户ID',
                             `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '用户名',
                             `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
                             `salt` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '盐值',
@@ -319,7 +319,7 @@ CREATE TABLE `sys_user` (
                             `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                             `modifier` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
                             `gmt_modified` datetime DEFAULT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                            PRIMARY KEY (`user_id`) USING BTREE,
+                            PRIMARY KEY (`id`) USING BTREE,
                             KEY `user_wx_openid` (`wx_openid`) USING BTREE,
                             KEY `user_qq_openid` (`qq_openid`) USING BTREE,
                             KEY `user_idx1_username` (`username`) USING BTREE

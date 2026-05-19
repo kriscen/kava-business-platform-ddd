@@ -16,6 +16,7 @@ import com.kava.kbpd.upms.domain.service.ISysRoleService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,16 +41,19 @@ public class SysRoleAppService implements ISysRoleAppService {
     private SysRoleAppConverter appConverter;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SysRoleId createRole(SysRoleCreateCommand command) {
         return sysRoleService.create(appConverter.convertCreateCommand2Entity(command));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateRole(SysRoleUpdateCommand command) {
         sysRoleService.update(appConverter.convertUpdateCommand2Entity(command));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void removeRoleBatchByIds(List<SysRoleId> ids) {
         sysRoleService.removeBatchByIds(ids);
     }
