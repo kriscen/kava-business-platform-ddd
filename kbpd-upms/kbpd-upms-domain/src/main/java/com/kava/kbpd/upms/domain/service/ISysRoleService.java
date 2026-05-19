@@ -1,6 +1,7 @@
 package com.kava.kbpd.upms.domain.service;
 
 import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.upms.domain.model.aggregate.SysRoleEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery;
@@ -17,4 +18,6 @@ public interface ISysRoleService {
     SysRoleEntity queryById(SysRoleId id);
 
     Boolean removeBatchByIds(List<SysRoleId> ids);
+
+    void initTenantAdminRole(SysTenantId tenantId, String menuIdStr);
 }

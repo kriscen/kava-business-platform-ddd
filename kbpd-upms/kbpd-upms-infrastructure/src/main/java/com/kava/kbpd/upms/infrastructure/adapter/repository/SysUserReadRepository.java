@@ -45,7 +45,11 @@ public class SysUserReadRepository implements ISysUserReadRepository {
     public PagingInfo<SysUserEntity> queryPage(SysUserListQuery query) {
         Page<SysUserPO> sysUserPOPage = sysUserMapper.selectPage(
                 Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
-                Wrappers.lambdaQuery(SysUserPO.class));
+                Wrappers.lambdaQuery(SysUserPO.class)
+                        .like(query.getUsername() != null, SysUserPO::getUsername, query.getUsername())
+                        .like(query.getPhone() != null, SysUserPO::getPhone, query.getPhone())
+                        .eq(query.getLockFlag() != null, SysUserPO::getLockFlag, query.getLockFlag())
+                        .eq(query.getDeptId() != null, SysUserPO::getDeptId, query.getDeptId()));
         return PagingInfo.toResponse(sysUserPOPage.getRecords().stream()
                         .map(sysUserConverter::convertPO2Entity).toList(),
                 sysUserPOPage.getTotal(), sysUserPOPage.getCurrent(), sysUserPOPage.getSize());

@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysDeptRepository;
-import com.kava.kbpd.upms.domain.service.ISysDeptService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysDeptAppService implements ISysDeptAppService {
-    @Resource
-    private ISysDeptRepository sysDeptRepository;
-
-    @Resource
-    private ISysDeptService sysDeptService;
-
-    @Resource
-    private SysDeptAppConverter sysDeptAppConverter;
+    private final ISysDeptRepository sysDeptRepository;
+    private final SysDeptAppConverter sysDeptAppConverter;
 
     @Override
     public SysDeptId createDept(SysDeptCreateCommand command) {

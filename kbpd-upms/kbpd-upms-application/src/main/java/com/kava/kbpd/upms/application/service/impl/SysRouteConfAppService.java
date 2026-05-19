@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysRouteConfEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysRouteConfRepository;
-import com.kava.kbpd.upms.domain.service.ISysRouteConfService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysRouteConfAppService implements ISysRouteConfAppService {
-    @Resource
-    private ISysRouteConfRepository sysRouteConfRepository;
-
-    @Resource
-    private ISysRouteConfService sysRouteConfService;
-
-    @Resource
-    private SysRouteConfAppConverter sysRouteConfAppConverter;
+    private final ISysRouteConfRepository sysRouteConfRepository;
+    private final SysRouteConfAppConverter sysRouteConfAppConverter;
 
     @Override
     public SysRouteConfId createRouteConf(SysRouteConfCreateCommand command) {

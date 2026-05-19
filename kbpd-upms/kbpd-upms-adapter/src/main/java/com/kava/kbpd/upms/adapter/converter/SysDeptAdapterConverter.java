@@ -22,6 +22,7 @@ public interface SysDeptAdapterConverter {
 
     @Mapping(source = "pageNo", target = "queryParam.pageNo")
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
+    @Mapping(source = "name", target = "deptName")
     SysDeptListQuery convertQueryDTO2QueryVal(SysDeptAdapterListQuery request);
 
     SysDeptListResponse convertEntity2List(SysDeptAppListDTO request);

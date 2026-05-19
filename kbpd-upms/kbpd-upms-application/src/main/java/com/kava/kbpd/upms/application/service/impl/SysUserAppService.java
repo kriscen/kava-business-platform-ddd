@@ -13,7 +13,7 @@ import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserWriteRepository;
 import com.kava.kbpd.upms.domain.service.ISysUserService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +27,12 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysUserAppService implements ISysUserAppService {
-    @Resource
-    private ISysUserReadRepository readRepository;
-
-    @Resource
-    private ISysUserWriteRepository writeRepository;
-
-    @Resource
-    private ISysUserService sysUserService;
-
-    @Resource
-    private SysUserAppConverter sysUserAppConverter;
+    private final ISysUserReadRepository readRepository;
+    private final ISysUserWriteRepository writeRepository;
+    private final ISysUserService sysUserService;
+    private final SysUserAppConverter sysUserAppConverter;
 
     @Override
     @Transactional(rollbackFor = Exception.class)

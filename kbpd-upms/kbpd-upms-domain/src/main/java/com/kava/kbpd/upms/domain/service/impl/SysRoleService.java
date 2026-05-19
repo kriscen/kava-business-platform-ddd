@@ -1,6 +1,7 @@
 package com.kava.kbpd.upms.domain.service.impl;
 
 import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.upms.domain.model.aggregate.SysRoleEntity;
 import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
@@ -11,24 +12,24 @@ import com.kava.kbpd.upms.domain.repository.ISysRoleReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysRoleWriteRepository;
 import com.kava.kbpd.upms.domain.service.ISysRoleService;
 import com.kava.kbpd.upms.types.enums.SysMenuScope;
+import com.kava.kbpd.upms.types.enums.SysRoleDataScope;
 import com.kava.kbpd.upms.types.exception.UpmsBizErrorCodeEnum;
 import com.kava.kbpd.upms.types.exception.UpmsBizException;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysRoleService implements ISysRoleService {
-    @Resource
-    private ISysRoleWriteRepository writeRepository;
-
-    @Resource
-    private ISysRoleReadRepository readRepository;
-
-    @Resource
-    private ISysMenuRepository menuRepository;
+    private final ISysRoleWriteRepository writeRepository;
+    private final ISysRoleReadRepository readRepository;
+    private final ISysMenuRepository menuRepository;
 
     @Override
     public SysRoleId create(SysRoleEntity entity) {
@@ -67,6 +68,33 @@ public class SysRoleService implements ISysRoleService {
             writeRepository.removeUserRoleByRoleId(roleId);
         }
         return writeRepository.removeBatchByIds(ids);
+    }
+
+    @Override
+    public void initTenantAdminRole(SysTenantId tenantId, String menuIdStr) {
+        List<SysMenuId> menuIds = Collections.emptyList();
+        if (StringUtils.hasText(menuIdStr)) {
+            menuIds = Arrays.stream(menuIdStr.split(","))
+                    .map(String::trim)
+                    .filter(StringUtils::hasText)
+                    .map(Long::parseLong)
+                    .map(id -> SysMenuId.builder().id(id).build())
+                    .toList();
+        }
+
+        SysRoleEntity adminRole = SysRoleEntity.builder()
+                .roleName("租户管理员")
+                .roleCode("tenant_admin")
+                .roleDesc("租户创建时自动生成的管理员角色")
+                .dsType(Integer.valueOf(SysRoleDataScope.ALL.getCode()))
+                .menuIds(menuIds)
+                .tenantId(tenantId)
+                .build();
+
+        SysRoleId roleId = writeRepository.create(adminRole);
+        if (!CollectionUtils.isEmpty(menuIds)) {
+            writeRepository.saveRoleMenus(roleId, menuIds);
+        }
     }
 
     /**

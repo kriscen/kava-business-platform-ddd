@@ -18,10 +18,10 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor(access = PRIVATE)
 public class SysUserListQuery implements ValueObject {
 
-   
-    /**
-     * 分页参数
-     */
     QueryParamValObj queryParam;
+    String username;
+    String phone;
+    Integer lockFlag;
+    Long deptId;
 
 }

@@ -11,8 +11,9 @@ import com.kava.kbpd.upms.application.service.ISysTenantAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysTenantRepository;
+import com.kava.kbpd.upms.domain.service.ISysRoleService;
 import com.kava.kbpd.upms.domain.service.ISysTenantService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,21 +27,20 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysTenantAppService implements ISysTenantAppService {
-    @Resource
-    private ISysTenantRepository sysTenantRepository;
-
-    @Resource
-    private ISysTenantService sysTenantService;
-
-    @Resource
-    private SysTenantAppConverter sysTenantAppConverter;
+    private final ISysTenantRepository sysTenantRepository;
+    private final ISysTenantService sysTenantService;
+    private final ISysRoleService sysRoleService;
+    private final SysTenantAppConverter sysTenantAppConverter;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public SysTenantId createTenant(SysTenantCreateCommand command) {
         SysTenantEntity sysTenantEntity = sysTenantAppConverter.convertCreateCommand2Entity(command);
-        return sysTenantService.create(sysTenantEntity);
+        SysTenantId tenantId = sysTenantService.create(sysTenantEntity);
+        sysRoleService.initTenantAdminRole(tenantId, sysTenantEntity.getMenuId());
+        return tenantId;
     }
 
     @Override

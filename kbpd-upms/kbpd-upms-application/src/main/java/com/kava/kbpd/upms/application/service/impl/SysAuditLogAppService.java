@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysAuditLogRepository;
-import com.kava.kbpd.upms.domain.service.ISysAuditLogService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysAuditLogAppService implements ISysAuditLogAppService {
-    @Resource
-    private ISysAuditLogRepository sysAuditLogRepository;
-
-    @Resource
-    private ISysAuditLogService sysAuditLogService;
-
-    @Resource
-    private SysAuditLogAppConverter sysAuditLogAppConverter;
+    private final ISysAuditLogRepository sysAuditLogRepository;
+    private final SysAuditLogAppConverter sysAuditLogAppConverter;
 
     @Override
     public SysAuditLogId createAuditLog(SysAuditLogCreateCommand command) {

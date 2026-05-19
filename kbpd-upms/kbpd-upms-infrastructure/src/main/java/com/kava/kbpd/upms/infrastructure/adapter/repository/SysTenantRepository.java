@@ -42,7 +42,8 @@ public class SysTenantRepository implements ISysTenantRepository {
     public PagingInfo<SysTenantEntity> queryPage(SysTenantListQuery query) {
         Page<SysTenantPO> sysTenantPOPage = sysTenantMapper.selectPage(
                 Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
-                Wrappers.lambdaQuery(SysTenantPO.class));
+                Wrappers.lambdaQuery(SysTenantPO.class)
+                        .like(query.getTenantName() != null, SysTenantPO::getName, query.getTenantName()));
         return PagingInfo.toResponse(sysTenantPOPage.getRecords().stream()
                         .map(sysTenantConverter::convertPO2Entity).toList(),
                 sysTenantPOPage.getTotal(), sysTenantPOPage.getCurrent(), sysTenantPOPage.getSize());

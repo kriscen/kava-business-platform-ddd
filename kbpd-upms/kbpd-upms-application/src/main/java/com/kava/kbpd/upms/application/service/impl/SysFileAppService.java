@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysFileEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysFileRepository;
-import com.kava.kbpd.upms.domain.service.ISysFileService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysFileAppService implements ISysFileAppService {
-    @Resource
-    private ISysFileRepository sysFileRepository;
-
-    @Resource
-    private ISysFileService sysFileService;
-
-    @Resource
-    private SysFileAppConverter sysFileAppConverter;
+    private final ISysFileRepository sysFileRepository;
+    private final SysFileAppConverter sysFileAppConverter;
 
     @Override
     public SysFileId createFile(SysFileCreateCommand command) {

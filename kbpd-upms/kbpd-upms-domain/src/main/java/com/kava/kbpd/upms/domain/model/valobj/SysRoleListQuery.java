@@ -18,10 +18,8 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor(access = PRIVATE)
 public class SysRoleListQuery implements ValueObject {
 
-   
-    /**
-     * 分页参数
-     */
     QueryParamValObj queryParam;
+    String roleName;
+    String roleCode;
 
 }

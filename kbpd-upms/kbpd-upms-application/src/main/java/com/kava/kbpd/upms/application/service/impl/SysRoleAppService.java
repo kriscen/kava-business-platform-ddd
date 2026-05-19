@@ -13,7 +13,7 @@ import com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysRoleReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysRoleWriteRepository;
 import com.kava.kbpd.upms.domain.service.ISysRoleService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +27,12 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysRoleAppService implements ISysRoleAppService {
-    @Resource
-    private ISysRoleReadRepository readRepository;
-
-    @Resource
-    private ISysRoleWriteRepository writeRepository;
-
-    @Resource
-    private ISysRoleService sysRoleService;
-
-    @Resource
-    private SysRoleAppConverter appConverter;
+    private final ISysRoleReadRepository readRepository;
+    private final ISysRoleWriteRepository writeRepository;
+    private final ISysRoleService sysRoleService;
+    private final SysRoleAppConverter appConverter;
 
     @Override
     @Transactional(rollbackFor = Exception.class)

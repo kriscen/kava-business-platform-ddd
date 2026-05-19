@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysFileGroupEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysFileGroupRepository;
-import com.kava.kbpd.upms.domain.service.ISysFileGroupService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysFileGroupAppService implements ISysFileGroupAppService {
-    @Resource
-    private ISysFileGroupRepository sysFileGroupRepository;
-
-    @Resource
-    private ISysFileGroupService sysFileGroupService;
-
-    @Resource
-    private SysFileGroupAppConverter sysFileGroupAppConverter;
+    private final ISysFileGroupRepository sysFileGroupRepository;
+    private final SysFileGroupAppConverter sysFileGroupAppConverter;
 
     @Override
     public SysFileGroupId createFileGroup(SysFileGroupCreateCommand command) {

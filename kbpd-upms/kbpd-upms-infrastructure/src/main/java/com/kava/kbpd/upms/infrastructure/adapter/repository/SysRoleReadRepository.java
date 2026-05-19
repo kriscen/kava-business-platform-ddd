@@ -32,7 +32,9 @@ public class SysRoleReadRepository implements ISysRoleReadRepository {
     public PagingInfo<SysRoleEntity> queryPage(SysRoleListQuery query) {
         Page<SysRolePO> sysRolePOPage = sysRoleMapper.selectPage(
                 Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
-                Wrappers.lambdaQuery(SysRolePO.class));
+                Wrappers.lambdaQuery(SysRolePO.class)
+                        .like(query.getRoleName() != null, SysRolePO::getRoleName, query.getRoleName())
+                        .like(query.getRoleCode() != null, SysRolePO::getRoleCode, query.getRoleCode()));
         return PagingInfo.toResponse(sysRolePOPage.getRecords().stream()
                         .map(sysRoleConverter::convertPO2Entity).toList(),
                 sysRolePOPage.getTotal(), sysRolePOPage.getCurrent(), sysRolePOPage.getSize());

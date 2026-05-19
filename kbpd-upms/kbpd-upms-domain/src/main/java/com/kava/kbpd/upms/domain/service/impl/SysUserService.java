@@ -7,19 +7,17 @@ import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserWriteRepository;
 import com.kava.kbpd.upms.domain.service.ISysUserService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysUserService implements ISysUserService {
-    @Resource
-    private ISysUserWriteRepository writeRepository;
-
-    @Resource
-    private ISysUserReadRepository readRepository;
+    private final ISysUserWriteRepository writeRepository;
+    private final ISysUserReadRepository readRepository;
 
     @Override
     public SysUserId create(SysUserEntity entity) {

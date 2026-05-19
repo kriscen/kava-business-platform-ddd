@@ -11,11 +11,9 @@ import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysMenuRepository;
-import com.kava.kbpd.upms.domain.repository.ISysRoleReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
-import com.kava.kbpd.upms.domain.service.ISysMenuService;
 import com.kava.kbpd.upms.types.enums.SysMenuScope;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,18 +27,11 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysMenuAppService implements ISysMenuAppService {
-    @Resource
-    private ISysMenuRepository sysMenuRepository;
-
-    @Resource
-    private ISysMenuService sysMenuService;
-
-    @Resource
-    private SysMenuAppConverter sysMenuAppConverter;
-
-    @Resource
-    private ISysUserReadRepository sysUserReadRepository;
+    private final ISysMenuRepository sysMenuRepository;
+    private final SysMenuAppConverter sysMenuAppConverter;
+    private final ISysUserReadRepository sysUserReadRepository;
 
     @Override
     public SysMenuId createMenu(SysMenuCreateCommand command) {

@@ -106,12 +106,17 @@ kbpd-{business}/
 - **Lombok** for reducing boilerplate
 - **Hutool** for common utilities
 
-## DDD Constraints (from constitution.md)
+## DDD Implementation Rules
 
-1. **Domain layer isolation**: Domain must not depend on Spring or external frameworks
-2. **Business logic location**: All business rules must be in domain layer, not leaked to application or adapter
-3. **Critical path testing**: Tests required for operations involving funds, permissions, or data integrity
-4. **Dependency inward**: adapter/infrastructure → application → domain
+Detailed rules: [`docs/03-conventions/ddd-rules.md`](docs/03-conventions/ddd-rules.md)
+
+1. **Domain model**: 充血方向，逐步完善。有业务规则时将行为收入 Entity/AggregateRoot
+2. **Spring in Domain**: 允许 `@Service` + 构造器注入，禁止 `@Resource`/`@Autowired` 字段注入。pom 依赖 `spring-context`（仅注解），不依赖 `spring-boot-starter`
+3. **DomainService**: 按需创建（跨 Repo 编排、业务校验、跨聚合协调、非平凡算法时才建）。保留接口作扩展点，未使用的实现不注入 Repo
+4. **跨聚合访问**: DomainService 允许跨聚合读，禁止跨聚合写。跨聚合写在 AppService 的 `@Transactional` 中编排
+5. **层间引用**: ID 和 ListQuery 留在 domain。Adapter 可引用 `domain.model.valobj`（ID、ListQuery），禁止引用 entity/aggregate/service/repository
+6. **ID 提升规则**: 模块内部 ID 留在 domain，跨模块共享时提升到 common-core（按需提升，不预设）
+7. **Critical path testing**: Tests required for operations involving funds, permissions, or data integrity
 
 <!-- KAVA-PROJECT-RULES: do NOT remove next line on /init — keeps project-specific docs/openspec rules -->
 @.claude/rules/project-docs.md

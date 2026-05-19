@@ -43,7 +43,8 @@ public class SysDeptRepository implements ISysDeptRepository {
     public PagingInfo<SysDeptEntity> queryPage(SysDeptListQuery query) {
         Page<SysDeptPO> sysDeptPOPage = sysDeptMapper.selectPage(
                 Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
-                Wrappers.lambdaQuery(SysDeptPO.class));
+                Wrappers.lambdaQuery(SysDeptPO.class)
+                        .like(query.getDeptName() != null, SysDeptPO::getName, query.getDeptName()));
         return PagingInfo.toResponse(sysDeptPOPage.getRecords().stream()
                         .map(sysDeptConverter::convertPO2Entity).toList(),
                 sysDeptPOPage.getTotal(), sysDeptPOPage.getCurrent(), sysDeptPOPage.getSize());

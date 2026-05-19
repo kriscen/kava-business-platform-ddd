@@ -11,7 +11,7 @@ import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysAreaRepository;
 import com.kava.kbpd.upms.domain.service.ISysAreaService;
 import com.kava.kbpd.upms.types.constants.UpmsConstants;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -26,11 +26,10 @@ import java.util.stream.Collectors;
  * @description: 行政区划 service实现
  */
 @Service
+@RequiredArgsConstructor
 public class SysAreaService implements ISysAreaService {
 
-    @Resource
-    private ISysAreaRepository repository;
-
+    private final ISysAreaRepository repository;
 
     @Override
     public List<Tree<Long>> selectAreaTree(SysAreaListQuery query) {

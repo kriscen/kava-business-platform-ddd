@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysI18nEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nId;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysI18nRepository;
-import com.kava.kbpd.upms.domain.service.ISysI18nService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysI18nAppService implements ISysI18nAppService {
-    @Resource
-    private ISysI18nRepository sysI18nRepository;
-
-    @Resource
-    private ISysI18nService sysI18nService;
-
-    @Resource
-    private SysI18nAppConverter sysI18nAppConverter;
+    private final ISysI18nRepository sysI18nRepository;
+    private final SysI18nAppConverter sysI18nAppConverter;
 
     @Override
     public SysI18nId createI18n(SysI18nCreateCommand command) {

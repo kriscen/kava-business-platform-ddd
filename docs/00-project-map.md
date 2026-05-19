@@ -48,6 +48,7 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [code-style.md](03-conventions/code-style.md) | 代码风格与命名规范，涵盖 Java 类名、方法名、常量的命名规则，以及 VO/DTO/Query/Cmd 等后缀约定 |
+| [ddd-rules.md](03-conventions/ddd-rules.md) | DDD 实现规范，定义领域模型风格、DomainService 规则、跨聚合访问策略、层间引用边界、Converter 转换模式 |
 | [git.md](03-conventions/git.md) | Git 分支与协作规范，定义 feature/bugfix/hotfix/release/refactor 分支命名格式及 main 分支保护策略 |
 
 ---

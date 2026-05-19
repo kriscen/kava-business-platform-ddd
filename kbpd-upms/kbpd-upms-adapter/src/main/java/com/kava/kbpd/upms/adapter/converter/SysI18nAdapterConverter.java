@@ -1,18 +1,13 @@
 package com.kava.kbpd.upms.adapter.converter;
 
 import com.kava.kbpd.upms.api.model.query.SysI18nAdapterListQuery;
-import com.kava.kbpd.upms.api.model.query.SysI18nAdapterListQuery;
-import com.kava.kbpd.upms.api.model.request.SysI18nRequest;
 import com.kava.kbpd.upms.api.model.request.SysI18nRequest;
 import com.kava.kbpd.upms.api.model.response.SysI18nDetailResponse;
 import com.kava.kbpd.upms.api.model.response.SysI18nListResponse;
-import com.kava.kbpd.upms.api.model.response.SysI18nDetailResponse;
 import com.kava.kbpd.upms.application.model.command.SysI18nCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysI18nUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysI18nAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysI18nAppListDTO;
-import com.kava.kbpd.upms.domain.model.entity.SysI18nEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

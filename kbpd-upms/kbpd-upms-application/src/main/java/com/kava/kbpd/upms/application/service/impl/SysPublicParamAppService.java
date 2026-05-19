@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysPublicParamEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamId;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysPublicParamRepository;
-import com.kava.kbpd.upms.domain.service.ISysPublicParamService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysPublicParamAppService implements ISysPublicParamAppService {
-    @Resource
-    private ISysPublicParamRepository sysPublicParamRepository;
-
-    @Resource
-    private ISysPublicParamService sysPublicParamService;
-
-    @Resource
-    private SysPublicParamAppConverter sysPublicParamAppConverter;
+    private final ISysPublicParamRepository sysPublicParamRepository;
+    private final SysPublicParamAppConverter sysPublicParamAppConverter;
 
     @Override
     public SysPublicParamId createPublicParam(SysPublicParamCreateCommand command) {

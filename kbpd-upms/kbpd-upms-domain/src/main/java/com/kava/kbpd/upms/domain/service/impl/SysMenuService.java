@@ -4,40 +4,36 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysMenuRepository;
 import com.kava.kbpd.upms.domain.service.ISysMenuService;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class SysMenuService implements ISysMenuService {
-    @Resource
-    private ISysMenuRepository repository;
 
     @Override
     public SysMenuId create(SysMenuEntity entity) {
-        return repository.create(entity);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public Boolean update(SysMenuEntity entity) {
-        return repository.update(entity);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public PagingInfo<SysMenuEntity> queryPage(SysMenuListQuery query) {
-        return repository.queryPage(query);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public SysMenuEntity queryById(SysMenuId id) {
-        return repository.queryById(id);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public Boolean removeBatchByIds(List<SysMenuId> ids) {
-        return repository.removeBatchByIds(ids);
+        throw new UnsupportedOperationException("暂未实现");
     }
 }

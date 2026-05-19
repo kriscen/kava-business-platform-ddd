@@ -4,40 +4,36 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogId;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysLogRepository;
 import com.kava.kbpd.upms.domain.service.ISysLogService;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class SysLogService implements ISysLogService {
-    @Resource
-    private ISysLogRepository repository;
 
     @Override
     public SysLogId create(SysLogEntity entity) {
-        return repository.create(entity);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public Boolean update(SysLogEntity entity) {
-        return repository.update(entity);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public PagingInfo<SysLogEntity> queryPage(SysLogListQuery query) {
-        return repository.queryPage(query);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public SysLogEntity queryById(SysLogId id) {
-        return repository.queryById(id);
+        throw new UnsupportedOperationException("暂未实现");
     }
 
     @Override
     public Boolean removeBatchByIds(List<SysLogId> ids) {
-        return repository.removeBatchByIds(ids);
+        throw new UnsupportedOperationException("暂未实现");
     }
 }

@@ -13,7 +13,7 @@ import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysAreaRepository;
 import com.kava.kbpd.upms.domain.service.ISysAreaService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +26,11 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysAreaAppService implements ISysAreaAppService {
-    @Resource
-    private ISysAreaRepository sysAreaRepository;
-
-    @Resource
-    private ISysAreaService sysAreaService;
-
-    @Resource
-    private SysAreaAppConverter sysAreaAppConverter;
+    private final ISysAreaRepository sysAreaRepository;
+    private final ISysAreaService sysAreaService;
+    private final SysAreaAppConverter sysAreaAppConverter;
 
     @Override
     public SysAreaId createArea(SysAreaCreateCommand command) {

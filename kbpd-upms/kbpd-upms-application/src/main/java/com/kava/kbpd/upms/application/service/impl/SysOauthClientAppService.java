@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysOauthClientEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientId;
 import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysOauthClientRepository;
-import com.kava.kbpd.upms.domain.service.ISysOauthClientService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysOauthClientAppService implements ISysOauthClientAppService {
-    @Resource
-    private ISysOauthClientRepository sysOauthClientRepository;
-
-    @Resource
-    private ISysOauthClientService sysOauthClientService;
-
-    @Resource
-    private SysOauthClientAppConverter sysOauthClientAppConverter;
+    private final ISysOauthClientRepository sysOauthClientRepository;
+    private final SysOauthClientAppConverter sysOauthClientAppConverter;
 
     @Override
     public SysOauthClientId createOauthClient(SysOauthClientCreateCommand command) {

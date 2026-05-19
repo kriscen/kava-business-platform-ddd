@@ -18,10 +18,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor(access = PRIVATE)
 public class SysDeptListQuery implements ValueObject {
 
-   
-    /**
-     * 分页参数
-     */
     QueryParamValObj queryParam;
+    String deptName;
 
 }

@@ -22,6 +22,8 @@ public interface SysMenuAdapterConverter {
 
     @Mapping(source = "pageNo", target = "queryParam.pageNo")
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
+    @Mapping(source = "name", target = "menuName")
+    @Mapping(source = "menuType", target = "type")
     SysMenuListQuery convertQueryDTO2QueryVal(SysMenuAdapterListQuery request);
 
     SysMenuListResponse convertEntity2List(SysMenuAppListDTO request);

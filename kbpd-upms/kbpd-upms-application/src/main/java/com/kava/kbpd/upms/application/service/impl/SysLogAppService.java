@@ -11,8 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogId;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysLogRepository;
-import com.kava.kbpd.upms.domain.service.ISysLogService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +24,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SysLogAppService implements ISysLogAppService {
-    @Resource
-    private ISysLogRepository sysLogRepository;
-
-    @Resource
-    private ISysLogService sysLogService;
-
-    @Resource
-    private SysLogAppConverter sysLogAppConverter;
+    private final ISysLogRepository sysLogRepository;
+    private final SysLogAppConverter sysLogAppConverter;
 
     @Override
     public SysLogId createLog(SysLogCreateCommand command) {

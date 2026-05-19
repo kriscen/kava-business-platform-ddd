@@ -15,6 +15,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SysTenantAdapterConverter {
 
+    @Mapping(source = "name", target = "tenantName")
     SysTenantListQuery convertQueryDTO2QueryVal(SysTenantAdapterListQuery request);
 
     SysTenantListResponse convertEntity2List(SysTenantAppListDTO request);

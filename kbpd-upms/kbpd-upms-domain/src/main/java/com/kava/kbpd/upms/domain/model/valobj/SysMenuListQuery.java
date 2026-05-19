@@ -18,10 +18,9 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor(access = PRIVATE)
 public class SysMenuListQuery implements ValueObject {
 
-   
-    /**
-     * 分页参数
-     */
     QueryParamValObj queryParam;
+    String menuName;
+    Integer type;
+    String scope;
 
 }
