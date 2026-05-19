@@ -71,4 +71,10 @@ public class SysAreaAppService implements ISysAreaAppService {
         return sysAreaService.selectAreaTree(query);
     }
 
+    @Override
+    public List<SysAreaAppListDTO> queryAreaChildren(SysAreaId pid) {
+        List<SysAreaEntity> children = sysAreaService.selectChildren(pid);
+        return children.stream().map(sysAreaAppConverter::convertEntityToListQueryDTO).toList();
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.kava.kbpd.upms.application.model.dto;
 
+import com.kava.kbpd.common.core.enums.Status;
+import com.kava.kbpd.upms.types.enums.SysAreaType;
 import lombok.Data;
 
 /**
@@ -40,14 +42,14 @@ public class SysAreaAppDetailDTO {
     private Long areaSort;
 
     /**
-     * 0:未生效，1:生效
+     * 状态
      */
-    private String areaStatus;
+    private Status areaStatus;
 
     /**
-     * 0:国家,1:省,2:城市,3:区县
+     * 区域类型
      */
-    private String areaType;
+    private SysAreaType areaType;
 
     /**
      * 城市编码

@@ -16,11 +16,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SysAreaAppConverter {
 
-//    @Mapping(source = "pageSize", target = "queryParam.pageSize")
     SysAreaEntity convertCreateCommand2Entity(SysAreaCreateCommand command);
 
     SysAreaEntity convertUpdateCommand2Entity(SysAreaUpdateCommand command);
 
+    @Mapping(source = "id.id", target = "id")
+    @Mapping(source = "pid.id", target = "pid")
     SysAreaAppListDTO convertEntityToListQueryDTO(SysAreaEntity entity);
 
     @Mapping(source = "pid.id", target = "pid")

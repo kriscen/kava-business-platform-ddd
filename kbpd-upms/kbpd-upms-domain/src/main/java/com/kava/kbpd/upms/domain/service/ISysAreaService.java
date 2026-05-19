@@ -1,6 +1,8 @@
 package com.kava.kbpd.upms.domain.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.kava.kbpd.upms.domain.model.entity.SysAreaEntity;
+import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
 
 import java.util.List;
@@ -13,5 +15,7 @@ import java.util.List;
 public interface ISysAreaService {
 
     List<Tree<Long>> selectAreaTree(SysAreaListQuery query);
+
+    List<SysAreaEntity> selectChildren(SysAreaId pid);
 
 }

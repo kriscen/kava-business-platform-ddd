@@ -1,5 +1,6 @@
 package com.kava.kbpd.upms.infrastructure.adapter.repository;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -40,9 +41,14 @@ public class SysAreaRepository implements ISysAreaRepository {
 
     @Override
     public PagingInfo<SysAreaEntity> queryPage(SysAreaListQuery query) {
+        var wrapper = Wrappers.lambdaQuery(SysAreaPO.class)
+                .eq(query.getPid() != null, SysAreaPO::getPid, query.getPid())
+                .like(query.getName() != null, SysAreaPO::getName, query.getName())
+                .eq(query.getAreaType() != null, SysAreaPO::getAreaType, query.getAreaType())
+                .eq(query.getAreaStatus() != null, SysAreaPO::getAreaStatus, query.getAreaStatus());
         Page<SysAreaPO> sysAreaPOPage = sysAreaMapper.selectPage(
                 Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
-                Wrappers.lambdaQuery(SysAreaPO.class));
+                wrapper);
         return PagingInfo.toResponse(sysAreaPOPage.getRecords().stream()
                         .map(sysAreaConverter::convertPO2Entity).toList(),
                 sysAreaPOPage.getTotal(), sysAreaPOPage.getCurrent(), sysAreaPOPage.getSize());
@@ -57,9 +63,11 @@ public class SysAreaRepository implements ISysAreaRepository {
 
     @Override
     public List<SysAreaEntity> selectTreeList(SysAreaListQuery query) {
-        List<SysAreaPO> entityList = sysAreaMapper.selectList(Wrappers.lambdaQuery(SysAreaPO.class)
-                                                .eq(SysAreaPO::getAreaStatus, YesNoEnum.YES.getCode())
-                                                .orderByDesc(SysAreaPO::getAreaSort));
+        var wrapper = Wrappers.lambdaQuery(SysAreaPO.class)
+                .eq(SysAreaPO::getAreaStatus, YesNoEnum.YES.getCode())
+                .in(CollUtil.isNotEmpty(query.getAreaTypes()), SysAreaPO::getAreaType, query.getAreaTypes())
+                .orderByDesc(SysAreaPO::getAreaSort);
+        List<SysAreaPO> entityList = sysAreaMapper.selectList(wrapper);
         return entityList.stream().map(sysAreaConverter::convertPO2Entity).toList();
     }
 
@@ -67,5 +75,14 @@ public class SysAreaRepository implements ISysAreaRepository {
     public Boolean removeBatchByIds(List<SysAreaId> ids) {
         List<Long> idList = ids.stream().map(SysAreaId::getId).toList();
         return SqlHelper.retBool(sysAreaMapper.deleteByIds(idList));
+    }
+
+    @Override
+    public List<SysAreaEntity> selectChildren(Long pid) {
+        List<SysAreaPO> list = sysAreaMapper.selectList(Wrappers.lambdaQuery(SysAreaPO.class)
+                .eq(SysAreaPO::getPid, pid)
+                .eq(SysAreaPO::getAreaStatus, YesNoEnum.YES.getCode())
+                .orderByDesc(SysAreaPO::getAreaSort));
+        return list.stream().map(sysAreaConverter::convertPO2Entity).toList();
     }
 }

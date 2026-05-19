@@ -28,4 +28,6 @@ public interface ISysAreaAppService {
     SysAreaAppDetailDTO queryAreaById(SysAreaId id);
 
     List<Tree<Long>> selectAreaTree(SysAreaListQuery query);
+
+    List<SysAreaAppListDTO> queryAreaChildren(SysAreaId pid);
 }

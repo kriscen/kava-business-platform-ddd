@@ -62,6 +62,20 @@ public class SysAreaController {
     }
 
     /**
+     * 按父节点查询直接子节点（懒加载）
+     *
+     * @param pid 父节点ID，默认100000
+     * @return 子节点列表
+     */
+    @GetMapping("/children")
+    public JsonResult<List<SysAreaListResponse>> getChildren(
+            @RequestParam(value = "pid", required = false) Long pid) {
+        List<SysAreaAppListDTO> children = appService.queryAreaChildren(SysAreaId.of(pid));
+        List<SysAreaListResponse> result = children.stream().map(adapterConverter::convertEntity2List).toList();
+        return JsonResult.buildSuccess(result);
+    }
+
+    /**
      * 获取详细信息
      *
      * @param id id

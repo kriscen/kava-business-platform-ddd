@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 /**
@@ -58,9 +60,9 @@ public class SysAreaListQuery implements ValueObject {
     String areaType;
 
     /**
-     * 0:非热门，1:热门
+     * 区域类型（多值筛选，用于树查询）
      */
-    String hot;
+    List<String> areaTypes;
 
     /**
      * 城市编码

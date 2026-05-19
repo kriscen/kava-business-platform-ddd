@@ -58,11 +58,6 @@ public class SysAreaListResponse implements Serializable {
     private String areaType;
 
     /**
-     * 0:非热门，1:热门
-     */
-    private String hot;
-
-    /**
      * 城市编码
      */
     private String cityCode;

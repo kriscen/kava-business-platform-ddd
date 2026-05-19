@@ -108,9 +108,9 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览（待填充） |
-| [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块接口文档（待填充） |
-| [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则（待填充） |
+| [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览，描述用户权限管理核心服务定位、14 个资源的 CRUD 体系、RBAC 权限模型与数据隔离策略 |
+| [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块接口文档，涵盖用户/角色/菜单/部门/租户/地区等资源的 HTTP REST 与 Dubbo RPC 接口定义 |
+| [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则，定义 RBAC 关联持久化、权限运行时、租户管理及数据隔离规则 |
 
 ---
 

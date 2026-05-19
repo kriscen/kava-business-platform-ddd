@@ -10,4 +10,6 @@ import java.util.List;
 public interface ISysAreaRepository extends IBaseSimpleRepository<SysAreaId, SysAreaEntity,SysAreaListQuery> {
     List<SysAreaEntity> selectTreeList(SysAreaListQuery query);
 
+    List<SysAreaEntity> selectChildren(Long pid);
+
 }

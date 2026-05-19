@@ -64,7 +64,8 @@
 | 方法 | 路径 | 入参 | 返回值 | 说明 |
 |---|---|---|---|---|
 | GET | `/page` | `SysAreaAdapterListQuery` (query) | `JsonResult<PagingInfo<SysAreaListResponse>>` | 分页查询地区 |
-| GET | `/tree` | `SysAreaAdapterListQuery` (query) | `JsonResult<List<Tree<Long>>>` | 树形地区数据 |
+| GET | `/tree` | `SysAreaAdapterListQuery` (query, 支持 areaType 参数) | `JsonResult<List<Tree<Long>>>` | 树形地区数据（可按 areaType 筛选层级） |
+| GET | `/children` | `pid` (query, 默认 100000) | `JsonResult<List<SysAreaListResponse>>` | 按父节点查询直接子节点（懒加载场景） |
 | GET | `/{id}` | `id` (path) | `JsonResult<SysAreaDetailResponse>` | 地区详情 |
 | POST | — | `SysAreaRequest` (body) | `JsonResult<Long>` | 创建地区 |
 | PUT | `/{id}` | `id` (path) + `SysAreaRequest` (body) | `JsonResult<Boolean>` | 更新地区 |

@@ -1,6 +1,8 @@
 package com.kava.kbpd.upms.application.model.command;
 
+import com.kava.kbpd.common.core.enums.Status;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
+import com.kava.kbpd.upms.types.enums.SysAreaType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,14 +51,14 @@ public class SysAreaCreateCommand {
     private Long areaSort;
 
     /**
-     * 0:未生效，1:生效
+     * 状态
      */
-    private String areaStatus;
+    private Status areaStatus;
 
     /**
-     * 0:国家,1:省,2:城市,3:区县
+     * 区域类型
      */
-    private String areaType;
+    private SysAreaType areaType;
 
     /**
      * 城市编码
