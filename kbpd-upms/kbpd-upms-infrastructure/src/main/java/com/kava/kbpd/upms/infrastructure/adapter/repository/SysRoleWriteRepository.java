@@ -13,22 +13,19 @@ import com.kava.kbpd.upms.infrastructure.dao.SysUserRoleMapper;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysRoleMenuPO;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysRolePO;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysUserRolePO;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class SysRoleWriteRepository implements ISysRoleWriteRepository {
 
-    @Resource
-    private SysRoleMapper sysRoleMapper;
-    @Resource
-    private SysRoleConverter sysRoleConverter;
-    @Resource
-    private SysRoleMenuMapper sysRoleMenuMapper;
-    @Resource
-    private SysUserRoleMapper sysUserRoleMapper;
+    private final SysRoleMapper sysRoleMapper;
+    private final SysRoleConverter sysRoleConverter;
+    private final SysRoleMenuMapper sysRoleMenuMapper;
+    private final SysUserRoleMapper sysUserRoleMapper;
 
     @Override
     public SysRoleId create(SysRoleEntity entity) {

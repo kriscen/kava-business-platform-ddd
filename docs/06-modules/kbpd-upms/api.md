@@ -22,7 +22,7 @@
 
 | 方法 | 路径 | 入参 | 返回值 | 说明 |
 |---|---|---|---|---|
-| GET | `/page` | `SysRoleAdapterListQuery` (query) | `JsonResult<PagingInfo<SysRoleListResponse>>` | 分页查询角色 |
+| GET | `/page` | `SysRoleAdapterListQuery` (query) | `JsonResult<PagingInfo<SysRoleListResponse>>` | 分页查询角色（租户用户自动按 tenantId 过滤，平台管理员查全部） |
 | GET | `/{id}` | `id` (path) | `JsonResult<SysRoleDetailResponse>` | 角色详情 |
 | POST | — | `SysRoleRequest` (body) | `JsonResult<Long>` | 创建角色 |
 | PUT | — | `SysRoleRequest` (body，含 id) | `JsonResult<Void>` | 更新角色 |

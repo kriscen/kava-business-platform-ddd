@@ -31,6 +31,7 @@ public interface SysRoleAppConverter {
     @Mapping(target = "menuIds", expression = "java(convertMenuIdsToLong(entity.getMenuIds()))")
     SysRoleAppDetailDTO convertEntity2Detail(SysRoleEntity entity);
 
+    @Mapping(source = "id.id", target = "id")
     SysRoleAppListDTO convertEntity2DTO(SysRoleEntity entity);
 
     default List<SysMenuId> convertMenuIds(List<Long> ids) {

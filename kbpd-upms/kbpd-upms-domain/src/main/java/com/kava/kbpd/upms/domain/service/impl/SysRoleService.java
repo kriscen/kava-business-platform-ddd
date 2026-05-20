@@ -33,7 +33,8 @@ public class SysRoleService implements ISysRoleService {
 
     @Override
     public SysRoleId create(SysRoleEntity entity) {
-        validateMenuBinding(entity);
+        validateRoleCodeUnique(entity.getRoleCode(), entity.getTenantId(), null);
+        validateMenuScope(entity);
         SysRoleId roleId = writeRepository.create(entity);
         if (!CollectionUtils.isEmpty(entity.getMenuIds())) {
             writeRepository.saveRoleMenus(roleId, entity.getMenuIds());
@@ -43,7 +44,8 @@ public class SysRoleService implements ISysRoleService {
 
     @Override
     public Boolean update(SysRoleEntity entity) {
-        validateMenuBinding(entity);
+        validateRoleCodeUnique(entity.getRoleCode(), entity.getTenantId(), entity.getId());
+        validateMenuScope(entity);
         writeRepository.removeRoleMenus(entity.getId());
         if (!CollectionUtils.isEmpty(entity.getMenuIds())) {
             writeRepository.saveRoleMenus(entity.getId(), entity.getMenuIds());
@@ -97,12 +99,16 @@ public class SysRoleService implements ISysRoleService {
         }
     }
 
-    /**
-     * 校验菜单绑定：menuIds 不能为空，且菜单 scope 必须在角色可见范围内
-     */
-    private void validateMenuBinding(SysRoleEntity entity) {
+    private void validateRoleCodeUnique(String roleCode, SysTenantId tenantId, SysRoleId excludeId) {
+        SysRoleEntity existing = readRepository.queryByRoleCode(roleCode, tenantId);
+        if (existing != null && !existing.getId().equals(excludeId)) {
+            throw new UpmsBizException(UpmsBizErrorCodeEnum.ROLE_CODE_DUPLICATE);
+        }
+    }
+
+    private void validateMenuScope(SysRoleEntity entity) {
         if (CollectionUtils.isEmpty(entity.getMenuIds())) {
-            throw new UpmsBizException(UpmsBizErrorCodeEnum.ROLE_MENU_EMPTY);
+            return;
         }
 
         List<SysMenuEntity> menus = menuRepository.queryByIds(entity.getMenuIds());

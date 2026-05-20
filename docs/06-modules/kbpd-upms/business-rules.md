@@ -59,7 +59,7 @@
 | 规则 | 描述 |
 |---|---|
 | 角色-菜单关联持久化 | 创建/更新角色时全量替换 `sys_role_menu`（先删后插），删除时级联清理 sys_role_menu + sys_user_role，查询时返回 menuIds |
-| 角色编码唯一性 | 创建角色时校验同一租户下 roleCode 不可重复（`UpmsBizErrorCodeEnum.ROLE_CODE_EXISTS`） |
+| 角色编码唯一性 | 创建和更新角色时校验同一租户下 roleCode 不可重复（`UpmsBizErrorCodeEnum.ROLE_CODE_DUPLICATE`），不同租户允许相同 roleCode |
 | 菜单作用域三值模型 | `SysMenuScope`: SYSTEM（平台专属）、TENANT（租户专属）、SYSTEM_TENANT（双方可见） |
 | 角色绑定校验 | 角色绑定菜单时校验 scope 可见性：租户角色不可绑定 SYSTEM 菜单，平台角色不可绑定 TENANT 菜单 |
 | 数据权限 dsType | 角色持有 dsType（0=ALL/1=CUSTOM/2=DEPT_AND_CHILD/3=DEPT_ONLY/4=SELF）和 dsScope 字段 |
