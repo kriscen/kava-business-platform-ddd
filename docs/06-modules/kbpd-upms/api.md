@@ -115,11 +115,13 @@
 
 ### 国际化 `/api/{version}/sys/i18n/`
 
+数据模型为 KV 模式（code + language + content），同一 code 可对应多语言翻译记录。
+
 | 方法 | 路径 | 入参 | 返回值 | 说明 |
 |---|---|---|---|---|
-| GET | `/page` | `SysI18nAdapterListQuery` (query) | `JsonResult<PagingInfo<SysI18nListResponse>>` | 分页查询 |
+| GET | `/page` | `SysI18nAdapterListQuery` (query, 支持 code/language 过滤) | `JsonResult<PagingInfo<SysI18nListResponse>>` | 分页查询（code 模糊、language 精确） |
 | GET | `/{id}` | `id` (path) | `JsonResult<SysI18nDetailResponse>` | 详情 |
-| POST | — | `SysI18nRequest` (body) | `JsonResult<Long>` | 创建 |
+| POST | — | `SysI18nRequest` (body, 字段: code/language/content) | `JsonResult<Long>` | 创建（code+language 唯一） |
 | PUT | `/{id}` | `id` (path) + `SysI18nRequest` (body) | `JsonResult<Boolean>` | 更新 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Boolean>` | 批量删除 |
 

@@ -11,17 +11,16 @@ import static lombok.AccessLevel.PRIVATE;
 /**
  * @author Kris
  * @date 2025/3/18
- * @description: 国际化
+ * @description: 国际化消息列表查询
  */
 @Value
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 public class SysI18nListQuery implements ValueObject {
 
-   
-    /**
-     * 分页参数
-     */
     QueryParamValObj queryParam;
 
+    String code;
+
+    String language;
 }

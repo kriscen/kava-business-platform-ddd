@@ -8,25 +8,16 @@ import lombok.EqualsAndHashCode;
 /**
  * @author Kris
  * @date 2025/3/18
- * @description: 系统表-国际化
+ * @description: 系统表-国际化消息
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_i18n")
-public class SysI18nPO extends SysDeletablePO {
+@TableName("sys_i18n_message")
+public class SysI18nMessagePO extends SysDeletablePO {
 
-	/**
-	 * key
-	 */
-	private String name;
+    private String code;
 
-	/**
-	 * 中文
-	 */
-	private String zhCn;
+    private String language;
 
-	/**
-	 * 英文
-	 */
-	private String en;
+    private String content;
 }

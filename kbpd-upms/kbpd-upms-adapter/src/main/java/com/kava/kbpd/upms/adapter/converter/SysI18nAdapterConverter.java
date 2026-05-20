@@ -17,6 +17,8 @@ public interface SysI18nAdapterConverter {
 
     @Mapping(source = "pageNo", target = "queryParam.pageNo")
     @Mapping(source = "pageSize", target = "queryParam.pageSize")
+    @Mapping(source = "code", target = "code")
+    @Mapping(source = "language", target = "language")
     SysI18nListQuery convertQueryDTO2QueryVal(SysI18nAdapterListQuery request);
 
     SysI18nListResponse convertEntity2List(SysI18nAppListDTO request);

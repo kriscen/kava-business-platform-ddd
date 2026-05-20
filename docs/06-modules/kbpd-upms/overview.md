@@ -212,7 +212,7 @@ cd kbpd-upms/kbpd-upms-bootstrap && mvn spring-boot:run
 | 日志 CRUD | ✅ | 操作日志 |
 | 审计日志 CRUD | ✅ | 字段变更审计 |
 | 文件 / 文件组 CRUD | ✅ | 基础文件管理 |
-| 国际化 CRUD | ✅ | zh/en 键值对 |
+| 国际化 CRUD | ✅ | KV 模式（code + language + content），支持按 code/language 过滤查询 |
 | 公共参数 CRUD | ✅ | 系统参数配置 |
 | 路由配置 CRUD | ✅ | 动态网关路由 |
 | OAuth 客户端 CRUD | ✅ | 客户端详情管理 |

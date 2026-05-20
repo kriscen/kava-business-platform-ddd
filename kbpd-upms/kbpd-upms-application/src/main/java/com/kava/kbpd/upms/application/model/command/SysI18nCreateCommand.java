@@ -10,11 +10,15 @@ import lombok.NoArgsConstructor;
  * @date 2025/9/28
  * @description: I18n create command
  */
-
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class SysI18nCreateCommand {
 
+    private String code;
 
+    private String language;
+
+    private String content;
 }

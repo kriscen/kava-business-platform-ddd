@@ -8,19 +8,16 @@ import static lombok.AccessLevel.PRIVATE;
 /**
  * @author Kris
  * @date 2025/3/18
- * @description: 系统表-国际化 id
+ * @description: 系统表-国际化消息 id
  */
 @Value
 @Builder
 @AllArgsConstructor(access = PRIVATE)
-public class SysI18nId implements Identifier {
+public class SysI18nMessageId implements Identifier {
 
-	/**
-	 * id
-	 */
-	Long id;
+    Long id;
 
-	public static SysI18nId of(Long id) {
-		return id == null ? null : builder().id(id).build();
-	}
+    public static SysI18nMessageId of(Long id) {
+        return id == null ? null : builder().id(id).build();
+    }
 }
