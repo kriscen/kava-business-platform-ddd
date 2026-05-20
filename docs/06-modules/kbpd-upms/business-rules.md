@@ -18,6 +18,7 @@
 | 统一异常体系 | `UpmsBizException` 继承 `BaseBizException`，错误码枚举 `UpmsBizErrorCodeEnum` 覆盖角色/用户/菜单/租户 | types 层 |
 | 拦截器执行顺序 | TenantLine → DataScope → Pagination（在 `MybatisPlusConfig` 中注册） | kbpd-common-database |
 | 平台管理员跳过 | `ROLE_ADMIN` 角色跳过租户隔离和数据权限过滤 | upms-permission-system |
+| 平台管理员无角色 | 平台管理员不经过 RBAC 角色体系，直接可见所有平台级菜单（SYSTEM + SYSTEM_TENANT），角色体系仅服务于租户 | 产品设计 |
 
 ---
 
@@ -58,6 +59,8 @@
 
 | 规则 | 描述 |
 |---|---|
+| **平台管理员无角色** | 平台管理员（`ROLE_ADMIN`）不经过角色体系，直接可见所有 `scope=SYSTEM` 和 `scope=SYSTEM_TENANT` 的菜单，无需角色-菜单绑定 |
+| 角色体系仅服务于租户 | `SysRole` 聚合根仅用于租户内权限管理，由租户管理员创建和管理 |
 | 角色-菜单关联持久化 | 创建/更新角色时全量替换 `sys_role_menu`（先删后插），删除时级联清理 sys_role_menu + sys_user_role，查询时返回 menuIds |
 | 角色编码唯一性 | 创建和更新角色时校验同一租户下 roleCode 不可重复（`UpmsBizErrorCodeEnum.ROLE_CODE_DUPLICATE`），不同租户允许相同 roleCode |
 | 菜单作用域三值模型 | `SysMenuScope`: SYSTEM（平台专属）、TENANT（租户专属）、SYSTEM_TENANT（双方可见） |
