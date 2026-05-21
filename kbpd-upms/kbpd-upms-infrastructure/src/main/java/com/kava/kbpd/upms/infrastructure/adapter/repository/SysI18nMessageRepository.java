@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.kava.kbpd.common.core.base.PagingInfo;
-import com.kava.kbpd.upms.domain.model.entity.SysI18nMessage;
+import com.kava.kbpd.upms.domain.model.entity.SysI18nMessageEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nMessageId;
 import com.kava.kbpd.upms.domain.repository.ISysI18nMessageRepository;
@@ -25,7 +25,7 @@ public class SysI18nMessageRepository implements ISysI18nMessageRepository {
     private final SysI18nMessageConverter sysI18nMessageConverter;
 
     @Override
-    public SysI18nMessageId create(SysI18nMessage entity) {
+    public SysI18nMessageId create(SysI18nMessageEntity entity) {
         SysI18nMessagePO po = sysI18nMessageConverter.convertEntity2PO(entity);
         sysI18nMessageMapper.insert(po);
         return SysI18nMessageId.builder()
@@ -34,13 +34,13 @@ public class SysI18nMessageRepository implements ISysI18nMessageRepository {
     }
 
     @Override
-    public Boolean update(SysI18nMessage entity) {
+    public Boolean update(SysI18nMessageEntity entity) {
         SysI18nMessagePO po = sysI18nMessageConverter.convertEntity2PO(entity);
         return SqlHelper.retBool(sysI18nMessageMapper.updateById(po));
     }
 
     @Override
-    public PagingInfo<SysI18nMessage> queryPage(SysI18nListQuery query) {
+    public PagingInfo<SysI18nMessageEntity> queryPage(SysI18nListQuery query) {
         LambdaQueryWrapper<SysI18nMessagePO> wrapper = Wrappers.lambdaQuery(SysI18nMessagePO.class)
                 .like(query.getCode() != null, SysI18nMessagePO::getCode, query.getCode())
                 .eq(query.getLanguage() != null, SysI18nMessagePO::getLanguage, query.getLanguage());
@@ -53,7 +53,7 @@ public class SysI18nMessageRepository implements ISysI18nMessageRepository {
     }
 
     @Override
-    public SysI18nMessage queryById(SysI18nMessageId id) {
+    public SysI18nMessageEntity queryById(SysI18nMessageId id) {
         SysI18nMessagePO po = sysI18nMessageMapper.selectById(id.getId());
         return sysI18nMessageConverter.convertPO2Entity(po);
     }
@@ -65,7 +65,7 @@ public class SysI18nMessageRepository implements ISysI18nMessageRepository {
     }
 
     @Override
-    public SysI18nMessage queryByCodeAndLanguage(String code, String language) {
+    public SysI18nMessageEntity queryByCodeAndLanguage(String code, String language) {
         LambdaQueryWrapper<SysI18nMessagePO> wrapper = Wrappers.lambdaQuery(SysI18nMessagePO.class)
                 .eq(SysI18nMessagePO::getCode, code)
                 .eq(SysI18nMessagePO::getLanguage, language);

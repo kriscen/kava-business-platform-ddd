@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysI18nMessage implements Entity<SysI18nMessageId> {
+public class SysI18nMessageEntity implements Entity<SysI18nMessageId> {
 
     private SysI18nMessageId id;
 
