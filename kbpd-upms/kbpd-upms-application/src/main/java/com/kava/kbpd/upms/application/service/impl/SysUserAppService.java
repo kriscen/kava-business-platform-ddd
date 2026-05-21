@@ -15,6 +15,8 @@ import com.kava.kbpd.upms.domain.repository.ISysUserWriteRepository;
 import com.kava.kbpd.upms.domain.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,16 +35,21 @@ public class SysUserAppService implements ISysUserAppService {
     private final ISysUserWriteRepository writeRepository;
     private final ISysUserService sysUserService;
     private final SysUserAppConverter sysUserAppConverter;
+    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public SysUserId createUser(SysUserCreateCommand command) {
+        command.setPassword(passwordEncoder.encode(command.getPassword()));
         return sysUserService.create(sysUserAppConverter.convertCreateCommand2Entity(command));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateUser(SysUserUpdateCommand command) {
+        if (command.getPassword() != null && !command.getPassword().isEmpty()) {
+            command.setPassword(passwordEncoder.encode(command.getPassword()));
+        }
         sysUserService.update(sysUserAppConverter.convertUpdateCommand2Entity(command));
     }
 

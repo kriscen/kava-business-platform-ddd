@@ -105,7 +105,7 @@
 
 | 规则 | 描述 | 优先级 | 状态 |
 |---|---|---|---|
-| 密码加密存储 | 创建/修改用户时密码加密，明文不得持久化 | P0 | 未实现 |
+| 密码加密存储 | 创建/修改用户时密码加密，明文不得持久化 | P0 | 已实现 |
 | 用户锁定策略 | 连续登录失败 N 次自动锁定 | P1 | 未实现 |
 | 密码过期检测 | `passwordExpireFlag` + `passwordModifyTime` 判断 | P1 | 未实现 |
 | DataScope SQL 注入 | `DataScopeInnerInterceptor.beforeQuery()` 未调用 `buildDataScopeCondition()` | P0 | DEFERRED |
@@ -118,6 +118,6 @@
 | loginByPwd 完善 | Dubbo RPC `loginByPwd` 仍为桩实现 | P0 | 未实现 |
 | 操作日志自动记录 | AOP 拦截关键操作写入 sys_log | P2 | 未实现 |
 | 审计日志字段追踪 | 敏感字段变更记录 beforeVal / afterVal | P2 | 未实现 |
-| SysLogPO 表名修正 | `@TableName("sys_file_group")` 疑似应为 `sys_log` | P0 | 待确认 |
+| SysLogPO 表名修正 | `@TableName("sys_file_group")` 疑似应为 `sys_log` | P0 | 已修复 |
 | 文件分组路径修正 | `FileGroup-group` 应改为 `file-group` | P1 | 未实现 |
 | 集成测试 | 角色菜单绑定、用户角色绑定、权限缓存、租户隔离、数据权限、菜单作用域、租户管理 | P1 | DEFERRED |
