@@ -1,6 +1,5 @@
 package com.kava.kbpd.common.core.model;
 
-import cn.hutool.core.convert.Convert;
 import com.kava.kbpd.common.core.constants.JwtClaimConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -82,14 +81,28 @@ public class UserContext {
         }
 
         return UserContext.builder()
-                .tenantId(Convert.toLong(claims.get(JwtClaimConstants.TENANT_ID)))
-                .userType(Convert.toStr(claims.get(JwtClaimConstants.USER_TYPE)))
-                .userId(Convert.toLong(claims.get(JwtClaimConstants.USER_ID)))
-                .memberId(Convert.toLong(claims.get(JwtClaimConstants.MEMBER_ID)))
-                .username(Convert.toStr(claims.get(JwtClaimConstants.USERNAME)))
-                .deptId(Convert.toLong(claims.get(JwtClaimConstants.DEPT_ID)))
+                .tenantId(toLong(claims.get(JwtClaimConstants.TENANT_ID)))
+                .userType(toStr(claims.get(JwtClaimConstants.USER_TYPE)))
+                .userId(toLong(claims.get(JwtClaimConstants.USER_ID)))
+                .memberId(toLong(claims.get(JwtClaimConstants.MEMBER_ID)))
+                .username(toStr(claims.get(JwtClaimConstants.USERNAME)))
+                .deptId(toLong(claims.get(JwtClaimConstants.DEPT_ID)))
                 .roles(roles)
-                .dataScope(Convert.toStr(claims.get(JwtClaimConstants.DATA_SCOPE)))
+                .dataScope(toStr(claims.get(JwtClaimConstants.DATA_SCOPE)))
                 .build();
+    }
+
+    private static Long toLong(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Number n) {
+            return n.longValue();
+        }
+        return Long.parseLong(value.toString());
+    }
+
+    private static String toStr(Object value) {
+        return value == null ? null : value.toString();
     }
 }

@@ -1,6 +1,5 @@
 package com.kava.kbpd.common.security.config;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.kava.kbpd.common.core.constants.JwtClaimConstants;
 import com.kava.kbpd.common.core.model.UserContext;
 import com.kava.kbpd.common.security.context.UserContextCleanupFilter;
@@ -61,7 +60,7 @@ public class ResourceServerConfiguration {
 
         http.authorizeHttpRequests((requests) ->
                         {
-                            if (CollectionUtil.isNotEmpty(whitelistPaths)) {
+                            if (whitelistPaths != null && !whitelistPaths.isEmpty()) {
                                 for (String whitelistPath : whitelistPaths) {
                                     requests.requestMatchers(mvcMatcherBuilder.pattern(whitelistPath)).permitAll();
                                 }

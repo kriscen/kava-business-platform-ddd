@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.adapter.http;
 
-import cn.hutool.core.lang.tree.Tree;
+import com.kava.kbpd.common.core.model.tree.Tree;
 import com.kava.kbpd.common.core.base.JsonResult;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.adapter.converter.SysAreaAdapterConverter;

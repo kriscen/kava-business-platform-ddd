@@ -1,6 +1,5 @@
 package com.kava.kbpd.auth.config;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.fasterxml.jackson.databind.Module;
 import com.kava.kbpd.auth.constants.AuthConstants;
 import com.kava.kbpd.auth.oauth2.component.TenantAwareAuthenticationFilter;
@@ -55,7 +54,7 @@ public class DefaultSecurityConfig {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
         http.authorizeHttpRequests((requests) ->
                         {
-                            if (CollectionUtil.isNotEmpty(kbpdAuthProperties.getWhitelistPaths())) {
+                            if (kbpdAuthProperties.getWhitelistPaths() != null && !kbpdAuthProperties.getWhitelistPaths().isEmpty()) {
                                 for (String whitelistPath : kbpdAuthProperties.getWhitelistPaths()) {
                                     requests.requestMatchers(mvcMatcherBuilder.pattern(whitelistPath)).permitAll();
                                 }

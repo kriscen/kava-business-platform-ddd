@@ -14,7 +14,7 @@
 | 聚合边界明确 | 仅 User 和 Role 为聚合根，User 持有 roleIds，Role 持有 menuIds | 领域模型 |
 | 软删除 | PO 继承 `SysDeletablePO`，通过 `delFlag` 实现逻辑删除 | 基础设施层 |
 | 三级 PO 继承 | `BasePO` → `SysDeletablePO`（+delFlag）→ `TenantDeletablePO`（+tenantId） | 基础设施层 |
-| 树形数据构建 | 地区实体使用 Hutool `TreeUtil`，按 `areaStatus=YES` 过滤、`areaSort DESC` 排序 | SysAreaService |
+| 树形数据构建 | 地区实体使用 `TreeBuilder` 构建树，按 `areaStatus=YES` 过滤、`areaSort DESC` 排序 | SysAreaService |
 | 统一异常体系 | `UpmsBizException` 继承 `BaseBizException`，错误码枚举 `UpmsBizErrorCodeEnum` 覆盖角色/用户/菜单/租户 | types 层 |
 | 拦截器执行顺序 | TenantLine → DataScope → Pagination（在 `MybatisPlusConfig` 中注册） | kbpd-common-database |
 | 平台管理员跳过 | `ROLE_ADMIN` 角色跳过租户隔离和数据权限过滤 | upms-permission-system |

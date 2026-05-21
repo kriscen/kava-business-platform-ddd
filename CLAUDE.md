@@ -104,7 +104,6 @@ kbpd-{business}/
 - **Spring Security + OAuth2** for authentication
 - **MapStruct** for object mapping
 - **Lombok** for reducing boilerplate
-- **Hutool** for common utilities
 
 ## DDD Implementation Rules
 

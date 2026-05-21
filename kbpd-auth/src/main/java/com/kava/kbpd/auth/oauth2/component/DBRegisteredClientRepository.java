@@ -1,7 +1,5 @@
 package com.kava.kbpd.auth.oauth2.component;
 
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
 import com.kava.kbpd.auth.config.KbpdAuthProperties;
 import com.kava.kbpd.auth.constants.AuthConstants;
 import com.kava.kbpd.common.core.constants.SecretConstants;
@@ -69,14 +67,14 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
         }
         // 回调地址
         Optional.ofNullable(clientDetails.getWebServerRedirectUri())
-                .ifPresent(redirectUri -> Arrays.stream(redirectUri.split(StrUtil.COMMA))
-                        .filter(StrUtil::isNotBlank)
+                .ifPresent(redirectUri -> Arrays.stream(redirectUri.split(","))
+                        .filter(s -> !s.isBlank())
                         .forEach(builder::redirectUri));
 
         // scope
         Optional.ofNullable(clientDetails.getScope())
-                .ifPresent(scope -> Arrays.stream(scope.split(StrUtil.COMMA))
-                        .filter(StrUtil::isNotBlank)
+                .ifPresent(scope -> Arrays.stream(scope.split(","))
+                        .filter(s -> !s.isBlank())
                         .forEach(builder::scope));
 
         return builder
@@ -88,7 +86,7 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
                                 .orElse(kbpdAuthProperties.getRefreshTokenValiditySeconds())))
                         .build())
                 .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(!BooleanUtil.toBoolean(clientDetails.getAutoapprove()))
+                        .requireAuthorizationConsent(!"1".equals(clientDetails.getAutoapprove()))
                         //传入userType和TenantId
                         .setting(AuthConstants.URL_PARAM_USER_TYPE,clientDetails.getUserType())
                         .setting(AuthConstants.URL_PARAM_TENANT_ID,clientDetails.getTenantId())

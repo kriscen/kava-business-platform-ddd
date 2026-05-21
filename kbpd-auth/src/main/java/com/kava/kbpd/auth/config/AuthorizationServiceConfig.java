@@ -1,6 +1,5 @@
 package com.kava.kbpd.auth.config;
 
-import cn.hutool.core.util.StrUtil;
 import com.kava.kbpd.auth.constants.AuthConstants;
 import com.kava.kbpd.auth.model.ExtendAuthenticationToken;
 import com.kava.kbpd.auth.model.MemberDetails;
@@ -256,7 +255,7 @@ public class AuthorizationServiceConfig {
     public JWKSource<SecurityContext> jwkSource() {
         // 尝试从Redis中获取JWKSet(JWT密钥对，包含非对称加密的公钥和私钥)
         String jwkSetStr = redisService.getValue(redisKeyGenerator.generateKey(RedisKeyModule.AUTH,AuthConstants.JWK_SET_KEY));
-        if (StrUtil.isNotBlank(jwkSetStr)) {
+        if (jwkSetStr != null && !jwkSetStr.isBlank()) {
             // 如果存在，解析JWKSet并返回
             JWKSet jwkSet = JWKSet.parse(jwkSetStr);
             return new ImmutableJWKSet<>(jwkSet);

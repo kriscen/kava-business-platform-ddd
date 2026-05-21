@@ -24,7 +24,7 @@
 *   **服务发现/配置中心:** Nacos
 *   **编程语言:** Java 21
 *   **构建工具:** Maven
-*   **辅助工具:** Lombok, MapStruct (用于对象映射), Hutool (通用工具库)
+*   **辅助工具:** Lombok, MapStruct (用于对象映射)
 
 ## 项目结构
 

@@ -1,6 +1,5 @@
 package com.kava.kbpd.upms.infrastructure.adapter.repository;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -65,7 +64,7 @@ public class SysAreaRepository implements ISysAreaRepository {
     public List<SysAreaEntity> selectTreeList(SysAreaListQuery query) {
         var wrapper = Wrappers.lambdaQuery(SysAreaPO.class)
                 .eq(SysAreaPO::getAreaStatus, YesNoEnum.YES.getCode())
-                .in(CollUtil.isNotEmpty(query.getAreaTypes()), SysAreaPO::getAreaType, query.getAreaTypes())
+                .in(query.getAreaTypes() != null && !query.getAreaTypes().isEmpty(), SysAreaPO::getAreaType, query.getAreaTypes())
                 .orderByDesc(SysAreaPO::getAreaSort);
         List<SysAreaPO> entityList = sysAreaMapper.selectList(wrapper);
         return entityList.stream().map(sysAreaConverter::convertPO2Entity).toList();

@@ -1,10 +1,8 @@
 package com.kava.kbpd.upms.domain.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.map.MapUtil;
+import com.kava.kbpd.common.core.model.tree.Tree;
+import com.kava.kbpd.common.core.model.tree.TreeBuilder;
+import com.kava.kbpd.common.core.model.tree.TreeNode;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
 import com.kava.kbpd.upms.domain.model.entity.SysAreaEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;
@@ -14,8 +12,9 @@ import com.kava.kbpd.upms.types.constants.UpmsConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,9 +33,9 @@ public class SysAreaService implements ISysAreaService {
     @Override
     public List<Tree<Long>> selectAreaTree(SysAreaListQuery query) {
         List<SysAreaEntity> entityList = repository.selectTreeList(query);
-        List<TreeNode<Long>> nodeList = CollUtil.newArrayList();
+        List<TreeNode<Long>> nodeList = new ArrayList<>();
 
-        boolean hasAreaTypeFilter = CollUtil.isNotEmpty(query.getAreaTypes());
+        boolean hasAreaTypeFilter = query.getAreaTypes() != null && !query.getAreaTypes().isEmpty();
         Set<Long> adcodeSet = null;
         if (hasAreaTypeFilter) {
             adcodeSet = entityList.stream().map(SysAreaEntity::getAdcode).collect(Collectors.toSet());
@@ -51,7 +50,7 @@ public class SysAreaService implements ISysAreaService {
                     sysAreaEntity.getName(), -Optional.ofNullable(sysAreaEntity.getAreaSort())
                     .orElse(UpmsConstants.DEFAULT_AREA_SORT));
 
-            HashMap<String, Object> extraMap = MapUtil.of(SysAreaEntity.Fields.adcode, sysAreaEntity.getAdcode());
+            Map<String, Object> extraMap = Map.of(SysAreaEntity.Fields.adcode, sysAreaEntity.getAdcode());
             treeNode.setExtra(extraMap);
             nodeList.add(treeNode);
         }
@@ -64,7 +63,7 @@ public class SysAreaService implements ISysAreaService {
         } else {
             rootId = UpmsConstants.DEFAULT_AREA_PID;
         }
-        return TreeUtil.build(nodeList, rootId);
+        return TreeBuilder.build(nodeList, rootId);
     }
 
     @Override

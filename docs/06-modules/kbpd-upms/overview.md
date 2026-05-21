@@ -41,7 +41,6 @@ kbpd-upms 是平台的**用户权限管理**核心服务，负责用户、角色
 | Redis | — | 缓存（通过 kbpd-common-cache） |
 | MapStruct | — | 层间对象映射（Entity ↔ PO、Command ↔ Request 等） |
 | Lombok | — | 减少样板代码 |
-| Hutool | — | 通用工具（TreeUtil 构建地区树等） |
 
 ---
 

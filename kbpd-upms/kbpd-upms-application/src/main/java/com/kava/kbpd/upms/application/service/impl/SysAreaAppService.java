@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.application.service.impl;
 
-import cn.hutool.core.lang.tree.Tree;
+import com.kava.kbpd.common.core.model.tree.Tree;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.application.converter.SysAreaAppConverter;
 import com.kava.kbpd.upms.application.model.command.SysAreaCreateCommand;

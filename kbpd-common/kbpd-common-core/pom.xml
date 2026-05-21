@@ -13,10 +13,6 @@
     <name>kbpd-common-core</name>
 
     <dependencies>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

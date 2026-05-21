@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.domain.service;
 
-import cn.hutool.core.lang.tree.Tree;
+import com.kava.kbpd.common.core.model.tree.Tree;
 import com.kava.kbpd.upms.domain.model.entity.SysAreaEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAreaListQuery;

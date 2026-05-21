@@ -35,7 +35,7 @@ kbpd-common-bom          (独立 BOM，无 parent 链接到 kbpd-common)
    │
    │  版本管理
    ▼
-kbpd-common-core         (依赖: hutool-core)
+kbpd-common-core         (基础类型体系)
    ▲
    │
 kbpd-common-cache        (依赖: core, redisson, spring-data-redis)
@@ -61,7 +61,6 @@ kbpd-common-web          (依赖: spring-boot-starter-web, undertow)
 | Apache Dubbo | 3.3.4 | RPC 通信 |
 | Redisson | 3.23.4 | Redis 客户端 |
 | Druid | 1.2.23 | 数据库连接池 |
-| Hutool | 5.8.36 | 通用工具库 |
 | MapStruct | 1.6.3 | 对象映射 |
 | Knife4j + SpringDoc | 3.0.5 / 2.1.0 | API 文档 |
 
