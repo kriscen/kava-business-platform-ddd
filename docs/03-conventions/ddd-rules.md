@@ -268,3 +268,51 @@ SysUserEntity convertCreateCommand2Entity(SysUserCreateCommand command);
 @Mapping(source = "id.id", target = "id")
 SysUserPO convertEntity2PO(SysUserEntity entity);
 ```
+
+---
+
+## 7. Repository 选型规范
+
+### 7.1 两种模式
+
+| 模式 | 接口 | 适用场景 |
+|------|------|----------|
+| **CQRS Split** | `IBaseReadRepository` + `IBaseWriteRepository` | 有中间关联表、读写差异显著的聚合 |
+| **SimpleRepository** | `IBaseSimpleRepository` | 扁平实体、简单 CRUD 的聚合 |
+
+### 7.2 选型标准
+
+满足以下**任一**条件时使用 CQRS Split，否则使用 SimpleRepository：
+
+- 聚合有**中间关联表**需要级联写入（如 `sys_user_role`、`sys_role_menu`）
+- Read 端需要**大量专用查询方法**（如多表 JOIN 取权限）
+- Write 端需要**关联管理方法**（如 `saveUserRoles`、`removeUserRoles`）
+- 存在只需要读取能力的消费方（如 `SysMenuAppService` 注入 `ISysUserReadRepository`）
+
+### 7.3 接口契约对齐
+
+两种模式共享统一的读操作能力：
+
+```java
+// CQRS Read 端（三个泛型参数）
+public interface IBaseReadRepository<I extends Identifier, E extends Entity<I>, Q extends ValueObject> {
+    E queryById(I id);
+    PagingInfo<E> queryPage(Q query);
+}
+
+// SimpleRepository（同样三个泛型参数，读写合一）
+public interface IBaseSimpleRepository<I extends Identifier, E extends Entity<I>, Q extends ValueObject> {
+    I create(E entity);
+    Boolean update(E entity);
+    Boolean removeBatchByIds(List<I> ids);
+    PagingInfo<E> queryPage(Q query);
+    E queryById(I id);
+}
+```
+
+### 7.4 当前使用情况
+
+| 模式 | 聚合 |
+|------|------|
+| CQRS Split | SysUser（关联 sys_user_role）、SysRole（关联 sys_role_menu） |
+| SimpleRepository | SysTenant、SysMenu、SysDept、SysFile、SysLog、SysOauthClient、SysArea、SysAuditLog、SysRouteConf、SysI18nMessage、SysFileGroup、SysPublicParam |
