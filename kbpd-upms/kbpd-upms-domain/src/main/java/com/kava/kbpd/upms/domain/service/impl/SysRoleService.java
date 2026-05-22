@@ -88,7 +88,7 @@ public class SysRoleService implements ISysRoleService {
                 .roleName("租户管理员")
                 .roleCode("tenant_admin")
                 .roleDesc("租户创建时自动生成的管理员角色")
-                .dsType(Integer.valueOf(SysRoleDataScope.ALL.getCode()))
+                .dsType(SysRoleDataScope.ALL.getCode())
                 .menuIds(menuIds)
                 .tenantId(tenantId)
                 .build();

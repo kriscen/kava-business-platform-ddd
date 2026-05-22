@@ -26,7 +26,7 @@ public class SysRoleDetailResponse implements Serializable {
     private String roleDesc;
 
     /** 数据权限类型 */
-    private Integer dsType;
+    private String dsType;
 
     /** 数据权限作用范围 */
     private String dsScope;

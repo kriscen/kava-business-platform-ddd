@@ -82,6 +82,11 @@ public class SysUserEntity implements AggregateRoot<SysUserId> {
 	private String miniOpenid;
 
 	/**
+	 * QQ openId
+	 */
+	private String qqOpenid;
+
+	/**
 	 * 昵称
 	 */
 	private String nickname;

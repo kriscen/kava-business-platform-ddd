@@ -67,7 +67,7 @@ CREATE TABLE `sys_dept` (
                             `id` bigint NOT NULL COMMENT '部门ID',
                             `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门名称',
                             `sort_order` int NOT NULL DEFAULT '0' COMMENT '排序',
-                            `parent_id` bigint DEFAULT NULL COMMENT '父级部门ID',
+                            `pid` bigint DEFAULT NULL COMMENT '父级部门ID',
                             `tenant_id` bigint DEFAULT NULL COMMENT '租户ID',
                             `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志',
                             `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
@@ -182,6 +182,7 @@ CREATE TABLE `sys_menu` (
                             `keep_alive` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '是否缓存，0否，1是',
                             `embedded` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否内嵌，0否，1是',
                             `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '菜单类型，0目录，1菜单，2按钮',
+                            `scope` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单范围，区分平台还是租户',
                             `tenant_id` bigint unsigned DEFAULT NULL COMMENT '租户ID',
                             `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志，0未删除，1已删除',
                             `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
@@ -208,6 +209,7 @@ CREATE TABLE `sys_oauth_client` (
                                             `refresh_token_validity` int DEFAULT NULL COMMENT '刷新令牌有效期（秒）',
                                             `additional_information` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '附加信息',
                                             `autoapprove` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '自动授权',
+                                            `user_type` int DEFAULT NULL COMMENT '用户类型',
                                             `tenant_id` bigint NOT NULL DEFAULT '0' COMMENT '所属租户ID',
                                             `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标记，0未删除，1已删除',
                                             `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
@@ -336,5 +338,27 @@ CREATE TABLE `sys_user_role` (
                                  `role_id` bigint NOT NULL COMMENT '角色ID',
                                  PRIMARY KEY (`user_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户角色表';
+
+-- ----------------------------
+-- Table structure for sys_public_param
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_public_param`;
+CREATE TABLE `sys_public_param` (
+                                    `id` bigint NOT NULL COMMENT '主键ID',
+                                    `public_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公共参数名称',
+                                    `public_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公共参数地址值,英文大写+下划线',
+                                    `public_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '值',
+                                    `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '1' COMMENT '状态 (1有效; 2无效)',
+                                    `validate_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公共参数编码',
+                                    `system_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '是否是系统内置',
+                                    `public_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '配置类型 (0-默认;1-检索;2-原文;3-报表;4-安全;5-文档;6-消息;9-其他)',
+                                    `tenant_id` bigint DEFAULT NULL COMMENT '租户ID',
+                                    `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标记',
+                                    `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
+                                    `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                    `modifier` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
+                                    `gmt_modified` datetime DEFAULT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='公共参数配置表';
 
 SET FOREIGN_KEY_CHECKS = 1;

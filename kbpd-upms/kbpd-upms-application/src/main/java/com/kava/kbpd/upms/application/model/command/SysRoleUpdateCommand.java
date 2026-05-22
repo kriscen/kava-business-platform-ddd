@@ -41,7 +41,7 @@ public class SysRoleUpdateCommand {
     /**
      * 数据权限类型
      */
-    private Integer dsType;
+    private String dsType;
 
     /**
      * 数据权限作用范围

@@ -25,11 +25,6 @@ public class SysLogPO extends TenantDeletablePO {
 	private String title;
 
 	/**
-	 * 创建者
-	 */
-	private String createBy;
-
-	/**
 	 * 操作IP地址
 	 */
 	private String remoteAddr;

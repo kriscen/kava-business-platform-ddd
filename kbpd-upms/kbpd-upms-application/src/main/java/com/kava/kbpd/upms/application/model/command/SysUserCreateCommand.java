@@ -64,6 +64,11 @@ public class SysUserCreateCommand {
     private String miniOpenid;
 
     /**
+     * QQ openId
+     */
+    private String qqOpenid;
+
+    /**
      * 昵称
      */
     private String nickname;
