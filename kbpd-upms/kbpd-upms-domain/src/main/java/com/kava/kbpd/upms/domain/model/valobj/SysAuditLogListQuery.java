@@ -1,5 +1,6 @@
 package com.kava.kbpd.upms.domain.model.valobj;
 
+import com.kava.kbpd.common.core.base.QueryParamValObj;
 import com.kava.kbpd.common.core.label.ValueObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,9 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor(access = PRIVATE)
 public class SysAuditLogListQuery implements ValueObject {
 
-
-
+    /**
+     * 分页参数
+     */
+    QueryParamValObj queryParam;
 
 }

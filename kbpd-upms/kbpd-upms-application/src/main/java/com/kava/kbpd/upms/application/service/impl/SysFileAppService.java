@@ -10,7 +10,7 @@ import com.kava.kbpd.upms.application.service.ISysFileAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysFileEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysFileRepository;
+import com.kava.kbpd.upms.domain.service.ISysFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,36 +26,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysFileAppService implements ISysFileAppService {
-    private final ISysFileRepository sysFileRepository;
+    private final ISysFileService sysFileService;
     private final SysFileAppConverter sysFileAppConverter;
 
     @Override
     public SysFileId createFile(SysFileCreateCommand command) {
         SysFileEntity sysFileEntity = sysFileAppConverter.convertCreateCommand2Entity(command);
-        return sysFileRepository.create(sysFileEntity);
+        return sysFileService.create(sysFileEntity);
     }
 
     @Override
     public void updateFile(SysFileUpdateCommand command) {
         SysFileEntity sysFileEntity = sysFileAppConverter.convertUpdateCommand2Entity(command);
-        sysFileRepository.update(sysFileEntity);
+        sysFileService.update(sysFileEntity);
     }
 
     @Override
     public void removeFileBatchByIds(List<SysFileId> ids) {
-        sysFileRepository.removeBatchByIds(ids);
+        sysFileService.removeBatchByIds(ids);
     }
 
     @Override
     public PagingInfo<SysFileAppListDTO> queryFilePage(SysFileListQuery query) {
-        PagingInfo<SysFileEntity> sysFileEntityPagingInfo = sysFileRepository.queryPage(query);
+        PagingInfo<SysFileEntity> sysFileEntityPagingInfo = sysFileService.queryPage(query);
         List<SysFileAppListDTO> collect = sysFileEntityPagingInfo.getList().stream().map(sysFileEntity -> sysFileAppConverter.convertEntityToListQueryDTO(sysFileEntity)).toList();
         return PagingInfo.toResponse(collect, sysFileEntityPagingInfo);
     }
 
     @Override
     public SysFileAppDetailDTO queryFileById(SysFileId id) {
-        SysFileEntity FileEntity = sysFileRepository.queryById(id);
+        SysFileEntity FileEntity = sysFileService.queryById(id);
         return sysFileAppConverter.convertEntityToDetailDTO(FileEntity);
     }
 

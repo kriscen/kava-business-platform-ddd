@@ -17,4 +17,6 @@ public interface ISysI18nMessageService {
     SysI18nMessageEntity queryById(SysI18nMessageId id);
 
     Boolean removeBatchByIds(List<SysI18nMessageId> ids);
+
+    SysI18nMessageEntity queryByCodeAndLanguage(String code, String language);
 }

@@ -10,7 +10,7 @@ import com.kava.kbpd.upms.application.service.ISysFileGroupAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysFileGroupEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileGroupListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysFileGroupRepository;
+import com.kava.kbpd.upms.domain.service.ISysFileGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,36 +26,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysFileGroupAppService implements ISysFileGroupAppService {
-    private final ISysFileGroupRepository sysFileGroupRepository;
+    private final ISysFileGroupService sysFileGroupService;
     private final SysFileGroupAppConverter sysFileGroupAppConverter;
 
     @Override
     public SysFileGroupId createFileGroup(SysFileGroupCreateCommand command) {
         SysFileGroupEntity sysFileGroupEntity = sysFileGroupAppConverter.convertCreateCommand2Entity(command);
-        return sysFileGroupRepository.create(sysFileGroupEntity);
+        return sysFileGroupService.create(sysFileGroupEntity);
     }
 
     @Override
     public void updateFileGroup(SysFileGroupUpdateCommand command) {
         SysFileGroupEntity sysFileGroupEntity = sysFileGroupAppConverter.convertUpdateCommand2Entity(command);
-        sysFileGroupRepository.update(sysFileGroupEntity);
+        sysFileGroupService.update(sysFileGroupEntity);
     }
 
     @Override
     public void removeFileGroupBatchByIds(List<SysFileGroupId> ids) {
-        sysFileGroupRepository.removeBatchByIds(ids);
+        sysFileGroupService.removeBatchByIds(ids);
     }
 
     @Override
     public PagingInfo<SysFileGroupAppListDTO> queryFileGroupPage(SysFileGroupListQuery query) {
-        PagingInfo<SysFileGroupEntity> sysFileGroupEntityPagingInfo = sysFileGroupRepository.queryPage(query);
+        PagingInfo<SysFileGroupEntity> sysFileGroupEntityPagingInfo = sysFileGroupService.queryPage(query);
         List<SysFileGroupAppListDTO> collect = sysFileGroupEntityPagingInfo.getList().stream().map(sysFileGroupEntity -> sysFileGroupAppConverter.convertEntityToListQueryDTO(sysFileGroupEntity)).toList();
         return PagingInfo.toResponse(collect, sysFileGroupEntityPagingInfo);
     }
 
     @Override
     public SysFileGroupAppDetailDTO queryFileGroupById(SysFileGroupId id) {
-        SysFileGroupEntity FileGroupEntity = sysFileGroupRepository.queryById(id);
+        SysFileGroupEntity FileGroupEntity = sysFileGroupService.queryById(id);
         return sysFileGroupAppConverter.convertEntityToDetailDTO(FileGroupEntity);
     }
 

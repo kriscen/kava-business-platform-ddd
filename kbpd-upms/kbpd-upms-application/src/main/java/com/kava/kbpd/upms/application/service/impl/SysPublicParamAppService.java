@@ -10,7 +10,7 @@ import com.kava.kbpd.upms.application.service.ISysPublicParamAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysPublicParamEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamId;
 import com.kava.kbpd.upms.domain.model.valobj.SysPublicParamListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysPublicParamRepository;
+import com.kava.kbpd.upms.domain.service.ISysPublicParamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,36 +26,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysPublicParamAppService implements ISysPublicParamAppService {
-    private final ISysPublicParamRepository sysPublicParamRepository;
+    private final ISysPublicParamService sysPublicParamService;
     private final SysPublicParamAppConverter sysPublicParamAppConverter;
 
     @Override
     public SysPublicParamId createPublicParam(SysPublicParamCreateCommand command) {
         SysPublicParamEntity sysPublicParamEntity = sysPublicParamAppConverter.convertCreateCommand2Entity(command);
-        return sysPublicParamRepository.create(sysPublicParamEntity);
+        return sysPublicParamService.create(sysPublicParamEntity);
     }
 
     @Override
     public void updatePublicParam(SysPublicParamUpdateCommand command) {
         SysPublicParamEntity sysPublicParamEntity = sysPublicParamAppConverter.convertUpdateCommand2Entity(command);
-        sysPublicParamRepository.update(sysPublicParamEntity);
+        sysPublicParamService.update(sysPublicParamEntity);
     }
 
     @Override
     public void removePublicParamBatchByIds(List<SysPublicParamId> ids) {
-        sysPublicParamRepository.removeBatchByIds(ids);
+        sysPublicParamService.removeBatchByIds(ids);
     }
 
     @Override
     public PagingInfo<SysPublicParamAppListDTO> queryPublicParamPage(SysPublicParamListQuery query) {
-        PagingInfo<SysPublicParamEntity> sysPublicParamEntityPagingInfo = sysPublicParamRepository.queryPage(query);
+        PagingInfo<SysPublicParamEntity> sysPublicParamEntityPagingInfo = sysPublicParamService.queryPage(query);
         List<SysPublicParamAppListDTO> collect = sysPublicParamEntityPagingInfo.getList().stream().map(sysPublicParamEntity -> sysPublicParamAppConverter.convertEntityToListQueryDTO(sysPublicParamEntity)).toList();
         return PagingInfo.toResponse(collect, sysPublicParamEntityPagingInfo);
     }
 
     @Override
     public SysPublicParamAppDetailDTO queryPublicParamById(SysPublicParamId id) {
-        SysPublicParamEntity PublicParamEntity = sysPublicParamRepository.queryById(id);
+        SysPublicParamEntity PublicParamEntity = sysPublicParamService.queryById(id);
         return sysPublicParamAppConverter.convertEntityToDetailDTO(PublicParamEntity);
     }
 

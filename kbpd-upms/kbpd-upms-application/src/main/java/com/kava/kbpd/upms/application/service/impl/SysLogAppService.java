@@ -10,7 +10,7 @@ import com.kava.kbpd.upms.application.service.ISysLogAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogId;
 import com.kava.kbpd.upms.domain.model.valobj.SysLogListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysLogRepository;
+import com.kava.kbpd.upms.domain.service.ISysLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,36 +26,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysLogAppService implements ISysLogAppService {
-    private final ISysLogRepository sysLogRepository;
+    private final ISysLogService sysLogService;
     private final SysLogAppConverter sysLogAppConverter;
 
     @Override
     public SysLogId createLog(SysLogCreateCommand command) {
         SysLogEntity sysLogEntity = sysLogAppConverter.convertCreateCommand2Entity(command);
-        return sysLogRepository.create(sysLogEntity);
+        return sysLogService.create(sysLogEntity);
     }
 
     @Override
     public void updateLog(SysLogUpdateCommand command) {
         SysLogEntity sysLogEntity = sysLogAppConverter.convertUpdateCommand2Entity(command);
-        sysLogRepository.update(sysLogEntity);
+        sysLogService.update(sysLogEntity);
     }
 
     @Override
     public void removeLogBatchByIds(List<SysLogId> ids) {
-        sysLogRepository.removeBatchByIds(ids);
+        sysLogService.removeBatchByIds(ids);
     }
 
     @Override
     public PagingInfo<SysLogAppListDTO> queryLogPage(SysLogListQuery query) {
-        PagingInfo<SysLogEntity> sysLogEntityPagingInfo = sysLogRepository.queryPage(query);
+        PagingInfo<SysLogEntity> sysLogEntityPagingInfo = sysLogService.queryPage(query);
         List<SysLogAppListDTO> collect = sysLogEntityPagingInfo.getList().stream().map(sysLogEntity -> sysLogAppConverter.convertEntityToListQueryDTO(sysLogEntity)).toList();
         return PagingInfo.toResponse(collect, sysLogEntityPagingInfo);
     }
 
     @Override
     public SysLogAppDetailDTO queryLogById(SysLogId id) {
-        SysLogEntity LogEntity = sysLogRepository.queryById(id);
+        SysLogEntity LogEntity = sysLogService.queryById(id);
         return sysLogAppConverter.convertEntityToDetailDTO(LogEntity);
     }
 

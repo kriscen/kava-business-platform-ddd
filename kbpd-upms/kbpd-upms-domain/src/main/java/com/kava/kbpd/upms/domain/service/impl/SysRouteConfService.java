@@ -4,36 +4,40 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysRouteConfEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysRouteConfRepository;
 import com.kava.kbpd.upms.domain.service.ISysRouteConfService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysRouteConfService implements ISysRouteConfService {
+    private final ISysRouteConfRepository repository;
 
     @Override
     public SysRouteConfId create(SysRouteConfEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.create(entity);
     }
 
     @Override
     public Boolean update(SysRouteConfEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.update(entity);
     }
 
     @Override
     public PagingInfo<SysRouteConfEntity> queryPage(SysRouteConfListQuery query) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryPage(query);
     }
 
     @Override
     public SysRouteConfEntity queryById(SysRouteConfId id) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryById(id);
     }
 
     @Override
     public Boolean removeBatchByIds(List<SysRouteConfId> ids) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.removeBatchByIds(ids);
     }
 }

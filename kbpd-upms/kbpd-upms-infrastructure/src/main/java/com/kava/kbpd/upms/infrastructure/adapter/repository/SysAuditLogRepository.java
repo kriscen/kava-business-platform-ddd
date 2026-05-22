@@ -1,5 +1,7 @@
 package com.kava.kbpd.upms.infrastructure.adapter.repository;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;
@@ -39,13 +41,12 @@ public class SysAuditLogRepository implements ISysAuditLogRepository {
 
     @Override
     public PagingInfo<SysAuditLogEntity> queryPage(SysAuditLogListQuery query) {
-//        Page<SysAuditLogPO> SysAuditLogPOPage = sysAuditLogMapper.selectPage(
-//                Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
-//                Wrappers.lambdaQuery(SysAuditLogPO.class));
-//        return PagingInfo.toResponse(SysAuditLogPOPage.getRecords().stream()
-//                        .map(sysAuditLogConverter::convertPO2Entity).toList(),
-//                SysAuditLogPOPage.getTotal(), SysAuditLogPOPage.getCurrent(), SysAuditLogPOPage.getSize());
-        return null;
+        Page<SysAuditLogPO> sysAuditLogPOPage = sysAuditLogMapper.selectPage(
+                Page.of(query.getQueryParam().getPageNo(), query.getQueryParam().getPageSize()),
+                Wrappers.lambdaQuery(SysAuditLogPO.class));
+        return PagingInfo.toResponse(sysAuditLogPOPage.getRecords().stream()
+                        .map(sysAuditLogConverter::convertPO2Entity).toList(),
+                sysAuditLogPOPage.getTotal(), sysAuditLogPOPage.getCurrent(), sysAuditLogPOPage.getSize());
     }
 
     @Override

@@ -4,36 +4,40 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysFileEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileId;
 import com.kava.kbpd.upms.domain.model.valobj.SysFileListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysFileRepository;
 import com.kava.kbpd.upms.domain.service.ISysFileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysFileService implements ISysFileService {
+    private final ISysFileRepository repository;
 
     @Override
     public SysFileId create(SysFileEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.create(entity);
     }
 
     @Override
     public Boolean update(SysFileEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.update(entity);
     }
 
     @Override
     public PagingInfo<SysFileEntity> queryPage(SysFileListQuery query) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryPage(query);
     }
 
     @Override
     public SysFileEntity queryById(SysFileId id) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryById(id);
     }
 
     @Override
     public Boolean removeBatchByIds(List<SysFileId> ids) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.removeBatchByIds(ids);
     }
 }

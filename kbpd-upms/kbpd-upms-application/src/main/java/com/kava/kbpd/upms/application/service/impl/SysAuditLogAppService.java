@@ -10,7 +10,7 @@ import com.kava.kbpd.upms.application.service.ISysAuditLogAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysAuditLogEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAuditLogListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysAuditLogRepository;
+import com.kava.kbpd.upms.domain.service.ISysAuditLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,36 +26,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysAuditLogAppService implements ISysAuditLogAppService {
-    private final ISysAuditLogRepository sysAuditLogRepository;
+    private final ISysAuditLogService sysAuditLogService;
     private final SysAuditLogAppConverter sysAuditLogAppConverter;
 
     @Override
     public SysAuditLogId createAuditLog(SysAuditLogCreateCommand command) {
         SysAuditLogEntity sysAuditLogEntity = sysAuditLogAppConverter.convertCreateCommand2Entity(command);
-        return sysAuditLogRepository.create(sysAuditLogEntity);
+        return sysAuditLogService.create(sysAuditLogEntity);
     }
 
     @Override
     public void updateAuditLog(SysAuditLogUpdateCommand command) {
         SysAuditLogEntity sysAuditLogEntity = sysAuditLogAppConverter.convertUpdateCommand2Entity(command);
-        sysAuditLogRepository.update(sysAuditLogEntity);
+        sysAuditLogService.update(sysAuditLogEntity);
     }
 
     @Override
     public void removeAuditLogBatchByIds(List<SysAuditLogId> ids) {
-        sysAuditLogRepository.removeBatchByIds(ids);
+        sysAuditLogService.removeBatchByIds(ids);
     }
 
     @Override
     public PagingInfo<SysAuditLogAppListDTO> queryAuditLogPage(SysAuditLogListQuery query) {
-        PagingInfo<SysAuditLogEntity> sysAuditLogEntityPagingInfo = sysAuditLogRepository.queryPage(query);
+        PagingInfo<SysAuditLogEntity> sysAuditLogEntityPagingInfo = sysAuditLogService.queryPage(query);
         List<SysAuditLogAppListDTO> collect = sysAuditLogEntityPagingInfo.getList().stream().map(sysAuditLogEntity -> sysAuditLogAppConverter.convertEntityToListQueryDTO(sysAuditLogEntity)).toList();
         return PagingInfo.toResponse(collect, sysAuditLogEntityPagingInfo);
     }
 
     @Override
     public SysAuditLogAppDetailDTO queryAuditLogById(SysAuditLogId id) {
-        SysAuditLogEntity AuditLogEntity = sysAuditLogRepository.queryById(id);
+        SysAuditLogEntity AuditLogEntity = sysAuditLogService.queryById(id);
         return sysAuditLogAppConverter.convertEntityToDetailDTO(AuditLogEntity);
     }
 

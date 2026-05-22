@@ -94,22 +94,22 @@ public class SysUserServiceImpl implements ISysUserService {
 | 跨聚合协调 | Tenant 创建时初始化 Role |
 | 非平凡领域算法 | Area 的树形构建 |
 
-### 3.2 透传 DomainService 的处理
+### 3.2 委托型 DomainService 的处理
 
 - 所有子域保留 DomainService **接口**，作为扩展点
-- **未被 AppService 调用的** DomainService 实现：不注入 Repository，方法体为空
-- **被 AppService 调用的** DomainService 实现：正常注入 Repository，实现逻辑
-- AppService 不注入未被使用的 DomainService
+- 所有 DomainService 实现：注入 Repository，方法委托转发（即使当前无业务逻辑）
+- AppService **必须**通过 DomainService 调用 Repository，不得直接注入 Repository
+- 委托模式保证 DDD 分层合规，同时为未来业务规则增长预留入口
 
 ```
 简单实体（暂无复杂逻辑）         复杂子域（有业务规则）
 ═══════════════════════         ══════════════════════
 
-ISysDeptService（接口）          ISysRoleService（接口）
-  └─ 实现类：空壳                 └─ 实现类：注入 Repo，含逻辑
+ISysPublicParamService（接口）    ISysRoleService（接口）
+  └─ 实现类：注入 Repo，委托转发     └─ 实现类：注入 Repo，含逻辑
 
 AppService                      AppService
-  └─ 直接调 Repository            └─ 调 DomainService
+  └─ 调 DomainService（委托）       └─ 调 DomainService（含逻辑）
 ```
 
 ---

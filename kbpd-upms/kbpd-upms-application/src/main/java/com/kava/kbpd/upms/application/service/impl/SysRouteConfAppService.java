@@ -10,7 +10,7 @@ import com.kava.kbpd.upms.application.service.ISysRouteConfAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysRouteConfEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRouteConfListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysRouteConfRepository;
+import com.kava.kbpd.upms.domain.service.ISysRouteConfService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,36 +26,36 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysRouteConfAppService implements ISysRouteConfAppService {
-    private final ISysRouteConfRepository sysRouteConfRepository;
+    private final ISysRouteConfService sysRouteConfService;
     private final SysRouteConfAppConverter sysRouteConfAppConverter;
 
     @Override
     public SysRouteConfId createRouteConf(SysRouteConfCreateCommand command) {
         SysRouteConfEntity sysRouteConfEntity = sysRouteConfAppConverter.convertCreateCommand2Entity(command);
-        return sysRouteConfRepository.create(sysRouteConfEntity);
+        return sysRouteConfService.create(sysRouteConfEntity);
     }
 
     @Override
     public void updateRouteConf(SysRouteConfUpdateCommand command) {
         SysRouteConfEntity sysRouteConfEntity = sysRouteConfAppConverter.convertUpdateCommand2Entity(command);
-        sysRouteConfRepository.update(sysRouteConfEntity);
+        sysRouteConfService.update(sysRouteConfEntity);
     }
 
     @Override
     public void removeRouteConfBatchByIds(List<SysRouteConfId> ids) {
-        sysRouteConfRepository.removeBatchByIds(ids);
+        sysRouteConfService.removeBatchByIds(ids);
     }
 
     @Override
     public PagingInfo<SysRouteConfAppListDTO> queryRouteConfPage(SysRouteConfListQuery query) {
-        PagingInfo<SysRouteConfEntity> sysRouteConfEntityPagingInfo = sysRouteConfRepository.queryPage(query);
+        PagingInfo<SysRouteConfEntity> sysRouteConfEntityPagingInfo = sysRouteConfService.queryPage(query);
         List<SysRouteConfAppListDTO> collect = sysRouteConfEntityPagingInfo.getList().stream().map(sysRouteConfEntity -> sysRouteConfAppConverter.convertEntityToListQueryDTO(sysRouteConfEntity)).toList();
         return PagingInfo.toResponse(collect, sysRouteConfEntityPagingInfo);
     }
 
     @Override
     public SysRouteConfAppDetailDTO queryRouteConfById(SysRouteConfId id) {
-        SysRouteConfEntity RouteConfEntity = sysRouteConfRepository.queryById(id);
+        SysRouteConfEntity RouteConfEntity = sysRouteConfService.queryById(id);
         return sysRouteConfAppConverter.convertEntityToDetailDTO(RouteConfEntity);
     }
 
