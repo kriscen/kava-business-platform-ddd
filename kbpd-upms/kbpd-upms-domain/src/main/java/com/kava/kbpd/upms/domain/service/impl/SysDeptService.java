@@ -4,36 +4,40 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysDeptRepository;
 import com.kava.kbpd.upms.domain.service.ISysDeptService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysDeptService implements ISysDeptService {
+    private final ISysDeptRepository repository;
 
     @Override
     public SysDeptId create(SysDeptEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.create(entity);
     }
 
     @Override
     public Boolean update(SysDeptEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.update(entity);
     }
 
     @Override
     public PagingInfo<SysDeptEntity> queryPage(SysDeptListQuery query) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryPage(query);
     }
 
     @Override
     public SysDeptEntity queryById(SysDeptId id) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryById(id);
     }
 
     @Override
     public Boolean removeBatchByIds(List<SysDeptId> ids) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.removeBatchByIds(ids);
     }
 }

@@ -4,36 +4,45 @@ import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.upms.domain.model.entity.SysOauthClientEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientId;
 import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysOauthClientRepository;
 import com.kava.kbpd.upms.domain.service.ISysOauthClientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysOauthClientService implements ISysOauthClientService {
+    private final ISysOauthClientRepository repository;
 
     @Override
     public SysOauthClientId create(SysOauthClientEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.create(entity);
     }
 
     @Override
     public Boolean update(SysOauthClientEntity entity) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.update(entity);
     }
 
     @Override
     public PagingInfo<SysOauthClientEntity> queryPage(SysOauthClientListQuery query) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryPage(query);
     }
 
     @Override
     public SysOauthClientEntity queryById(SysOauthClientId id) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.queryById(id);
     }
 
     @Override
     public Boolean removeBatchByIds(List<SysOauthClientId> ids) {
-        throw new UnsupportedOperationException("暂未实现");
+        return repository.removeBatchByIds(ids);
+    }
+
+    @Override
+    public SysOauthClientEntity queryByClientId(String clientId) {
+        return repository.queryByClientId(clientId);
     }
 }

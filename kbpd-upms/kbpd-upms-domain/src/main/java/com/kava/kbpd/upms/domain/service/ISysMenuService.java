@@ -17,4 +17,8 @@ public interface ISysMenuService {
     SysMenuEntity queryById(SysMenuId id);
 
     Boolean removeBatchByIds(List<SysMenuId> ids);
+
+    List<SysMenuEntity> queryAll();
+
+    List<SysMenuEntity> queryByIds(List<SysMenuId> ids);
 }

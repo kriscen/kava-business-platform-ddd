@@ -17,4 +17,6 @@ public interface ISysOauthClientService {
     SysOauthClientEntity queryById(SysOauthClientId id);
 
     Boolean removeBatchByIds(List<SysOauthClientId> ids);
+
+    SysOauthClientEntity queryByClientId(String clientId);
 }
