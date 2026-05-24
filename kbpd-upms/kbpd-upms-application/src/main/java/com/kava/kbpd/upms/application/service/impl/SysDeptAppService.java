@@ -14,6 +14,7 @@ import com.kava.kbpd.upms.domain.service.ISysDeptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,18 +31,21 @@ public class SysDeptAppService implements ISysDeptAppService {
     private final SysDeptAppConverter sysDeptAppConverter;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SysDeptId createDept(SysDeptCreateCommand command) {
         SysDeptEntity sysDeptEntity = sysDeptAppConverter.convertCreateCommand2Entity(command);
         return sysDeptService.create(sysDeptEntity);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateDept(SysDeptUpdateCommand command) {
         SysDeptEntity sysDeptEntity = sysDeptAppConverter.convertUpdateCommand2Entity(command);
         sysDeptService.update(sysDeptEntity);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void removeDeptBatchByIds(List<SysDeptId> ids) {
         sysDeptService.removeBatchByIds(ids);
     }

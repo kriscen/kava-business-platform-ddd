@@ -14,7 +14,6 @@ import com.kava.kbpd.upms.application.service.ISysTenantAppService;
 import com.kava.kbpd.upms.application.service.ISysUserAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysTenantRepository;
 import com.kava.kbpd.upms.domain.service.ISysRoleService;
 import com.kava.kbpd.upms.domain.service.ISysTenantService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysTenantAppService implements ISysTenantAppService {
-    private final ISysTenantRepository sysTenantRepository;
     private final ISysTenantService sysTenantService;
     private final ISysRoleService sysRoleService;
     private final ISysUserAppService sysUserAppService;
@@ -64,12 +62,12 @@ public class SysTenantAppService implements ISysTenantAppService {
 
     @Override
     public void removeTenantBatchByIds(List<SysTenantId> ids) {
-        sysTenantRepository.removeBatchByIds(ids);
+        sysTenantService.removeBatchByIds(ids);
     }
 
     @Override
     public PagingInfo<SysTenantAppListDTO> queryTenantPage(SysTenantListQuery query) {
-        PagingInfo<SysTenantEntity> sysTenantEntityPagingInfo = sysTenantRepository.queryPage(query);
+        PagingInfo<SysTenantEntity> sysTenantEntityPagingInfo = sysTenantService.queryPage(query);
         List<SysTenantAppListDTO> collect = sysTenantEntityPagingInfo.getList().stream()
                 .map(sysTenantAppConverter::convertEntityToListQueryDTO).toList();
         return PagingInfo.toResponse(collect, sysTenantEntityPagingInfo);
@@ -77,7 +75,7 @@ public class SysTenantAppService implements ISysTenantAppService {
 
     @Override
     public SysTenantAppDetailDTO queryTenantById(SysTenantId id) {
-        SysTenantEntity tenantEntity = sysTenantRepository.queryById(id);
+        SysTenantEntity tenantEntity = sysTenantService.queryById(id);
         return sysTenantAppConverter.convertEntityToDetailDTO(tenantEntity);
     }
 
@@ -93,7 +91,7 @@ public class SysTenantAppService implements ISysTenantAppService {
 
     @Override
     public TenantStatusAppDTO checkTenantStatus(SysTenantId id) {
-        SysTenantEntity entity = sysTenantRepository.queryById(id);
+        SysTenantEntity entity = sysTenantService.queryById(id);
         if (entity == null) {
             return null;
         }

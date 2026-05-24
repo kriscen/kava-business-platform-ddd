@@ -7,9 +7,12 @@ import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserWriteRepository;
 import com.kava.kbpd.upms.domain.service.ISysUserService;
+import com.kava.kbpd.upms.types.exception.UpmsBizException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import static com.kava.kbpd.upms.types.exception.UpmsBizErrorCodeEnum.USER_USERNAME_DUPLICATE;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class SysUserService implements ISysUserService {
 
     @Override
     public SysUserId create(SysUserEntity entity) {
+        validateUsernameUnique(entity.getTenantId().getId(), entity.getUsername(), null);
         SysUserId userId = writeRepository.create(entity);
         if (!CollectionUtils.isEmpty(entity.getRoleIds())) {
             writeRepository.saveUserRoles(userId, entity.getRoleIds());
@@ -30,6 +34,10 @@ public class SysUserService implements ISysUserService {
 
     @Override
     public Boolean update(SysUserEntity entity) {
+        SysUserEntity existing = readRepository.queryById(entity.getId());
+        if (existing != null && !existing.getUsername().equals(entity.getUsername())) {
+            validateUsernameUnique(entity.getTenantId().getId(), entity.getUsername(), entity.getId());
+        }
         writeRepository.removeUserRoles(entity.getId());
         if (!CollectionUtils.isEmpty(entity.getRoleIds())) {
             writeRepository.saveUserRoles(entity.getId(), entity.getRoleIds());
@@ -53,5 +61,12 @@ public class SysUserService implements ISysUserService {
             writeRepository.removeUserRoles(userId);
         }
         return writeRepository.removeBatchByIds(ids);
+    }
+
+    private void validateUsernameUnique(Long tenantId, String username, SysUserId excludeId) {
+        SysUserEntity existing = readRepository.queryByUsername(tenantId, username);
+        if (existing != null && (excludeId == null || !existing.getId().equals(excludeId))) {
+            throw new UpmsBizException(USER_USERNAME_DUPLICATE);
+        }
     }
 }

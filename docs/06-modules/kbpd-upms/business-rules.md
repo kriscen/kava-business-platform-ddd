@@ -53,7 +53,7 @@
 | 规则 | 描述 |
 |---|---|
 | 用户-角色关联持久化 | 创建/更新用户时全量替换 `sys_user_role`（先删后插），删除时级联清理，查询时返回 roleIds |
-| 用户名唯一性 | 创建用户时校验同一租户下用户名不可重复（`UpmsBizErrorCodeEnum.USERNAME_EXISTS`） |
+| 用户名唯一性 | 创建用户时校验同一租户下用户名不可重复；更新用户时若 username 变更则校验新用户名唯一性（`UpmsBizErrorCodeEnum.USER_USERNAME_DUPLICATE`） |
 
 ### 角色与权限
 
@@ -85,6 +85,17 @@
 | pid 环检测 | 创建/更新部门时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 DEPT_PID_CIRCULAR（A00502） |
 | 删除前子部门检查 | 删除部门前检查是否有直接子部门，有则抛出 DEPT_HAS_CHILDREN（A00503） |
 | 删除前用户引用检查 | 删除部门前检查 sys_user.dept_id 是否有用户关联，有则抛出 DEPT_REFERENCED_BY_USER（A00504） |
+
+### OAuth 客户端管理
+
+| 规则 | 描述 |
+|---|---|
+| clientId 唯一性 | 创建客户端时校验 clientId 全局唯一；更新时若 clientId 变更则校验新 clientId 唯一性（排除自身）（`CLIENT_ID_DUPLICATE` A00601） |
+| clientSecret 非空 | 创建和更新客户端时 clientSecret 不可为空（`CLIENT_SECRET_REQUIRED` A00602） |
+| token 有效期范围 | accessTokenValidity 和 refreshTokenValidity 必须大于 0（`CLIENT_TOKEN_VALIDITY_INVALID` A00603） |
+| authorizedGrantTypes 非空 | 授权方式不可为空数组（`CLIENT_GRANT_TYPES_REQUIRED` A00604） |
+| AppService 调用链路 | SysOauthClientAppService 通过 ISysOauthClientService 调用 Repository，不直接注入 Repository |
+| 写操作事务保障 | AppService 的 create/update/remove 方法均有 `@Transactional(rollbackFor = Exception.class)` |
 
 ### 权限运行时
 
@@ -131,6 +142,10 @@
 | 部门 | A00502 | 部门父节点不能形成循环引用 |
 | 部门 | A00503 | 部门存在子部门，无法删除 |
 | 部门 | A00504 | 部门已被用户引用，无法删除 |
+| OAuth客户端 | A00601 | 客户端ID已存在 |
+| OAuth客户端 | A00602 | 客户端密钥不能为空 |
+| OAuth客户端 | A00603 | 令牌有效期无效 |
+| OAuth客户端 | A00604 | 授权方式不能为空 |
 
 ---
 

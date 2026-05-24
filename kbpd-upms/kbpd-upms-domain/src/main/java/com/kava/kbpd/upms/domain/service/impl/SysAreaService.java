@@ -1,5 +1,6 @@
 package com.kava.kbpd.upms.domain.service.impl;
 
+import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.common.core.model.tree.Tree;
 import com.kava.kbpd.common.core.model.tree.TreeBuilder;
 import com.kava.kbpd.common.core.model.tree.TreeNode;
@@ -29,6 +30,31 @@ import java.util.stream.Collectors;
 public class SysAreaService implements ISysAreaService {
 
     private final ISysAreaRepository repository;
+
+    @Override
+    public SysAreaId create(SysAreaEntity entity) {
+        return repository.create(entity);
+    }
+
+    @Override
+    public Boolean update(SysAreaEntity entity) {
+        return repository.update(entity);
+    }
+
+    @Override
+    public Boolean removeBatchByIds(List<SysAreaId> ids) {
+        return repository.removeBatchByIds(ids);
+    }
+
+    @Override
+    public PagingInfo<SysAreaEntity> queryPage(SysAreaListQuery query) {
+        return repository.queryPage(query);
+    }
+
+    @Override
+    public SysAreaEntity queryById(SysAreaId id) {
+        return repository.queryById(id);
+    }
 
     @Override
     public List<Tree<Long>> selectAreaTree(SysAreaListQuery query) {

@@ -41,6 +41,12 @@ public enum UpmsBizErrorCodeEnum implements BaseErrorCodeEnum {
     TENANT_CODE_DUPLICATE("A00402", "租户编码已存在"),
     TENANT_STATUS_INVALID_TRANSITION("A00403", "租户状态流转不合法"),
 
+    // ---- OAuth客户端 ----
+    CLIENT_ID_DUPLICATE("A00601", "客户端ID已存在"),
+    CLIENT_SECRET_REQUIRED("A00602", "客户端密钥不能为空"),
+    CLIENT_TOKEN_VALIDITY_INVALID("A00603", "令牌有效期无效"),
+    CLIENT_GRANT_TYPES_REQUIRED("A00604", "授权方式不能为空"),
+
     ;
 
     private final String errorCode;
