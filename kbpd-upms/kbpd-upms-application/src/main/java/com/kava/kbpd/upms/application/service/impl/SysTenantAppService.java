@@ -100,4 +100,10 @@ public class SysTenantAppService implements ISysTenantAppService {
         dto.setExpired(entity.isExpired());
         return dto;
     }
+
+    @Override
+    public List<SysTenantAppListDTO> queryTenantDropdown() {
+        List<SysTenantEntity> tenants = sysTenantService.queryAll();
+        return tenants.stream().map(sysTenantAppConverter::convertEntityToListQueryDTO).toList();
+    }
 }

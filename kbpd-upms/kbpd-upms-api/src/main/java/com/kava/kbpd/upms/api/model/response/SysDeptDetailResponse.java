@@ -53,4 +53,9 @@ public class SysDeptDetailResponse implements Serializable {
      */
     private Long pid;
 
+    /**
+     * 父级部门名称
+     */
+    private String parentName;
+
 }

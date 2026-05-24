@@ -75,6 +75,18 @@ public class SysDeptRepository implements ISysDeptRepository {
     }
 
     @Override
+    public List<SysDeptEntity> queryByIds(List<SysDeptId> ids) {
+        List<Long> idList = ids.stream().map(SysDeptId::getId).toList();
+        if (idList.isEmpty()) {
+            return List.of();
+        }
+        return sysDeptMapper.selectBatchIds(idList)
+                .stream()
+                .map(sysDeptConverter::convertPO2Entity)
+                .toList();
+    }
+
+    @Override
     public List<SysDeptEntity> queryByPid(SysDeptId pid) {
         return sysDeptMapper.selectList(
                         Wrappers.lambdaQuery(SysDeptPO.class)

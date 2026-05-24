@@ -44,5 +44,7 @@ public class SysRoleAppDetailDTO {
      */
     private List<Long> menuIds;
 
+    private List<String> menuNames;
+
     private Long tenantId;
 }

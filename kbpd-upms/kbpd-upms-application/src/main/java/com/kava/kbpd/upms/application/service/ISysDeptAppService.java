@@ -26,4 +26,6 @@ public interface ISysDeptAppService {
 
     SysDeptAppDetailDTO queryDeptById(SysDeptId id);
 
+    List<SysDeptAppListDTO> queryDeptTree();
+
 }

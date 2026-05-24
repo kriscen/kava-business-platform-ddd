@@ -24,4 +24,6 @@ public interface ISysTenantService {
     void disable(SysTenantId id);
 
     SysTenantStatus queryEffectiveStatus(SysTenantId id);
+
+    List<SysTenantEntity> queryAll();
 }

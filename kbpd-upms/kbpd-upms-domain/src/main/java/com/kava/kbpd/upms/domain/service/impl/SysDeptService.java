@@ -54,6 +54,11 @@ public class SysDeptService implements ISysDeptService {
         return repository.queryAll();
     }
 
+    @Override
+    public List<SysDeptEntity> queryTree() {
+        return repository.queryAll();
+    }
+
     private void validatePid(SysDeptEntity entity) {
         SysDeptId pid = entity.getPid();
         if (pid == null) {

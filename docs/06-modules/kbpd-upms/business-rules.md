@@ -19,6 +19,7 @@
 | 拦截器执行顺序 | TenantLine → DataScope → Pagination（在 `MybatisPlusConfig` 中注册） | kbpd-common-database |
 | 平台管理员跳过 | `ROLE_ADMIN` 角色跳过租户隔离和数据权限过滤 | upms-permission-system |
 | 平台管理员无角色 | 平台管理员不经过 RBAC 角色体系，直接可见所有平台级菜单（SYSTEM + SYSTEM_TENANT），角色体系仅服务于租户 | 产品设计 |
+| 关联名称 Infrastructure 层查询 | 响应中的关联名称（deptName、tenantName、roleNames、menuNames）在 Infrastructure 层通过批量 IN 或 JOIN 查询获取，不在 Domain/Application 层跨 Repository 调用 | upms-crud-api-completeness |
 
 ---
 

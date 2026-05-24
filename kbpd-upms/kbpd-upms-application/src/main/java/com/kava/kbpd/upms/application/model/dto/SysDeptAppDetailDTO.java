@@ -13,4 +13,5 @@ public class SysDeptAppDetailDTO {
     private String name;
     private Integer sortOrder;
     private Long pid;
+    private String parentName;
 }

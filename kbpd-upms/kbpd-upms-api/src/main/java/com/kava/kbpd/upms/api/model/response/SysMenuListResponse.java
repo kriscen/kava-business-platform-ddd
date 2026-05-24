@@ -98,4 +98,14 @@ public class SysMenuListResponse implements Serializable {
      */
     private String delFlag;
 
+    /**
+     * 子菜单列表（用于树结构）
+     */
+    private java.util.List<SysMenuListResponse> children;
+
+    /**
+     * 父级菜单名称
+     */
+    private String parentName;
+
 }

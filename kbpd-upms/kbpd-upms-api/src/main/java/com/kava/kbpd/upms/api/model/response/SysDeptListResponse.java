@@ -53,4 +53,14 @@ public class SysDeptListResponse implements Serializable {
      */
     private Long pid;
 
+    /**
+     * 父级部门名称
+     */
+    private String parentName;
+
+    /**
+     * 子部门列表（用于树结构）
+     */
+    private java.util.List<SysDeptListResponse> children;
+
 }

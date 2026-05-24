@@ -12,8 +12,8 @@
 
 | 方法 | 路径 | 入参 | 返回值 | 说明 |
 |---|---|---|---|---|
-| GET | `/page` | `SysUserAdapterListQuery` (query) | `JsonResult<PagingInfo<SysUserListResponse>>` | 分页查询用户 |
-| GET | `/{id}` | `id` (path) | `JsonResult<SysUserDetailResponse>` | 用户详情 |
+| GET | `/page` | `SysUserAdapterListQuery` (query) | `JsonResult<PagingInfo<SysUserListResponse>>` | 分页查询用户（响应含 deptName、tenantName、roleIds） |
+| GET | `/{id}` | `id` (path) | `JsonResult<SysUserDetailResponse>` | 用户详情（响应含 deptName、tenantName、roleNames、roleIds） |
 | POST | — | `SysUserRequest` (body) | `JsonResult<Long>` | 创建用户，返回新 ID |
 | PUT | — | `SysUserRequest` (body，含 id) | `JsonResult<Void>` | 更新用户 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Void>` | 批量删除用户 |
@@ -23,10 +23,11 @@
 | 方法 | 路径 | 入参 | 返回值 | 说明 |
 |---|---|---|---|---|
 | GET | `/page` | `SysRoleAdapterListQuery` (query) | `JsonResult<PagingInfo<SysRoleListResponse>>` | 分页查询角色（租户用户自动按 tenantId 过滤，平台管理员查全部） |
-| GET | `/{id}` | `id` (path) | `JsonResult<SysRoleDetailResponse>` | 角色详情 |
+| GET | `/{id}` | `id` (path) | `JsonResult<SysRoleDetailResponse>` | 角色详情（响应含 menuNames） |
 | POST | — | `SysRoleRequest` (body) | `JsonResult<Long>` | 创建角色 |
 | PUT | — | `SysRoleRequest` (body，含 id) | `JsonResult<Void>` | 更新角色 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Void>` | 批量删除角色 |
+| GET | `/dropdown` | — | `JsonResult<List<SysRoleDropdownResponse>>` | 角色下拉列表（id、roleName、roleCode），不分页，按 roleName 排序 |
 
 ### 菜单管理 `/api/{version}/sys/menu/`
 
@@ -48,6 +49,7 @@
 | POST | — | `SysDeptRequest` (body) | `JsonResult<Long>` | 创建部门 |
 | PUT | `/{id}` | `id` (path) + `SysDeptRequest` (body) | `JsonResult<Boolean>` | 更新部门 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Boolean>` | 批量删除部门 |
+| GET | `/tree` | — | `JsonResult<List<SysDeptListResponse>>` | 部门树形结构（复用 TreeBuilder，按 pid 组装） |
 
 ### 租户管理 `/api/{version}/sys/tenant/`
 
@@ -60,6 +62,7 @@
 | DELETE | — | `List<Long>` (body) | `JsonResult<Boolean>` | 批量删除租户 |
 | PUT | `/{id}/enable` | `id` (path) | `JsonResult<Void>` | 启用租户（重复启用抛 A00403） |
 | PUT | `/{id}/disable` | `id` (path) | `JsonResult<Void>` | 停用租户（重复停用抛 A00403） |
+| GET | `/dropdown` | — | `JsonResult<List<SysTenantDropdownResponse>>` | 租户下拉列表（id、name、code、status），不分页 |
 
 ### 地区管理 `/api/{version}/sys/area/`
 

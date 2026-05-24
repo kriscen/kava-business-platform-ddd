@@ -33,4 +33,6 @@ public interface ISysTenantAppService {
 
     TenantStatusAppDTO checkTenantStatus(SysTenantId id);
 
+    List<SysTenantAppListDTO> queryTenantDropdown();
+
 }

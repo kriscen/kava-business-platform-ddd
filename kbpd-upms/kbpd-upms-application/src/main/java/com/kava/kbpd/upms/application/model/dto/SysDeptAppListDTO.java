@@ -13,4 +13,6 @@ public class SysDeptAppListDTO {
     private String name;
     private Integer sortOrder;
     private Long pid;
+    private String parentName;
+    private java.util.List<SysDeptAppListDTO> children;
 }

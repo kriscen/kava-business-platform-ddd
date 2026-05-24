@@ -40,6 +40,8 @@ public class SysMenuAppListDTO {
 
     private Long tenantId;
 
+    private String parentName;
+
     /**
      * 子菜单列表（用于树结构）
      */

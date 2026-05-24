@@ -53,13 +53,27 @@ public class SysMenuAppService implements ISysMenuAppService {
     public PagingInfo<SysMenuAppListDTO> queryMenuPage(SysMenuListQuery query) {
         PagingInfo<SysMenuEntity> sysMenuEntityPagingInfo = sysMenuService.queryPage(query);
         List<SysMenuAppListDTO> collect = sysMenuEntityPagingInfo.getList().stream().map(sysMenuAppConverter::convertEntityToListQueryDTO).toList();
+
+        List<Long> pids = collect.stream().map(SysMenuAppListDTO::getParentId).filter(Objects::nonNull).distinct().toList();
+        if (!pids.isEmpty()) {
+            List<SysMenuId> pidIds = pids.stream().map(SysMenuId::of).toList();
+            Map<Long, String> parentNameMap = sysMenuService.queryByIds(pidIds).stream()
+                    .collect(Collectors.toMap(m -> m.getId().getId(), SysMenuEntity::getName, (a, b) -> a));
+            collect.forEach(dto -> dto.setParentName(parentNameMap.get(dto.getParentId())));
+        }
+
         return PagingInfo.toResponse(collect, sysMenuEntityPagingInfo);
     }
 
     @Override
     public SysMenuAppDetailDTO queryMenuById(SysMenuId id) {
-        SysMenuEntity MenuEntity = sysMenuService.queryById(id);
-        return sysMenuAppConverter.convertEntityToDetailDTO(MenuEntity);
+        SysMenuEntity menuEntity = sysMenuService.queryById(id);
+        SysMenuAppDetailDTO dto = sysMenuAppConverter.convertEntityToDetailDTO(menuEntity);
+        if (dto != null && menuEntity.getPid() != null) {
+            SysMenuEntity parent = sysMenuService.queryById(menuEntity.getPid());
+            dto.setParentName(parent != null ? parent.getName() : null);
+        }
+        return dto;
     }
 
     @Override
@@ -70,7 +84,11 @@ public class SysMenuAppService implements ISysMenuAppService {
 
         visibleMenus.sort(Comparator.comparingInt(m -> m.getSortOrder() != null ? m.getSortOrder() : 0));
 
-        return buildTree(visibleMenus);
+        Map<Long, String> nameMap = allMenus.stream()
+                .filter(m -> m.getId() != null)
+                .collect(Collectors.toMap(m -> m.getId().getId(), SysMenuEntity::getName, (a, b) -> a));
+
+        return buildTree(visibleMenus, nameMap);
     }
 
     private List<SysMenuEntity> filterByScope(List<SysMenuEntity> allMenus, Long userId, Set<String> roles) {
@@ -103,10 +121,14 @@ public class SysMenuAppService implements ISysMenuAppService {
         return new HashSet<>(menuIds);
     }
 
-    private List<SysMenuAppListDTO> buildTree(List<SysMenuEntity> menus) {
+    private List<SysMenuAppListDTO> buildTree(List<SysMenuEntity> menus, Map<Long, String> nameMap) {
         List<SysMenuAppListDTO> dtos = menus.stream()
                 .map(sysMenuAppConverter::convertEntityToListQueryDTO)
                 .toList();
+
+        for (SysMenuAppListDTO dto : dtos) {
+            dto.setParentName(dto.getParentId() != null ? nameMap.get(dto.getParentId()) : null);
+        }
 
         Map<Long, SysMenuAppListDTO> dtoMap = new LinkedHashMap<>();
         for (SysMenuAppListDTO dto : dtos) {

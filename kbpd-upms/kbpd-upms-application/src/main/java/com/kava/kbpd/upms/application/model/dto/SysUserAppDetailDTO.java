@@ -43,4 +43,10 @@ public class SysUserAppDetailDTO {
      * 关联的角色ID列表
      */
     private List<Long> roleIds;
+
+    private String deptName;
+
+    private String tenantName;
+
+    private List<String> roleNames;
 }

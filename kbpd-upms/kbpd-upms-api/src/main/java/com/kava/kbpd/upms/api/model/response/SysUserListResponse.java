@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Kris
@@ -130,5 +131,20 @@ public class SysUserListResponse implements Serializable {
 	 * 邮箱
 	 */
 	private String email;
+
+	/**
+	 * 部门名称
+	 */
+	private String deptName;
+
+	/**
+	 * 租户名称
+	 */
+	private String tenantName;
+
+	/**
+	 * 关联的角色ID列表
+	 */
+	private List<Long> roleIds;
 
 }

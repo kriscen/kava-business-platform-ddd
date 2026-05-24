@@ -32,6 +32,12 @@ public interface SysUserAppConverter {
     @Mapping(target = "tenantId", expression = "java(convertTenantId(command.getTenantId()))")
     SysUserEntity convertUpdateCommand2Entity(SysUserUpdateCommand command);
 
+    @Mapping(source = "id.id", target = "id")
+    @Mapping(source = "deptId.id", target = "deptId")
+    @Mapping(source = "tenantId.id", target = "tenantId")
+    @Mapping(target = "roleIds", expression = "java(convertRoleIdsToLong(sysUserEntity.getRoleIds()))")
+    @Mapping(target = "deptName", ignore = true)
+    @Mapping(target = "tenantName", ignore = true)
     SysUserAppListDTO convertEntity2DTO(SysUserEntity sysUserEntity);
 
     @Mapping(source = "id.id", target = "id")

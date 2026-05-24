@@ -14,7 +14,30 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class SysMenuUpdateCommand {
 
+    private Long id;
 
+    private String name;
+
+    private String permission;
+
+    private Long pid;
+
+    private String icon;
+
+    private String path;
+
+    private String component;
+
+    private String visible;
+
+    private Integer sortOrder;
+
+    private String menuType;
+
+    private String keepAlive;
+
+    private String embedded;
 }

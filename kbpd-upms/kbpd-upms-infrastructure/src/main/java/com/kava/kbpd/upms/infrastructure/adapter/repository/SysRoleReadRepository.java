@@ -68,4 +68,14 @@ public class SysRoleReadRepository implements ISysRoleReadRepository {
         return po == null ? null : sysRoleConverter.convertPO2Entity(po);
     }
 
+    @Override
+    public List<SysRoleEntity> queryList(SysRoleListQuery query) {
+        List<SysRolePO> pos = sysRoleMapper.selectList(
+                Wrappers.lambdaQuery(SysRolePO.class)
+                        .eq(query.getTenantId() != null, SysRolePO::getTenantId,
+                                query.getTenantId() != null ? query.getTenantId().getId() : null)
+                        .orderByAsc(SysRolePO::getRoleName));
+        return pos.stream().map(sysRoleConverter::convertPO2Entity).toList();
+    }
+
 }

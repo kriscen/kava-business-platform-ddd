@@ -19,4 +19,6 @@ public interface ISysDeptService {
     Boolean removeBatchByIds(List<SysDeptId> ids);
 
     List<SysDeptEntity> queryAll();
+
+    List<SysDeptEntity> queryTree();
 }

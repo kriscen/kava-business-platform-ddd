@@ -7,6 +7,7 @@ import com.kava.kbpd.upms.adapter.converter.SysTenantAdapterConverter;
 import com.kava.kbpd.upms.api.model.query.SysTenantAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysTenantRequest;
 import com.kava.kbpd.upms.api.model.response.SysTenantDetailResponse;
+import com.kava.kbpd.upms.api.model.response.SysTenantDropdownResponse;
 import com.kava.kbpd.upms.api.model.response.SysTenantListResponse;
 import com.kava.kbpd.upms.application.model.dto.SysTenantAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysTenantAppListDTO;
@@ -102,6 +103,21 @@ public class SysTenantController {
     public JsonResult<Void> disable(@PathVariable("id") Long id) {
         appService.disableTenant(SysTenantId.of(id));
         return JsonResult.buildSuccess();
+    }
+
+    @GetMapping("/dropdown")
+    public JsonResult<List<SysTenantDropdownResponse>> getTenantDropdown() {
+        List<SysTenantAppListDTO> tenants = appService.queryTenantDropdown();
+        List<SysTenantDropdownResponse> result = tenants.stream()
+                .map(dto -> {
+                    SysTenantDropdownResponse resp = new SysTenantDropdownResponse();
+                    resp.setId(dto.getId());
+                    resp.setName(dto.getName());
+                    resp.setCode(dto.getCode());
+                    resp.setStatus(dto.getStatus() != null ? dto.getStatus().getCode() : null);
+                    return resp;
+                }).toList();
+        return JsonResult.buildSuccess(result);
     }
 
 }

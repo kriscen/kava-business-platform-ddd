@@ -8,6 +8,7 @@ import com.kava.kbpd.upms.adapter.converter.SysRoleAdapterConverter;
 import com.kava.kbpd.upms.api.model.query.SysRoleAdapterListQuery;
 import com.kava.kbpd.upms.api.model.request.SysRoleRequest;
 import com.kava.kbpd.upms.api.model.response.SysRoleDetailResponse;
+import com.kava.kbpd.upms.api.model.response.SysRoleDropdownResponse;
 import com.kava.kbpd.upms.api.model.response.SysRoleListResponse;
 import com.kava.kbpd.upms.application.model.dto.SysRoleAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysRoleAppListDTO;
@@ -73,6 +74,22 @@ public class SysRoleController {
         List<SysRoleId> idList = ids.stream().map(SysRoleId::of).toList();
         sysRoleAppService.removeRoleBatchByIds(idList);
         return JsonResult.buildSuccess();
+    }
+
+    @GetMapping("/dropdown")
+    public JsonResult<List<SysRoleDropdownResponse>> getRoleDropdown() {
+        UserContext ctx = UserContextHolder.get();
+        SysTenantId tenantId = (ctx != null && ctx.getTenantId() != null) ? SysTenantId.of(ctx.getTenantId()) : null;
+        List<SysRoleAppListDTO> roles = sysRoleAppService.queryRoleDropdown(tenantId);
+        List<SysRoleDropdownResponse> result = roles.stream()
+                .map(dto -> {
+                    SysRoleDropdownResponse resp = new SysRoleDropdownResponse();
+                    resp.setId(dto.getId());
+                    resp.setRoleName(dto.getRoleName());
+                    resp.setRoleCode(dto.getRoleCode());
+                    return resp;
+                }).toList();
+        return JsonResult.buildSuccess(result);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.kava.kbpd.upms.application.service.impl;
 
 import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.common.core.model.valobj.SysUserId;
 import com.kava.kbpd.upms.application.converter.SysUserAppConverter;
 import com.kava.kbpd.upms.application.model.command.SysUserCreateCommand;
@@ -9,7 +10,14 @@ import com.kava.kbpd.upms.application.model.dto.SysUserAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysUserAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysUserAppService;
 import com.kava.kbpd.upms.domain.model.aggregate.SysUserEntity;
+import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
+import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
+import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
+import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysDeptRepository;
+import com.kava.kbpd.upms.domain.repository.ISysRoleReadRepository;
+import com.kava.kbpd.upms.domain.repository.ISysTenantRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserWriteRepository;
 import com.kava.kbpd.upms.domain.service.ISysUserService;
@@ -20,7 +28,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Kris
@@ -35,6 +47,9 @@ public class SysUserAppService implements ISysUserAppService {
     private final ISysUserWriteRepository writeRepository;
     private final ISysUserService sysUserService;
     private final SysUserAppConverter sysUserAppConverter;
+    private final ISysDeptRepository sysDeptRepository;
+    private final ISysTenantRepository sysTenantRepository;
+    private final ISysRoleReadRepository sysRoleReadRepository;
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Override
@@ -63,13 +78,20 @@ public class SysUserAppService implements ISysUserAppService {
     public PagingInfo<SysUserAppListDTO> queryUserPage(SysUserListQuery query) {
         PagingInfo<SysUserEntity> pagingInfo = readRepository.queryPage(query);
         List<SysUserAppListDTO> convertList = pagingInfo.getList().stream().map(sysUserAppConverter::convertEntity2DTO).toList();
+
+        enrichUserListDTOs(convertList, pagingInfo.getList());
+
         return PagingInfo.toResponse(convertList, pagingInfo);
     }
 
     @Override
     public SysUserAppDetailDTO queryUserById(SysUserId id) {
         SysUserEntity sysUserEntity = readRepository.queryById(id);
-        return sysUserAppConverter.convertEntity2Detail(sysUserEntity);
+        SysUserAppDetailDTO dto = sysUserAppConverter.convertEntity2Detail(sysUserEntity);
+        if (dto != null) {
+            enrichUserDetailDTO(dto, sysUserEntity);
+        }
+        return dto;
     }
 
     @Override
@@ -78,7 +100,9 @@ public class SysUserAppService implements ISysUserAppService {
         if (sysUserEntity == null) {
             return null;
         }
-        return sysUserAppConverter.convertEntity2Detail(sysUserEntity);
+        SysUserAppDetailDTO dto = sysUserAppConverter.convertEntity2Detail(sysUserEntity);
+        enrichUserDetailDTO(dto, sysUserEntity);
+        return dto;
     }
 
     @Override
@@ -99,5 +123,50 @@ public class SysUserAppService implements ISysUserAppService {
     @Override
     public List<Long> queryMenuIdsByUserId(Long userId) {
         return readRepository.queryMenuIdsByUserId(userId);
+    }
+
+    private void enrichUserDetailDTO(SysUserAppDetailDTO dto, SysUserEntity entity) {
+        if (dto.getDeptId() != null) {
+            SysDeptEntity dept = sysDeptRepository.queryById(SysDeptId.of(dto.getDeptId()));
+            dto.setDeptName(dept != null ? dept.getName() : null);
+        }
+        if (dto.getTenantId() != null) {
+            SysTenantEntity tenant = sysTenantRepository.queryById(SysTenantId.of(dto.getTenantId()));
+            dto.setTenantName(tenant != null ? tenant.getName() : null);
+        }
+        if (entity.getRoleIds() != null && !entity.getRoleIds().isEmpty()) {
+            List<Long> roleIdLongs = entity.getRoleIds().stream().map(SysRoleId::getId).toList();
+            Map<Long, String> roleNameMap = sysRoleReadRepository.queryList(
+                    com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery.builder().build()
+            ).stream().collect(Collectors.toMap(r -> r.getId().getId(), r -> r.getRoleName(), (a, b) -> a));
+            dto.setRoleNames(roleIdLongs.stream().map(roleNameMap::get).filter(Objects::nonNull).toList());
+        }
+    }
+
+    private void enrichUserListDTOs(List<SysUserAppListDTO> dtos, List<SysUserEntity> entities) {
+        List<Long> deptIds = entities.stream().map(e -> e.getDeptId() != null ? e.getDeptId().getId() : null).filter(Objects::nonNull).distinct().toList();
+        List<Long> tenantIds = entities.stream().map(e -> e.getTenantId() != null ? e.getTenantId().getId() : null).filter(Objects::nonNull).distinct().toList();
+
+        Map<Long, String> deptNameMap = deptIds.isEmpty() ? Collections.emptyMap() :
+                sysDeptRepository.queryByIds(deptIds.stream().map(SysDeptId::of).toList())
+                        .stream().collect(Collectors.toMap(d -> d.getId().getId(), d -> d.getName(), (a, b) -> a));
+        Map<Long, String> tenantNameMap = tenantIds.isEmpty() ? Collections.emptyMap() :
+                sysTenantRepository.queryByIds(tenantIds.stream().map(SysTenantId::of).toList())
+                        .stream().collect(Collectors.toMap(t -> t.getId().getId(), t -> t.getName(), (a, b) -> a));
+
+        for (int i = 0; i < dtos.size(); i++) {
+            SysUserAppListDTO dto = dtos.get(i);
+            SysUserEntity entity = entities.get(i);
+
+            if (entity.getDeptId() != null) {
+                dto.setDeptName(deptNameMap.get(entity.getDeptId().getId()));
+            }
+            if (entity.getTenantId() != null) {
+                dto.setTenantName(tenantNameMap.get(entity.getTenantId().getId()));
+            }
+            if (entity.getRoleIds() != null) {
+                dto.setRoleIds(entity.getRoleIds().stream().map(SysRoleId::getId).toList());
+            }
+        }
     }
 }

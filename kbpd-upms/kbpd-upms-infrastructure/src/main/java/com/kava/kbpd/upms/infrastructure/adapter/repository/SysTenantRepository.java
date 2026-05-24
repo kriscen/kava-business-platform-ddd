@@ -68,4 +68,24 @@ public class SysTenantRepository implements ISysTenantRepository {
                         .eq(SysTenantPO::getCode, code));
         return po != null ? sysTenantConverter.convertPO2Entity(po) : null;
     }
+
+    @Override
+    public List<SysTenantEntity> queryAll() {
+        List<SysTenantPO> pos = sysTenantMapper.selectList(
+                Wrappers.lambdaQuery(SysTenantPO.class)
+                        .orderByAsc(SysTenantPO::getName));
+        return pos.stream().map(sysTenantConverter::convertPO2Entity).toList();
+    }
+
+    @Override
+    public List<SysTenantEntity> queryByIds(List<SysTenantId> ids) {
+        List<Long> idList = ids.stream().map(SysTenantId::getId).toList();
+        if (idList.isEmpty()) {
+            return List.of();
+        }
+        return sysTenantMapper.selectBatchIds(idList)
+                .stream()
+                .map(sysTenantConverter::convertPO2Entity)
+                .toList();
+    }
 }

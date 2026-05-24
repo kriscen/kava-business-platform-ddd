@@ -11,6 +11,8 @@ public interface ISysDeptRepository extends IBaseSimpleRepository<SysDeptId, Sys
 
     List<SysDeptEntity> queryAll();
 
+    List<SysDeptEntity> queryByIds(List<SysDeptId> ids);
+
     List<SysDeptEntity> queryByPid(SysDeptId pid);
 
     boolean existsUserReference(SysDeptId deptId);

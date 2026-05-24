@@ -34,6 +34,9 @@ public class SysRoleDetailResponse implements Serializable {
     /** 关联的菜单ID列表 */
     private List<Long> menuIds;
 
+    /** 关联的菜单名称列表 */
+    private List<String> menuNames;
+
     /** 创建时间 */
     private LocalDateTime gmtCreate;
 

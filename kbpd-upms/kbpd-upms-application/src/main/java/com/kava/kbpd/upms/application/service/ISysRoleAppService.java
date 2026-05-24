@@ -10,6 +10,8 @@ import com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery;
 
 import java.util.List;
 
+import com.kava.kbpd.common.core.model.valobj.SysTenantId;
+
 /**
  * @author Kris
  * @date 2025/9/30
@@ -25,4 +27,6 @@ public interface ISysRoleAppService {
     PagingInfo<SysRoleAppListDTO> queryRolePage(SysRoleListQuery query);
 
     SysRoleAppDetailDTO queryRoleById(SysRoleId id);
+
+    List<SysRoleAppListDTO> queryRoleDropdown(SysTenantId tenantId);
 }

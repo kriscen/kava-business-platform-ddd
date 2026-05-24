@@ -73,6 +73,11 @@ public class SysTenantService implements ISysTenantService {
         return entity.isExpired() ? SysTenantStatus.DISABLED : entity.getStatus();
     }
 
+    @Override
+    public List<SysTenantEntity> queryAll() {
+        return repository.queryAll();
+    }
+
     private void validateCodeUnique(String code, SysTenantId excludeId) {
         SysTenantEntity existing = repository.queryByCode(code);
         if (existing != null && (excludeId == null || !existing.getId().equals(excludeId))) {

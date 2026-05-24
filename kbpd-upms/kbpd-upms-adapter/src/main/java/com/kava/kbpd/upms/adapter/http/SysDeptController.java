@@ -92,4 +92,11 @@ public class SysDeptController {
         return JsonResult.buildSuccess();
     }
 
+    @GetMapping("/tree")
+    public JsonResult<List<SysDeptListResponse>> getDeptTree() {
+        List<SysDeptAppListDTO> tree = appService.queryDeptTree();
+        List<SysDeptListResponse> result = tree.stream().map(adapterConverter::convertEntity2List).toList();
+        return JsonResult.buildSuccess(result);
+    }
+
 }

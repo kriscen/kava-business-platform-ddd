@@ -137,4 +137,19 @@ public class SysUserDetailResponse implements Serializable {
 	 */
 	private List<Long> roleIds;
 
+	/**
+	 * 部门名称
+	 */
+	private String deptName;
+
+	/**
+	 * 租户名称
+	 */
+	private String tenantName;
+
+	/**
+	 * 角色名称列表
+	 */
+	private List<String> roleNames;
+
 }

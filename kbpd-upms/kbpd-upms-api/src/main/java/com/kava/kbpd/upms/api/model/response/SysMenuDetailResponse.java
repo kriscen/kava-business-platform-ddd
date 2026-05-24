@@ -98,4 +98,9 @@ public class SysMenuDetailResponse implements Serializable {
      */
     private String delFlag;
 
+    /**
+     * 父级菜单名称
+     */
+    private String parentName;
+
 }
