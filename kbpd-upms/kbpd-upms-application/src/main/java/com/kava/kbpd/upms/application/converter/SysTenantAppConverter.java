@@ -8,21 +8,18 @@ import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/**
- * @author Kris
- * @date 2025/3/25
- * @description: SysTenant转换器
- */
 @Mapper(componentModel = "spring")
 public interface SysTenantAppConverter {
 
-//    @Mapping(source = "pageSize", target = "queryParam.pageSize")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     SysTenantEntity convertCreateCommand2Entity(SysTenantCreateCommand command);
 
     SysTenantEntity convertUpdateCommand2Entity(SysTenantUpdateCommand command);
 
+    @Mapping(source = "id.id", target = "id")
     SysTenantAppListDTO convertEntityToListQueryDTO(SysTenantEntity entity);
 
+    @Mapping(source = "id.id", target = "id")
     SysTenantAppDetailDTO convertEntityToDetailDTO(SysTenantEntity entity);
-
 }

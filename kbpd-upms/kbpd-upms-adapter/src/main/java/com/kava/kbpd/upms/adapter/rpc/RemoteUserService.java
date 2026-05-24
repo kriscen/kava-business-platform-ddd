@@ -49,11 +49,4 @@ public class RemoteUserService implements IRemoteUserService {
 
         return sysUserDTO;
     }
-
-    @Override
-    public SysUserDTO loginByPwd(String name, String pwd) {
-        SysUserDTO sysUserDTO = new SysUserDTO();
-        sysUserDTO.setId(1L);
-        return sysUserDTO;
-    }
 }

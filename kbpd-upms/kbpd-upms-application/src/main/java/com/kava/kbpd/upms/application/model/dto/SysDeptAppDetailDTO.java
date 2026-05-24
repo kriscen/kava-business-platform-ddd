@@ -9,5 +9,8 @@ import lombok.Data;
  */
 @Data
 public class SysDeptAppDetailDTO {
-
+    private Long id;
+    private String name;
+    private Integer sortOrder;
+    private Long pid;
 }

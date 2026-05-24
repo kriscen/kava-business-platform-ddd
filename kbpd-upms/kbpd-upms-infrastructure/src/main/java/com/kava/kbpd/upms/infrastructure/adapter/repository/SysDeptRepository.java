@@ -10,7 +10,9 @@ import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysDeptRepository;
 import com.kava.kbpd.upms.infrastructure.converter.SysDeptConverter;
 import com.kava.kbpd.upms.infrastructure.dao.SysDeptMapper;
+import com.kava.kbpd.upms.infrastructure.dao.SysUserMapper;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysDeptPO;
+import com.kava.kbpd.upms.infrastructure.dao.po.SysUserPO;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,8 @@ public class SysDeptRepository implements ISysDeptRepository {
 
     @Resource
     private SysDeptMapper sysDeptMapper;
+    @Resource
+    private SysUserMapper sysUserMapper;
     @Resource
     private SysDeptConverter sysDeptConverter;
 
@@ -60,5 +64,31 @@ public class SysDeptRepository implements ISysDeptRepository {
     public Boolean removeBatchByIds(List<SysDeptId> ids) {
         List<Long> idList = ids.stream().map(SysDeptId::getId).toList();
         return SqlHelper.retBool(sysDeptMapper.deleteByIds(idList));
+    }
+
+    @Override
+    public List<SysDeptEntity> queryAll() {
+        return sysDeptMapper.selectList(Wrappers.lambdaQuery(SysDeptPO.class))
+                .stream()
+                .map(sysDeptConverter::convertPO2Entity)
+                .toList();
+    }
+
+    @Override
+    public List<SysDeptEntity> queryByPid(SysDeptId pid) {
+        return sysDeptMapper.selectList(
+                        Wrappers.lambdaQuery(SysDeptPO.class)
+                                .eq(SysDeptPO::getPid, pid.getId()))
+                .stream()
+                .map(sysDeptConverter::convertPO2Entity)
+                .toList();
+    }
+
+    @Override
+    public boolean existsUserReference(SysDeptId deptId) {
+        return sysUserMapper.selectCount(
+                        Wrappers.lambdaQuery(SysUserPO.class)
+                                .eq(SysUserPO::getDeptId, deptId.getId()))
+                > 0;
     }
 }

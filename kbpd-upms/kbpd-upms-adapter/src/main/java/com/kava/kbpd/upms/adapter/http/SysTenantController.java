@@ -92,4 +92,16 @@ public class SysTenantController {
         return JsonResult.buildSuccess();
     }
 
+    @PutMapping("/{id}/enable")
+    public JsonResult<Void> enable(@PathVariable("id") Long id) {
+        appService.enableTenant(SysTenantId.of(id));
+        return JsonResult.buildSuccess();
+    }
+
+    @PutMapping("/{id}/disable")
+    public JsonResult<Void> disable(@PathVariable("id") Long id) {
+        appService.disableTenant(SysTenantId.of(id));
+        return JsonResult.buildSuccess();
+    }
+
 }

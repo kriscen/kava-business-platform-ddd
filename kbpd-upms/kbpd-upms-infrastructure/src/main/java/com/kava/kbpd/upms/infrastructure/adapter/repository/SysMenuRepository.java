@@ -10,7 +10,9 @@ import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysMenuRepository;
 import com.kava.kbpd.upms.infrastructure.converter.SysMenuConverter;
 import com.kava.kbpd.upms.infrastructure.dao.SysMenuMapper;
+import com.kava.kbpd.upms.infrastructure.dao.SysRoleMenuMapper;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysMenuPO;
+import com.kava.kbpd.upms.infrastructure.dao.po.SysRoleMenuPO;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,8 @@ public class SysMenuRepository implements ISysMenuRepository {
 
     @Resource
     private SysMenuMapper sysMenuMapper;
+    @Resource
+    private SysRoleMenuMapper sysRoleMenuMapper;
     @Resource
     private SysMenuConverter sysMenuConverter;
 
@@ -82,5 +86,23 @@ public class SysMenuRepository implements ISysMenuRepository {
                 .stream()
                 .map(sysMenuConverter::convertPO2Entity)
                 .toList();
+    }
+
+    @Override
+    public List<SysMenuEntity> queryByPid(SysMenuId pid) {
+        return sysMenuMapper.selectList(
+                        Wrappers.lambdaQuery(SysMenuPO.class)
+                                .eq(SysMenuPO::getParentId, pid.getId()))
+                .stream()
+                .map(sysMenuConverter::convertPO2Entity)
+                .toList();
+    }
+
+    @Override
+    public boolean existsRoleReference(SysMenuId menuId) {
+        return sysRoleMenuMapper.selectCount(
+                        Wrappers.lambdaQuery(SysRoleMenuPO.class)
+                                .eq(SysRoleMenuPO::getMenuId, menuId.getId()))
+                > 0;
     }
 }

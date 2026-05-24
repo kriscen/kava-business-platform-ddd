@@ -15,7 +15,7 @@
 | 软删除 | PO 继承 `SysDeletablePO`，通过 `delFlag` 实现逻辑删除 | 基础设施层 |
 | 三级 PO 继承 | `BasePO` → `SysDeletablePO`（+delFlag）→ `TenantDeletablePO`（+tenantId） | 基础设施层 |
 | 树形数据构建 | 地区实体使用 `TreeBuilder` 构建树，按 `areaStatus=YES` 过滤、`areaSort DESC` 排序 | SysAreaService |
-| 统一异常体系 | `UpmsBizException` 继承 `BaseBizException`，错误码枚举 `UpmsBizErrorCodeEnum` 覆盖角色/用户/菜单/租户 | types 层 |
+| 统一异常体系 | `UpmsBizException` 继承 `BaseBizException`，错误码枚举 `UpmsBizErrorCodeEnum` 覆盖角色/用户/菜单/部门/租户 | types 层 |
 | 拦截器执行顺序 | TenantLine → DataScope → Pagination（在 `MybatisPlusConfig` 中注册） | kbpd-common-database |
 | 平台管理员跳过 | `ROLE_ADMIN` 角色跳过租户隔离和数据权限过滤 | upms-permission-system |
 | 平台管理员无角色 | 平台管理员不经过 RBAC 角色体系，直接可见所有平台级菜单（SYSTEM + SYSTEM_TENANT），角色体系仅服务于租户 | 产品设计 |
@@ -67,6 +67,25 @@
 | 角色绑定校验 | 角色绑定菜单时校验 scope 可见性：租户角色不可绑定 SYSTEM 菜单，平台角色不可绑定 TENANT 菜单 |
 | 数据权限 dsType | 角色持有 dsType（0=ALL/1=CUSTOM/2=DEPT_AND_CHILD/3=DEPT_ONLY/4=SELF）和 dsScope 字段 |
 
+### 菜单管理
+
+| 规则 | 描述 |
+|---|---|
+| pid 自引用校验 | 创建/更新菜单时，pid 等于自身 id 抛出 MENU_PID_SELF_REFERENCE（A00303） |
+| pid 环检测 | 创建/更新菜单时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 MENU_PID_CIRCULAR（A00304） |
+| 删除前子菜单检查 | 删除菜单前检查是否有直接子菜单，有则抛出 MENU_HAS_CHILDREN（A00305） |
+| 删除前角色引用检查 | 删除菜单前检查 sys_role_menu 是否有角色绑定，有则抛出 MENU_REFERENCED_BY_ROLE（A00306） |
+| sortOrder 默认值 | 创建菜单时 sortOrder 为 null 自动设为 0 |
+
+### 部门管理
+
+| 规则 | 描述 |
+|---|---|
+| pid 自引用校验 | 创建/更新部门时，pid 等于自身 id 抛出 DEPT_PID_SELF_REFERENCE（A00501） |
+| pid 环检测 | 创建/更新部门时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 DEPT_PID_CIRCULAR（A00502） |
+| 删除前子部门检查 | 删除部门前检查是否有直接子部门，有则抛出 DEPT_HAS_CHILDREN（A00503） |
+| 删除前用户引用检查 | 删除部门前检查 sys_user.dept_id 是否有用户关联，有则抛出 DEPT_REFERENCED_BY_USER（A00504） |
+
 ### 权限运行时
 
 | 规则 | 描述 |
@@ -84,6 +103,11 @@
 | 租户数据隔离 | `KavaTenantLineInnerInterceptor` 自动注入 `WHERE tenant_id = ?`，平台管理员跳过，支持忽略表配置 |
 | 租户创建自动初始化 | 创建租户时自动创建 `tenant_admin` 角色，关联所有已分配菜单，dsType=ALL |
 | 租户菜单分配 | 通过 `sys_tenant.menu_id` 字段存储分配的菜单 ID 列表 |
+| 租户状态枚举 | `SysTenantStatus`: NORMAL("0")/DISABLED("9")，创建时默认 NORMAL，到期状态通过 `endTime` 实时计算 |
+| 租户编码唯一性 | 创建/更新时校验 `code` 全局唯一（排除自身），违反抛 `TENANT_CODE_DUPLICATE`（A00402） |
+| 租户生命周期管理 | enable/disable 操作校验状态流转合法性，重复操作抛 `TENANT_STATUS_INVALID_TRANSITION`（A00403） |
+| 租户到期自动判定 | `isExpired()` 实时比较 `endTime` 与当前时间；`queryEffectiveStatus()` 综合到期+显式状态返回最终有效状态 |
+| 租户创建管理员用户 | 创建租户时可传入 adminUsername/adminPassword，自动创建管理员用户并绑定 tenant_admin 角色 |
 
 ### 错误码
 
@@ -96,8 +120,17 @@
 | 用户 | A00202 | 用户名已存在 |
 | 菜单 | A00301 | 菜单不存在 |
 | 菜单 | A00302 | 菜单作用域无效 |
+| 菜单 | A00303 | 菜单父节点不能为自身 |
+| 菜单 | A00304 | 菜单父节点不能形成循环引用 |
+| 菜单 | A00305 | 菜单存在子菜单，无法删除 |
+| 菜单 | A00306 | 菜单已被角色引用，无法删除 |
 | 租户 | A00401 | 租户不存在 |
 | 租户 | A00402 | 租户编码已存在 |
+| 租户 | A00403 | 租户状态流转不合法 |
+| 部门 | A00501 | 部门父节点不能为自身 |
+| 部门 | A00502 | 部门父节点不能形成循环引用 |
+| 部门 | A00503 | 部门存在子部门，无法删除 |
+| 部门 | A00504 | 部门已被用户引用，无法删除 |
 
 ---
 
@@ -113,7 +146,7 @@
 | CUSTOM dsType 实现 | dsType "1" 未使用 dsScope 字段，与 DEPT_ONLY 逻辑相同 | P1 | DEFERRED |
 | 多角色数据权限合并 | 当前取第一个角色 dsType，需按优先级取最大范围 | P1 | DEFERRED |
 | DEPT_AND_CHILD 递归 | 未实现部门子树递归查询 | P1 | DEFERRED |
-| 租户创建管理员用户 | 仅创建 tenant_admin 角色，未创建初始管理员用户 | P1 | DEFERRED |
+| 租户创建管理员用户 | 创建租户时可传入管理员信息，自动创建用户并绑定 tenant_admin 角色 | P1 | 已实现 |
 | MetaObjectHandler | PO 层 FieldFill 注解无对应 Handler | P1 | 未实现 |
 | loginByPwd 完善 | Dubbo RPC `loginByPwd` 仍为桩实现 | P0 | 未实现 |
 | 操作日志自动记录 | AOP 拦截关键操作写入 sys_log | P2 | 未实现 |

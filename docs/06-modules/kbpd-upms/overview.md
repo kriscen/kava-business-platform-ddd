@@ -78,7 +78,7 @@ kbpd-upms/
 │   └── converter/                    #   Entity ↔ PO 转换器（14 个）
 ├── kbpd-upms-adapter/                # 适配器层：Controller、RPC 服务、转换器
 │   ├── http/                         #   REST Controller（14 个）
-│   ├── rpc/                          #   Dubbo 服务实现（2 个）
+│   ├── rpc/                          #   Dubbo 服务实现（3 个）
 │   └── converter/                    #   Request/Response ↔ Command/DTO 转换器（14 个）
 └── kbpd-upms-bootstrap/              # 启动模块
     └── src/main/java/                #   UpmsApplication + DevSecurityConfig
@@ -148,6 +148,7 @@ kbpd-auth ──Dubbo──→ kbpd-upms
    │  IRemoteUserService.findByUsername()
    │  IRemoteUserService.loginByPwd()
    │  IRemoteOauthClientService.queryByClientId()
+   │  IRemoteTenantService.checkTenantStatus()
    │
 kbpd-gateway ──HTTP──→ kbpd-upms
    │  SysRouteConfController (读取路由配置)
@@ -197,16 +198,16 @@ cd kbpd-upms/kbpd-upms-bootstrap && mvn spring-boot:run
 | 菜单 CRUD | ✅ | 树形菜单、按钮权限、三值作用域（system/tenant/system_tenant） |
 | 菜单树接口 | ✅ | GET /menu/tree，按用户角色和 scope 过滤可见菜单 |
 | 部门 CRUD | ✅ | 组织架构树 |
-| 租户 CRUD | ✅ | 含菜单分配、创建时自动初始化 tenant_admin 角色 |
+| 租户 CRUD | ✅ | 含菜单分配、创建时自动初始化 tenant_admin 角色、可选创建管理员用户 |
 | 权限运行时 | ✅ | Redis 缓存权限（`perm:user:{userId}`）、@PreAuthorize 方法级鉴权、ROLE_ADMIN 跳过 |
 | 租户数据隔离 | ✅ | KavaTenantLineInnerInterceptor 自动注入 tenant_id，平台管理员跳过 |
 | 数据权限拦截器 | ⚠️ | DataScopeInnerInterceptor 已注册但 beforeQuery 未生效（DEFERRED） |
 | @DataScope 注解 | ⚠️ | 注解已定义但未被任何方法使用（DEFERRED） |
 | 多角色数据权限合并 | ⚠️ | 当前取第一个角色的 dsType，未按优先级取最大范围（DEFERRED） |
-| Dubbo RPC 接口 | ⚠️ | RemoteUserService.findByUsername 已实现，loginByPwd 仍为桩 |
+| Dubbo RPC 接口 | ✅ | RemoteUserService.findByUsername 已实现，IRemoteTenantService.checkTenantStatus 已实现，loginByPwd 仍为桩 |
 | 权限上下文传播 | ✅ | Dubbo Consumer/Provider Filter 传播 permissions + dataScope |
 | JWT dataScope | ✅ | Auth Server 签发时写入 dataScope claim，UserContext 解析 |
-| 错误码定义 | ✅ | UpmsBizErrorCodeEnum 覆盖角色/用户/菜单/租户（A00101-A00402） |
+| 错误码定义 | ✅ | UpmsBizErrorCodeEnum 覆盖角色/用户/菜单/租户（A00101-A00403） |
 | 地区管理 | ✅ | 含树形查询（/tree） |
 | 日志 CRUD | ✅ | 操作日志 |
 | 审计日志 CRUD | ✅ | 字段变更审计 |
@@ -215,5 +216,5 @@ cd kbpd-upms/kbpd-upms-bootstrap && mvn spring-boot:run
 | 公共参数 CRUD | ✅ | 系统参数配置 |
 | 路由配置 CRUD | ✅ | 动态网关路由 |
 | OAuth 客户端 CRUD | ✅ | 客户端详情管理 |
-| 领域业务逻辑 | ❌ | 密码加密、锁定策略等未在领域层实现 |
+| 领域业务逻辑 | ✅ | 密码加密、租户编码唯一性、状态流转校验、到期判定已实现 |
 | MetaObjectHandler | ❌ | PO 层 FieldFill 注解无对应 Handler，creator/gmtCreate 等字段为 null |

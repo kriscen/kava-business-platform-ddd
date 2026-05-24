@@ -60,4 +60,12 @@ public class SysTenantRepository implements ISysTenantRepository {
         List<Long> idList = ids.stream().map(SysTenantId::getId).toList();
         return SqlHelper.retBool(sysTenantMapper.deleteByIds(idList));
     }
+
+    @Override
+    public SysTenantEntity queryByCode(String code) {
+        SysTenantPO po = sysTenantMapper.selectOne(
+                Wrappers.lambdaQuery(SysTenantPO.class)
+                        .eq(SysTenantPO::getCode, code));
+        return po != null ? sysTenantConverter.convertPO2Entity(po) : null;
+    }
 }

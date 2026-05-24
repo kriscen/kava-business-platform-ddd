@@ -35,7 +35,7 @@ public class SysUserController {
      * @return 分页查询结果
      */
     @GetMapping("/page")
-    public JsonResult<PagingInfo<SysUserListResponse>> getSysAreaPage(@ModelAttribute SysUserAdapterListQuery query) {
+    public JsonResult<PagingInfo<SysUserListResponse>> getSysUserPage(@ModelAttribute SysUserAdapterListQuery query) {
         SysUserListQuery q = sysUserTriggerConverter.convertQueryDTO2QueryVal(query);
         PagingInfo<SysUserAppListDTO> queryUserPage = sysUserAppService.queryUserPage(q);
         PagingInfo<SysUserListResponse> result = PagingInfo.toResponse(queryUserPage.getList().stream().

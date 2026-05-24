@@ -6,6 +6,7 @@ import com.kava.kbpd.upms.application.model.command.SysTenantCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysTenantUpdateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysTenantAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysTenantAppListDTO;
+import com.kava.kbpd.upms.application.model.dto.TenantStatusAppDTO;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
 
 import java.util.List;
@@ -25,5 +26,11 @@ public interface ISysTenantAppService {
     PagingInfo<SysTenantAppListDTO> queryTenantPage(SysTenantListQuery query);
 
     SysTenantAppDetailDTO queryTenantById(SysTenantId id);
+
+    void enableTenant(SysTenantId id);
+
+    void disableTenant(SysTenantId id);
+
+    TenantStatusAppDTO checkTenantStatus(SysTenantId id);
 
 }

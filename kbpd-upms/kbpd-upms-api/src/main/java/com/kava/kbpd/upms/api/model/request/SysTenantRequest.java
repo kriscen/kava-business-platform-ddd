@@ -75,6 +75,10 @@ public class SysTenantRequest implements Serializable {
 
 	private String menuId;
 
+	private String adminUsername;
+
+	private String adminPassword;
+
 	/**
 	 * 创建人
 	 */

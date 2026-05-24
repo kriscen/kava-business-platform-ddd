@@ -16,13 +16,21 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SysDeptAppConverter {
 
-//    @Mapping(source = "pageSize", target = "queryParam.pageSize")
+    @Mapping(source = "pid", target = "pid.id")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
     SysDeptEntity convertCreateCommand2Entity(SysDeptCreateCommand command);
 
+    @Mapping(source = "id", target = "id.id")
+    @Mapping(source = "pid", target = "pid.id")
+    @Mapping(target = "tenantId", ignore = true)
     SysDeptEntity convertUpdateCommand2Entity(SysDeptUpdateCommand command);
 
+    @Mapping(source = "id.id", target = "id")
+    @Mapping(source = "pid.id", target = "pid")
     SysDeptAppListDTO convertEntityToListQueryDTO(SysDeptEntity entity);
 
+    @Mapping(source = "id.id", target = "id")
+    @Mapping(source = "pid.id", target = "pid")
     SysDeptAppDetailDTO convertEntityToDetailDTO(SysDeptEntity entity);
-
 }

@@ -55,9 +55,11 @@
 |---|---|---|---|---|
 | GET | `/page` | `SysTenantAdapterListQuery` (query) | `JsonResult<PagingInfo<SysTenantListResponse>>` | 分页查询租户 |
 | GET | `/{id}` | `id` (path) | `JsonResult<SysTenantDetailResponse>` | 租户详情 |
-| POST | — | `SysTenantRequest` (body) | `JsonResult<Long>` | 创建租户 |
+| POST | — | `SysTenantRequest` (body) | `JsonResult<Long>` | 创建租户（可传入 adminUsername/adminPassword 自动创建管理员用户） |
 | PUT | `/{id}` | `id` (path) + `SysTenantRequest` (body) | `JsonResult<Boolean>` | 更新租户 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Boolean>` | 批量删除租户 |
+| PUT | `/{id}/enable` | `id` (path) | `JsonResult<Void>` | 启用租户（重复启用抛 A00403） |
+| PUT | `/{id}/disable` | `id` (path) | `JsonResult<Void>` | 停用租户（重复停用抛 A00403） |
 
 ### 地区管理 `/api/{version}/sys/area/`
 
@@ -180,6 +182,16 @@
 |---|---|---|---|
 | `queryByClientId` | `String clientId` | `SysOauthClientDTO` | 根据 clientId 查询 OAuth 客户端详情 |
 
+### IRemoteTenantService
+
+- **包路径：** `com.kava.kbpd.upms.api.service.IRemoteTenantService`
+- **Dubbo 版本：** `1.0`
+- **实现类：** `RemoteTenantService`（`adapter.rpc`）
+
+| 方法签名 | 参数 | 返回值 | 说明 |
+|---|---|---|---|
+| `checkTenantStatus` | `Long tenantId` | `TenantStatusDTO` | 查询租户有效状态，综合到期+显式状态返回最终结果 |
+
 ---
 
 ## DTO 定义
@@ -219,6 +231,15 @@
 | `autoapprove` | `String` | 自动授权 |
 | `tenantId` | `Long` | 所属租户 |
 | `userType` | `String` | 用户类型 |
+
+### TenantStatusDTO
+
+- **包路径：** `com.kava.kbpd.upms.api.model.dto.TenantStatusDTO`
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `status` | `String` | 租户有效状态码（综合到期+显式状态） |
+| `expired` | `Boolean` | 租户是否已到期 |
 
 ---
 

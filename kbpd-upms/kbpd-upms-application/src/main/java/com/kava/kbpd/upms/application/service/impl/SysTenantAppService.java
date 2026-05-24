@@ -2,12 +2,16 @@ package com.kava.kbpd.upms.application.service.impl;
 
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
+import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import com.kava.kbpd.upms.application.converter.SysTenantAppConverter;
 import com.kava.kbpd.upms.application.model.command.SysTenantCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysTenantUpdateCommand;
+import com.kava.kbpd.upms.application.model.command.SysUserCreateCommand;
 import com.kava.kbpd.upms.application.model.dto.SysTenantAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysTenantAppListDTO;
+import com.kava.kbpd.upms.application.model.dto.TenantStatusAppDTO;
 import com.kava.kbpd.upms.application.service.ISysTenantAppService;
+import com.kava.kbpd.upms.application.service.ISysUserAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysTenantRepository;
@@ -17,14 +21,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Kris
- * @date 2025/9/28
- * @description: Tenant application service
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class SysTenantAppService implements ISysTenantAppService {
     private final ISysTenantRepository sysTenantRepository;
     private final ISysTenantService sysTenantService;
     private final ISysRoleService sysRoleService;
+    private final ISysUserAppService sysUserAppService;
     private final SysTenantAppConverter sysTenantAppConverter;
 
     @Override
@@ -39,14 +41,25 @@ public class SysTenantAppService implements ISysTenantAppService {
     public SysTenantId createTenant(SysTenantCreateCommand command) {
         SysTenantEntity sysTenantEntity = sysTenantAppConverter.convertCreateCommand2Entity(command);
         SysTenantId tenantId = sysTenantService.create(sysTenantEntity);
-        sysRoleService.initTenantAdminRole(tenantId, sysTenantEntity.getMenuId());
+        SysRoleId adminRoleId = sysRoleService.initTenantAdminRole(tenantId, sysTenantEntity.getMenuId());
+
+        if (StringUtils.hasText(command.getAdminUsername())) {
+            SysUserCreateCommand userCommand = SysUserCreateCommand.builder()
+                    .username(command.getAdminUsername())
+                    .password(command.getAdminPassword())
+                    .tenantId(tenantId.getId())
+                    .roleIds(Collections.singletonList(adminRoleId.getId()))
+                    .build();
+            sysUserAppService.createUser(userCommand);
+        }
+
         return tenantId;
     }
 
     @Override
     public void updateTenant(SysTenantUpdateCommand command) {
         SysTenantEntity sysTenantEntity = sysTenantAppConverter.convertUpdateCommand2Entity(command);
-        sysTenantRepository.update(sysTenantEntity);
+        sysTenantService.update(sysTenantEntity);
     }
 
     @Override
@@ -57,14 +70,36 @@ public class SysTenantAppService implements ISysTenantAppService {
     @Override
     public PagingInfo<SysTenantAppListDTO> queryTenantPage(SysTenantListQuery query) {
         PagingInfo<SysTenantEntity> sysTenantEntityPagingInfo = sysTenantRepository.queryPage(query);
-        List<SysTenantAppListDTO> collect = sysTenantEntityPagingInfo.getList().stream().map(sysTenantEntity -> sysTenantAppConverter.convertEntityToListQueryDTO(sysTenantEntity)).toList();
+        List<SysTenantAppListDTO> collect = sysTenantEntityPagingInfo.getList().stream()
+                .map(sysTenantAppConverter::convertEntityToListQueryDTO).toList();
         return PagingInfo.toResponse(collect, sysTenantEntityPagingInfo);
     }
 
     @Override
     public SysTenantAppDetailDTO queryTenantById(SysTenantId id) {
-        SysTenantEntity TenantEntity = sysTenantRepository.queryById(id);
-        return sysTenantAppConverter.convertEntityToDetailDTO(TenantEntity);
+        SysTenantEntity tenantEntity = sysTenantRepository.queryById(id);
+        return sysTenantAppConverter.convertEntityToDetailDTO(tenantEntity);
     }
 
+    @Override
+    public void enableTenant(SysTenantId id) {
+        sysTenantService.enable(id);
+    }
+
+    @Override
+    public void disableTenant(SysTenantId id) {
+        sysTenantService.disable(id);
+    }
+
+    @Override
+    public TenantStatusAppDTO checkTenantStatus(SysTenantId id) {
+        SysTenantEntity entity = sysTenantRepository.queryById(id);
+        if (entity == null) {
+            return null;
+        }
+        TenantStatusAppDTO dto = new TenantStatusAppDTO();
+        dto.setStatus(sysTenantService.queryEffectiveStatus(id).getCode());
+        dto.setExpired(entity.isExpired());
+        return dto;
+    }
 }

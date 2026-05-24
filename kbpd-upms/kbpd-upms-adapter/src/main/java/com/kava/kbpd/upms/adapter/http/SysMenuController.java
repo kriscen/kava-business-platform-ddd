@@ -98,12 +98,13 @@ public class SysMenuController {
      * 获取当前用户的菜单树
      */
     @GetMapping("/tree")
-    public JsonResult<List<SysMenuAppListDTO>> getMenuTree() {
+    public JsonResult<List<SysMenuListResponse>> getMenuTree() {
         UserContext ctx = UserContextHolder.get();
         Long userId = ctx != null ? ctx.getUserId() : null;
         java.util.Set<String> roles = ctx != null ? ctx.getRoles() : null;
         List<SysMenuAppListDTO> tree = appService.queryMenuTree(userId, roles);
-        return JsonResult.buildSuccess(tree);
+        List<SysMenuListResponse> result = tree.stream().map(adapterConverter::convertEntity2List).toList();
+        return JsonResult.buildSuccess(result);
     }
 
 }

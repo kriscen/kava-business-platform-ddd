@@ -73,7 +73,7 @@ public class SysRoleService implements ISysRoleService {
     }
 
     @Override
-    public void initTenantAdminRole(SysTenantId tenantId, String menuIdStr) {
+    public SysRoleId initTenantAdminRole(SysTenantId tenantId, String menuIdStr) {
         List<SysMenuId> menuIds = Collections.emptyList();
         if (StringUtils.hasText(menuIdStr)) {
             menuIds = Arrays.stream(menuIdStr.split(","))
@@ -97,6 +97,7 @@ public class SysRoleService implements ISysRoleService {
         if (!CollectionUtils.isEmpty(menuIds)) {
             writeRepository.saveRoleMenus(roleId, menuIds);
         }
+        return roleId;
     }
 
     private void validateRoleCodeUnique(String roleCode, SysTenantId tenantId, SysRoleId excludeId) {

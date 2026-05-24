@@ -28,6 +28,7 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [kbpd-upms.sql](01-sql/kbpd-upms.sql) | UPMS（用户权限管理）数据库建表脚本，基于 MySQL 8.4，包含系统表、租户、审计日志等表结构定义 |
+| [V2__tenant_add_time_columns.sql](01-sql/V2__tenant_add_time_columns.sql) | 租户表增量迁移：新增 start_time、end_time 列（DATETIME, 允许 NULL） |
 
 ---
 

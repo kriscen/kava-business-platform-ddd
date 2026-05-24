@@ -6,5 +6,5 @@ import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
 
 public interface ISysTenantRepository extends IBaseSimpleRepository<SysTenantId, SysTenantEntity, SysTenantListQuery> {
-
+    SysTenantEntity queryByCode(String code);
 }

@@ -5,16 +5,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author Kris
- * @date 2025/9/28
- * @description: Tenant create command
- */
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class SysTenantCreateCommand {
-
-
+    private String name;
+    private String code;
+    private String tenantDomain;
+    private String websiteName;
+    private String logo;
+    private String footer;
+    private String miniQr;
+    private String background;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private String menuId;
+    private String adminUsername;
+    private String adminPassword;
 }

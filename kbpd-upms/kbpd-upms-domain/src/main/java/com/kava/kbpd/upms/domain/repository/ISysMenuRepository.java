@@ -18,4 +18,14 @@ public interface ISysMenuRepository extends IBaseSimpleRepository<SysMenuId, Sys
      * 根据菜单ID列表批量查询
      */
     List<SysMenuEntity> queryByIds(List<SysMenuId> ids);
+
+    /**
+     * 查询指定父节点的直接子菜单
+     */
+    List<SysMenuEntity> queryByPid(SysMenuId pid);
+
+    /**
+     * 检查菜单是否被角色引用
+     */
+    boolean existsRoleReference(SysMenuId menuId);
 }

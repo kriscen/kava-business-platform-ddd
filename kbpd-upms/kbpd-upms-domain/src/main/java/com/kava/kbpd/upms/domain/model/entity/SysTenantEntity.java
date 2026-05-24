@@ -2,6 +2,7 @@ package com.kava.kbpd.upms.domain.model.entity;
 
 import com.kava.kbpd.common.core.label.Entity;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
+import com.kava.kbpd.upms.types.enums.SysTenantStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -78,9 +79,17 @@ public class SysTenantEntity implements Entity<SysTenantId> {
 	/**
 	 * 0正常 9-冻结
 	 */
-	private String status;
+	private SysTenantStatus status;
 
 	private String menuId;
+
+	private LocalDateTime gmtCreate;
+
+	private LocalDateTime gmtModified;
+
+	public boolean isExpired() {
+		return endTime != null && endTime.isBefore(LocalDateTime.now());
+	}
 
 	@Override
 	public SysTenantId identifier() {

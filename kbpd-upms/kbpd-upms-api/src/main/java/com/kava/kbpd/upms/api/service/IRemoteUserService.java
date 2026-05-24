@@ -9,6 +9,4 @@ import com.kava.kbpd.upms.api.model.dto.SysUserDTO;
  */
 public interface IRemoteUserService {
     SysUserDTO findByUsername(String tenantId,String username);
-
-    SysUserDTO loginByPwd(String name, String pwd);
 }

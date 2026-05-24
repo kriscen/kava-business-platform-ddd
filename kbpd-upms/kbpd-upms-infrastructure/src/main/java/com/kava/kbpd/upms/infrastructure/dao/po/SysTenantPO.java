@@ -5,6 +5,8 @@ import com.kava.kbpd.common.database.po.SysDeletablePO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Kris
  * @date 2025/3/18
@@ -60,4 +62,8 @@ public class SysTenantPO extends SysDeletablePO {
 	private String status;
 
 	private String menuId;
+
+	private LocalDateTime startTime;
+
+	private LocalDateTime endTime;
 }
