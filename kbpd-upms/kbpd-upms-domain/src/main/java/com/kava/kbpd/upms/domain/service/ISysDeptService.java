@@ -1,6 +1,7 @@
 package com.kava.kbpd.upms.domain.service;
 
 import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.common.core.model.tree.Tree;
 import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
@@ -20,5 +21,5 @@ public interface ISysDeptService {
 
     List<SysDeptEntity> queryAll();
 
-    List<SysDeptEntity> queryTree();
+    List<Tree<Long>> queryTree();
 }

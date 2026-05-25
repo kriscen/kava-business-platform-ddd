@@ -2,8 +2,6 @@ package com.kava.kbpd.upms.application.service.impl;
 
 import com.kava.kbpd.common.core.base.PagingInfo;
 import com.kava.kbpd.common.core.model.tree.Tree;
-import com.kava.kbpd.common.core.model.tree.TreeBuilder;
-import com.kava.kbpd.common.core.model.tree.TreeNode;
 import com.kava.kbpd.upms.application.converter.SysDeptAppConverter;
 import com.kava.kbpd.upms.application.model.command.SysDeptCreateCommand;
 import com.kava.kbpd.upms.application.model.command.SysDeptUpdateCommand;
@@ -19,7 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,22 +86,25 @@ public class SysDeptAppService implements ISysDeptAppService {
 
     @Override
     public List<SysDeptAppListDTO> queryDeptTree() {
-        List<SysDeptEntity> allDepts = sysDeptService.queryTree();
-
-        Map<Long, String> nameMap = allDepts.stream()
-                .filter(d -> d.getId() != null)
-                .collect(Collectors.toMap(d -> d.getId().getId(), SysDeptEntity::getName, (a, b) -> a));
-
-        List<TreeNode<Long>> nodes = allDepts.stream()
-                .map(d -> new TreeNode<>(
-                        d.getId().getId(),
-                        d.getPid() != null ? d.getPid().getId() : null,
-                        d.getName(),
-                        (long) (d.getSortOrder() != null ? d.getSortOrder() : 0)))
-                .toList();
-
-        List<Tree<Long>> trees = TreeBuilder.build(nodes, null);
+        List<Tree<Long>> trees = sysDeptService.queryTree();
+        Map<Long, String> nameMap = buildNameMap(trees);
         return convertDeptTreeList(trees, nameMap);
+    }
+
+    private Map<Long, String> buildNameMap(List<Tree<Long>> trees) {
+        Map<Long, String> map = new HashMap<>();
+        Deque<List<Tree<Long>>> stack = new ArrayDeque<>();
+        stack.push(trees);
+        while (!stack.isEmpty()) {
+            List<Tree<Long>> level = stack.pop();
+            for (Tree<Long> tree : level) {
+                map.put(tree.getId(), tree.getName());
+                if (tree.getChildren() != null && !tree.getChildren().isEmpty()) {
+                    stack.push(tree.getChildren());
+                }
+            }
+        }
+        return map;
     }
 
     private List<SysDeptAppListDTO> convertDeptTreeList(List<Tree<Long>> trees, Map<Long, String> nameMap) {

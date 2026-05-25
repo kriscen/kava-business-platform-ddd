@@ -1,6 +1,9 @@
 package com.kava.kbpd.upms.domain.service.impl;
 
 import com.kava.kbpd.common.core.base.PagingInfo;
+import com.kava.kbpd.common.core.model.tree.Tree;
+import com.kava.kbpd.common.core.model.tree.TreeBuilder;
+import com.kava.kbpd.common.core.model.tree.TreeNode;
 import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
 import com.kava.kbpd.upms.domain.model.valobj.SysDeptListQuery;
@@ -55,8 +58,16 @@ public class SysDeptService implements ISysDeptService {
     }
 
     @Override
-    public List<SysDeptEntity> queryTree() {
-        return repository.queryAll();
+    public List<Tree<Long>> queryTree() {
+        List<SysDeptEntity> allDepts = repository.queryAll();
+        List<TreeNode<Long>> nodes = allDepts.stream()
+                .map(d -> new TreeNode<>(
+                        d.getId().getId(),
+                        d.getPid() != null ? d.getPid().getId() : null,
+                        d.getName(),
+                        (long) (d.getSortOrder() != null ? d.getSortOrder() : 0)))
+                .toList();
+        return TreeBuilder.build(nodes, null);
     }
 
     private void validatePid(SysDeptEntity entity) {
