@@ -11,6 +11,7 @@ import com.kava.kbpd.upms.domain.model.entity.SysI18nMessageEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nListQuery;
 import com.kava.kbpd.upms.domain.model.valobj.SysI18nMessageId;
 import com.kava.kbpd.upms.domain.service.ISysI18nMessageService;
+import com.kava.kbpd.upms.types.exception.UpmsBizErrorCodeEnum;
 import com.kava.kbpd.upms.types.exception.UpmsBizException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class SysI18nAppService implements ISysI18nAppService {
         SysI18nMessageEntity existing = sysI18nMessageService
                 .queryByCodeAndLanguage(command.getCode(), command.getLanguage());
         if (existing != null) {
-            throw new UpmsBizException("I18N_CODE_DUPLICATE", "翻译键已存在: " + command.getCode());
+            throw new UpmsBizException(UpmsBizErrorCodeEnum.I18N_CODE_DUPLICATE);
         }
         SysI18nMessageEntity entity = sysI18nAppConverter.convertCreateCommand2Entity(command);
         return sysI18nMessageService.create(entity);

@@ -30,7 +30,7 @@ public class AuthenticationFailureEventHandler implements AuthenticationFailureH
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 		OAuth2Error error = ((OAuth2AuthenticationException) exception).getError();
 		ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
-		JsonResult result = JsonResult.buildError(error.getErrorCode());
+		JsonResult result = JsonResult.buildError(error.getErrorCode(), error.getDescription());
 		accessTokenHttpResponseConverter.write(result, null, httpResponse);
 	}
 }

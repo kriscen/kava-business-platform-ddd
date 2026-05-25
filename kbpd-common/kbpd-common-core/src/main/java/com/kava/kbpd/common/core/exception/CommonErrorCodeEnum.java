@@ -12,68 +12,32 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CommonErrorCodeEnum implements BaseErrorCodeEnum {
 
-    // =========== 系统级别未知异常 =========
+    // =========== 00-00 系统级错误 =========
 
-    /**
-     * 系统未知错误
-     */
-    SYSTEM_UNKNOWN_ERROR("-1", "系统未知错误"),
+    SYSTEM_UNKNOWN_ERROR("00000001", "系统未知错误"),
 
-    // =========== 客户端异常 =========
+    // =========== 00-01 客户端请求错误 =========
 
-    /**
-     * 客户端HTTP请求方法错误
-     * org.springframework.web.HttpRequestMethodNotSupportedException
-     */
-    CLIENT_HTTP_METHOD_ERROR("1001", "客户端HTTP请求方法错误"),
+    CLIENT_HTTP_METHOD_ERROR("00010001", "客户端HTTP请求方法错误"),
+    CLIENT_REQUEST_BODY_CHECK_ERROR("00010002", "客户端请求体参数校验不通过"),
+    CLIENT_REQUEST_BODY_FORMAT_ERROR("00010003", "客户端请求体JSON格式错误或字段类型不匹配"),
+    CLIENT_PATH_VARIABLE_ERROR("00010004", "客户端URL中的参数类型错误"),
+    CLIENT_REQUEST_PARAM_CHECK_ERROR("00010005", "客户端请求参数校验不通过"),
+    CLIENT_REQUEST_PARAM_REQUIRED_ERROR("00010006", "客户端请求缺少必填的参数"),
 
-    /**
-     * 客户端request body参数错误
-     * 主要是未能通过Hibernate Validator校验的异常处理
-     * <p>
-     * org.springframework.web.bind.MethodArgumentNotValidException
-     */
-    CLIENT_REQUEST_BODY_CHECK_ERROR("1002", "客户端请求体参数校验不通过"),
+    // =========== 00-02 服务端错误 =========
 
-    /**
-     * 客户端@RequestBody请求体JSON格式错误或字段类型错误
-     * org.springframework.http.converter.HttpMessageNotReadableException
-     * <p>
-     * eg:
-     * 1、参数类型不对:{"test":"abc"}，本身类型是Long
-     * 2、{"test":}  test属性没有给值
-     */
-    CLIENT_REQUEST_BODY_FORMAT_ERROR("1003", "客户端请求体JSON格式错误或字段类型不匹配"),
+    SERVER_ILLEGAL_ARGUMENT_ERROR("00020001", "业务方法参数检查不通过"),
+    SERVER_DATABASE_ERROR("00020002", "数据库操作异常"),
+    SERVER_RPC_ERROR("00020003", "RPC调用异常"),
 
-    /**
-     * 客户端@PathVariable参数错误
-     * 一般是类型不匹配，比如本来是Long类型，客户端却给了一个无法转换成Long字符串
-     * org.springframework.validation.BindException
-     */
-    CLIENT_PATH_VARIABLE_ERROR("1004", "客户端URL中的参数类型错误"),
+    // =========== 00-03 认证/授权错误 =========
 
-    /**
-     * 客户端@RequestParam参数校验不通过
-     * 主要是未能通过Hibernate Validator校验的异常处理
-     * javax.validation.ConstraintViolationException
-     */
-    CLIENT_REQUEST_PARAM_CHECK_ERROR("1005", "客户端请求参数校验不通过"),
-
-    /**
-     * 客户端@RequestParam参数必填
-     * 入参中的@RequestParam注解设置了必填，但是客户端没有给值
-     * javax.validation.ConstraintViolationException
-     */
-    CLIENT_REQUEST_PARAM_REQUIRED_ERROR("1006", "客户端请求缺少必填的参数"),
-
-
-    // =========== 服务端异常 =========
-
-    /**
-     * 通用的业务方法入参检查错误
-     * java.lang.IllegalArgumentException
-     */
-    SERVER_ILLEGAL_ARGUMENT_ERROR("2001", "业务方法参数检查不通过"),
+    AUTH_UNAUTHORIZED("00030001", "未认证"),
+    AUTH_TOKEN_EXPIRED("00030002", "token已过期"),
+    AUTH_TOKEN_INVALID("00030003", "token无效"),
+    AUTH_FORBIDDEN("00030004", "权限不足"),
+    AUTH_TENANT_INVALID("00030005", "租户不存在或已禁用"),
     ;
 
     private final String errorCode;

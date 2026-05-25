@@ -13,6 +13,10 @@
     <name>kbpd-common-web</name>
 
     <dependencies>
+        <dependency>
+            <groupId>com.kava.kbpd</groupId>
+            <artifactId>kbpd-common-core</artifactId>
+        </dependency>
         <!--web 模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

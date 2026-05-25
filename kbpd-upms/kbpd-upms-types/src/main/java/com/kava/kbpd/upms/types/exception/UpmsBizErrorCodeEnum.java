@@ -13,39 +13,42 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UpmsBizErrorCodeEnum implements BaseErrorCodeEnum {
 
-    // ---- 角色 ----
-    ROLE_NOT_FOUND("A00101", "角色不存在"),
-    ROLE_CODE_DUPLICATE("A00102", "角色编码已存在"),
-    ROLE_MENU_EMPTY("A00103", "角色必须关联至少一个菜单"),
+    // ---- 10-01 角色 ----
+    ROLE_NOT_FOUND("10010001", "角色不存在"),
+    ROLE_CODE_DUPLICATE("10010002", "角色编码已存在"),
+    ROLE_MENU_EMPTY("10010003", "角色必须关联至少一个菜单"),
 
-    // ---- 用户 ----
-    USER_NOT_FOUND("A00201", "用户不存在"),
-    USER_USERNAME_DUPLICATE("A00202", "用户名已存在"),
+    // ---- 10-02 用户 ----
+    USER_NOT_FOUND("10020001", "用户不存在"),
+    USER_USERNAME_DUPLICATE("10020002", "用户名已存在"),
 
-    // ---- 菜单 ----
-    MENU_NOT_FOUND("A00301", "菜单不存在"),
-    MENU_SCOPE_INVALID("A00302", "菜单作用域无效"),
-    MENU_PID_SELF_REFERENCE("A00303", "菜单父节点不能为自身"),
-    MENU_PID_CIRCULAR("A00304", "菜单父节点不能形成循环引用"),
-    MENU_HAS_CHILDREN("A00305", "菜单存在子菜单，无法删除"),
-    MENU_REFERENCED_BY_ROLE("A00306", "菜单已被角色引用，无法删除"),
+    // ---- 10-03 菜单 ----
+    MENU_NOT_FOUND("10030001", "菜单不存在"),
+    MENU_SCOPE_INVALID("10030002", "菜单作用域无效"),
+    MENU_PID_SELF_REFERENCE("10030003", "菜单父节点不能为自身"),
+    MENU_PID_CIRCULAR("10030004", "菜单父节点不能形成循环引用"),
+    MENU_HAS_CHILDREN("10030005", "菜单存在子菜单，无法删除"),
+    MENU_REFERENCED_BY_ROLE("10030006", "菜单已被角色引用，无法删除"),
 
-    // ---- 部门 ----
-    DEPT_PID_SELF_REFERENCE("A00501", "部门父节点不能为自身"),
-    DEPT_PID_CIRCULAR("A00502", "部门父节点不能形成循环引用"),
-    DEPT_HAS_CHILDREN("A00503", "部门存在子部门，无法删除"),
-    DEPT_REFERENCED_BY_USER("A00504", "部门已被用户引用，无法删除"),
+    // ---- 10-04 租户 ----
+    TENANT_NOT_FOUND("10040001", "租户不存在"),
+    TENANT_CODE_DUPLICATE("10040002", "租户编码已存在"),
+    TENANT_STATUS_INVALID_TRANSITION("10040003", "租户状态流转不合法"),
 
-    // ---- 租户 ----
-    TENANT_NOT_FOUND("A00401", "租户不存在"),
-    TENANT_CODE_DUPLICATE("A00402", "租户编码已存在"),
-    TENANT_STATUS_INVALID_TRANSITION("A00403", "租户状态流转不合法"),
+    // ---- 10-05 部门 ----
+    DEPT_PID_SELF_REFERENCE("10050001", "部门父节点不能为自身"),
+    DEPT_PID_CIRCULAR("10050002", "部门父节点不能形成循环引用"),
+    DEPT_HAS_CHILDREN("10050003", "部门存在子部门，无法删除"),
+    DEPT_REFERENCED_BY_USER("10050004", "部门已被用户引用，无法删除"),
 
-    // ---- OAuth客户端 ----
-    CLIENT_ID_DUPLICATE("A00601", "客户端ID已存在"),
-    CLIENT_SECRET_REQUIRED("A00602", "客户端密钥不能为空"),
-    CLIENT_TOKEN_VALIDITY_INVALID("A00603", "令牌有效期无效"),
-    CLIENT_GRANT_TYPES_REQUIRED("A00604", "授权方式不能为空"),
+    // ---- 10-06 OAuth客户端 ----
+    CLIENT_ID_DUPLICATE("10060001", "客户端ID已存在"),
+    CLIENT_SECRET_REQUIRED("10060002", "客户端密钥不能为空"),
+    CLIENT_TOKEN_VALIDITY_INVALID("10060003", "令牌有效期无效"),
+    CLIENT_GRANT_TYPES_REQUIRED("10060004", "授权方式不能为空"),
+
+    // ---- 10-08 国际化 ----
+    I18N_CODE_DUPLICATE("10080001", "国际化编码已存在"),
 
     ;
 
