@@ -18,7 +18,8 @@ docs/
 │   ├── kbpd-gateway/        # API 网关
 │   ├── kbpd-member/         # 会员服务
 │   └── kbpd-upms/           # 用户权限管理服务
-└── 07-product/              # 产品文档
+├── 07-product/              # 产品文档
+└── 08-frontend/             # 前端对接文档
 ```
 
 ---
@@ -83,7 +84,7 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [overview.md](06-modules/kbpd-auth/overview.md) | Auth 模块概览，描述 OAuth2 认证授权中心定位、双 Security 过滤链、多租户认证流程、Token 存储策略与 JWT Claims |
-| [api.md](06-modules/kbpd-auth/api.md) | Auth 模块接口文档，包含页面接口（登录/授权确认）和 OAuth2 协议端点说明 |
+| [api.md](06-modules/kbpd-auth/api.md) | Auth 模块后端接口文档（Dubbo RPC 依赖、静态资源白名单），前端对接见 [auth-api.md](08-frontend/auth-api.md) |
 | [business-rules.md](06-modules/kbpd-auth/business-rules.md) | Auth 模块业务规则，定义多租户认证路由、Token 生命周期管理、客户端校验等规则 |
 
 ### kbpd-common/ — 公共模块
@@ -111,7 +112,7 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览，描述用户权限管理核心服务定位、14 个资源的 CRUD 体系、RBAC 权限模型与数据隔离策略 |
-| [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块接口文档，涵盖用户/角色/菜单/部门/租户/地区等资源的 HTTP REST 与 Dubbo RPC 接口定义 |
+| [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块后端接口文档（Dubbo RPC 接口与 DTO），前端对接见 [upms-api.md](08-frontend/upms-api.md) |
 | [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则，定义 RBAC 关联持久化、权限运行时、租户管理及数据隔离规则 |
 
 ---
@@ -128,11 +129,22 @@ docs/
 
 ---
 
+## 08-frontend/ — 前端对接文档
+
+| 文件 | 说明 |
+|------|------|
+| [upms-api.md](08-frontend/upms-api.md) | UPMS 前端对接文档，包含 HTTP REST 接口、请求/响应字段定义和查询参数 |
+| [auth-api.md](08-frontend/auth-api.md) | Auth 前端对接文档，包含登录流程、OAuth2 协议端点和 JWT Token 结构 |
+
+---
+
 ## 快速导航
 
 **新人上手**：`overview.md` → `boundaries.md` → `code-style.md` → `git.md`
 
 **了解产品**：`07-product/vision.md` → `user-roles.md` → `platform-architecture.md` → `auth-chain.md`
+
+**前端对接**：`08-frontend/auth-api.md`（认证流程） → `08-frontend/upms-api.md`（业务接口）
 
 **开发接口**：`error-codes.md`
 
