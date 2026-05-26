@@ -11,15 +11,14 @@ docs/
 ├── 02-architecture/         # 架构设计
 ├── 03-conventions/          # 开发规范
 ├── 04-reference/            # 参考手册
-├── 05-history/              # 决策历史
+├── 05-frontend/             # 前端对接文档
 ├── 06-modules/              # 模块文档
 │   ├── kbpd-auth/           # 认证服务
 │   ├── kbpd-common/         # 公共模块
 │   ├── kbpd-gateway/        # API 网关
 │   ├── kbpd-member/         # 会员服务
 │   └── kbpd-upms/           # 用户权限管理服务
-├── 07-product/              # 产品文档
-└── 08-frontend/             # 前端对接文档
+└── 07-product/              # 产品文档
 ```
 
 ---
@@ -59,15 +58,16 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [error-codes.md](04-reference/error-codes.md) | 错误码规范（待填充） |
+| [error-codes.md](04-reference/error-codes.md) | 错误码规范，定义 8 位数字格式（MM-SS-NNNN）的模块号分配、通用错误码和业务错误码 |
 
 ---
 
-## 05-history/ — 决策历史
+## 05-frontend/ — 前端对接文档
 
 | 文件 | 说明 |
 |------|------|
-| [adr-template.md](05-history/adr-template.md) | ADR（架构决策记录）模板，包含状态、背景、决策、理由、备选方案、后果等标准章节，用于记录重大架构决策 |
+| [auth-api.md](05-frontend/auth-api.md) | Auth 前端对接文档，包含登录流程、OAuth2 协议端点和 JWT Token 结构 |
+| [upms-api.md](05-frontend/upms-api.md) | UPMS 前端对接文档，包含 HTTP REST 接口、请求/响应字段定义和查询参数 |
 
 ---
 
@@ -84,7 +84,7 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [overview.md](06-modules/kbpd-auth/overview.md) | Auth 模块概览，描述 OAuth2 认证授权中心定位、双 Security 过滤链、多租户认证流程、Token 存储策略与 JWT Claims |
-| [api.md](06-modules/kbpd-auth/api.md) | Auth 模块后端接口文档（Dubbo RPC 依赖、静态资源白名单），前端对接见 [auth-api.md](08-frontend/auth-api.md) |
+| [api.md](06-modules/kbpd-auth/api.md) | Auth 模块后端接口文档（Dubbo RPC 依赖、静态资源白名单），前端对接见 [auth-api.md](05-frontend/auth-api.md) |
 | [business-rules.md](06-modules/kbpd-auth/business-rules.md) | Auth 模块业务规则，定义多租户认证路由、Token 生命周期管理、客户端校验等规则 |
 
 ### kbpd-common/ — 公共模块
@@ -97,22 +97,22 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-gateway/overview.md) | Gateway 模块概览（待填充） |
+| [overview.md](06-modules/kbpd-gateway/overview.md) | Gateway 模块概览，描述 Spring Cloud Gateway 路由、Nacos 服务发现与配置管理 |
 
 ### kbpd-member/ — 会员服务
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览（待填充） |
-| [api.md](06-modules/kbpd-member/api.md) | Member 模块接口文档（待填充） |
-| [business-rules.md](06-modules/kbpd-member/business-rules.md) | Member 模块业务规则（待填充） |
+| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，描述会员管理微服务定位、DDD 分层结构与 Dubbo RPC 骨架（早期脚手架阶段） |
+| [api.md](06-modules/kbpd-member/api.md) | Member 模块接口文档，定义 IRemoteMemberService Dubbo RPC 接口与 DTO |
+| [business-rules.md](06-modules/kbpd-member/business-rules.md) | Member 模块业务规则（规划），定义多租户隔离、CQRS、DDD 分层约束及预期业务规则 |
 
 ### kbpd-upms/ — 用户权限管理服务
 
 | 文件 | 说明 |
 |------|------|
 | [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览，描述用户权限管理核心服务定位、14 个资源的 CRUD 体系、RBAC 权限模型与数据隔离策略 |
-| [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块后端接口文档（Dubbo RPC 接口与 DTO），前端对接见 [upms-api.md](08-frontend/upms-api.md) |
+| [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块后端接口文档（Dubbo RPC 接口与 DTO），前端对接见 [upms-api.md](05-frontend/upms-api.md) |
 | [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则，定义 RBAC 关联持久化、权限运行时、租户管理及数据隔离规则 |
 
 ---
@@ -129,27 +129,16 @@ docs/
 
 ---
 
-## 08-frontend/ — 前端对接文档
-
-| 文件 | 说明 |
-|------|------|
-| [upms-api.md](08-frontend/upms-api.md) | UPMS 前端对接文档，包含 HTTP REST 接口、请求/响应字段定义和查询参数 |
-| [auth-api.md](08-frontend/auth-api.md) | Auth 前端对接文档，包含登录流程、OAuth2 协议端点和 JWT Token 结构 |
-
----
-
 ## 快速导航
 
-**新人上手**：`overview.md` → `boundaries.md` → `code-style.md` → `git.md`
+**新人上手**：`02-architecture/overview.md` → `02-architecture/boundaries.md` → `03-conventions/code-style.md` → `03-conventions/git.md`
 
-**了解产品**：`07-product/vision.md` → `user-roles.md` → `platform-architecture.md` → `auth-chain.md`
+**了解产品**：`07-product/vision.md` → `07-product/user-roles.md` → `07-product/platform-architecture.md` → `07-product/auth-chain.md`
 
-**前端对接**：`08-frontend/auth-api.md`（认证流程） → `08-frontend/upms-api.md`（业务接口）
+**前端对接**：`05-frontend/auth-api.md`（认证流程） → `05-frontend/upms-api.md`（业务接口）
 
-**开发接口**：`error-codes.md`
+**开发接口**：`04-reference/error-codes.md`
 
 **建库建表**：`01-sql/kbpd-upms.sql`
-
-**架构变更**：`adr-template.md`（填写后提交到此目录）
 
 **模块开发**：`06-modules/kbpd-{模块}/overview.md` → `api.md` → `business-rules.md`
