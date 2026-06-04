@@ -36,7 +36,7 @@ public class SysMenuAppListDTO {
 
     private String embedded;
 
-    private String scope;
+    private String level;
 
     private Long tenantId;
 

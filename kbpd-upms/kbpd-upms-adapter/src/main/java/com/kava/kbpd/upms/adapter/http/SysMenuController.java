@@ -101,8 +101,9 @@ public class SysMenuController {
     public JsonResult<List<SysMenuListResponse>> getMenuTree() {
         UserContext ctx = UserContextHolder.get();
         Long userId = ctx != null ? ctx.getUserId() : null;
+        Long tenantId = ctx != null ? ctx.getTenantId() : null;
         java.util.Set<String> roles = ctx != null ? ctx.getRoles() : null;
-        List<SysMenuAppListDTO> tree = appService.queryMenuTree(userId, roles);
+        List<SysMenuAppListDTO> tree = appService.queryMenuTree(userId, tenantId, roles);
         List<SysMenuListResponse> result = tree.stream().map(adapterConverter::convertEntity2List).toList();
         return JsonResult.buildSuccess(result);
     }

@@ -50,6 +50,20 @@ public enum UpmsBizErrorCodeEnum implements BaseErrorCodeEnum {
     // ---- 10-08 国际化 ----
     I18N_CODE_DUPLICATE("10080001", "国际化编码已存在"),
 
+    // ---- 10-09 应用 ----
+    APP_NOT_FOUND("10090001", "应用不存在"),
+    APP_CODE_DUPLICATE("10090002", "应用编码已存在"),
+    APP_NOT_DELETABLE("10090003", "系统应用不可删除"),
+    APP_NOT_DISABLEABLE("10090004", "系统应用不可停用"),
+    APP_IN_USE("10090005", "应用仍有租户使用，无法删除"),
+    APP_DISABLED("10090006", "应用已停用，无法订阅"),
+
+    // ---- 10-10 租户应用 ----
+    TENANT_APP_ALREADY_SUBSCRIBED("10100001", "租户已订阅该应用"),
+    TENANT_APP_NOT_UNSUBSCRIBABLE("10100002", "kava-base 系统应用不可退订"),
+    TENANT_APP_MENU_OUT_OF_SCOPE("10100003", "菜单超出可分配范围"),
+    APP_MENU_NOT_FOUND("10100004", "关联的菜单不存在"),
+
     ;
 
     private final String errorCode;

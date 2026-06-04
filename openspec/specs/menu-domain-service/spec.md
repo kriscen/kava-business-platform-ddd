@@ -10,10 +10,10 @@
 
 SysMenuService SHALL 注入 ISysMenuRepository，并将 CRUD 操作委托转发至 Repository。创建和修改操作 SHALL 在委托前执行 pid 校验。删除操作 SHALL 在委托前执行子菜单和角色引用检查。
 
-Application 层的 `SysMenuCreateCommand` 和 `SysMenuUpdateCommand` SHALL 包含完整的字段映射（name、permission、pid、icon、path、component、visible、sortOrder、menuType、keepAlive、embedded、scope），使 Controller 层的 Create/Update 请求能正确传递到 Domain 层。
+Application 层的 `SysMenuCreateCommand` 和 `SysMenuUpdateCommand` SHALL 包含完整的字段映射（name、permission、pid、icon、path、component、visible、sortOrder、menuType、keepAlive、embedded、**level**），使 Controller 层的 Create/Update 请求能正确传递到 Domain 层。
 
 #### Scenario: 创建菜单 — Command 字段完整传递
-- **WHEN** 前端调用 `POST /api/v1/sys/menu/` 提交 name、permission、pid、icon、path、component、visible、sortOrder、menuType、keepAlive、embedded、scope 字段
+- **WHEN** 前端调用 `POST /api/v1/sys/menu/` 提交 name、permission、pid、icon、path、component、visible、sortOrder、menuType、keepAlive、embedded、**level** 字段
 - **THEN** SysMenuCreateCommand SHALL 包含所有上述字段
 - **AND** AdapterConverter 将 Request 映射为 Command
 - **AND** AppConverter 将 Command 映射为 SysMenuEntity

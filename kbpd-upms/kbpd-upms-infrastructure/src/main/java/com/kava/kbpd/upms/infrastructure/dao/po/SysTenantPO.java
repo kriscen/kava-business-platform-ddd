@@ -61,8 +61,6 @@ public class SysTenantPO extends SysDeletablePO {
 	 */
 	private String status;
 
-	private String menuId;
-
 	private LocalDateTime startTime;
 
 	private LocalDateTime endTime;

@@ -15,9 +15,11 @@ public interface SysOauthClientConverter {
 
     @Mapping(source = "id", target = "id.id")
     @Mapping(source = "tenantId", target = "tenantId.id")
+    @Mapping(source = "appId", target = "appId.id")
     SysOauthClientEntity convertPO2Entity(SysOauthClientPO sysOauthClientDetailsPO);
 
     @Mapping(source = "id.id", target = "id")
     @Mapping(source = "tenantId.id", target = "tenantId")
+    @Mapping(source = "appId.id", target = "appId")
     SysOauthClientPO convertEntity2PO(SysOauthClientEntity entity);
 }

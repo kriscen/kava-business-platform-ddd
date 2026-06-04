@@ -73,8 +73,6 @@ public class SysTenantRequest implements Serializable {
 	 */
 	private String status;
 
-	private String menuId;
-
 	private String adminUsername;
 
 	private String adminPassword;

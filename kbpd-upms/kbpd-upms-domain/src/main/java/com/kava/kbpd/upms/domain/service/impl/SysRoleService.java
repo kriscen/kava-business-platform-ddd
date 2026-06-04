@@ -10,31 +10,31 @@ import com.kava.kbpd.upms.domain.model.valobj.SysRoleListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysMenuRepository;
 import com.kava.kbpd.upms.domain.repository.ISysRoleReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysRoleWriteRepository;
+import com.kava.kbpd.upms.domain.repository.ISysTenantAppRepository;
 import com.kava.kbpd.upms.domain.service.ISysRoleService;
-import com.kava.kbpd.upms.types.enums.SysMenuScope;
+import com.kava.kbpd.upms.types.enums.SysMenuLevel;
 import com.kava.kbpd.upms.types.enums.SysRoleDataScope;
 import com.kava.kbpd.upms.types.exception.UpmsBizErrorCodeEnum;
 import com.kava.kbpd.upms.types.exception.UpmsBizException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SysRoleService implements ISysRoleService {
+
     private final ISysRoleWriteRepository writeRepository;
     private final ISysRoleReadRepository readRepository;
     private final ISysMenuRepository menuRepository;
+    private final ISysTenantAppRepository tenantAppRepository;
 
     @Override
     public SysRoleId create(SysRoleEntity entity) {
         validateRoleCodeUnique(entity.getRoleCode(), entity.getTenantId(), null);
-        validateMenuScope(entity);
+        validateMenuLevel(entity);
         SysRoleId roleId = writeRepository.create(entity);
         if (!CollectionUtils.isEmpty(entity.getMenuIds())) {
             writeRepository.saveRoleMenus(roleId, entity.getMenuIds());
@@ -45,7 +45,7 @@ public class SysRoleService implements ISysRoleService {
     @Override
     public Boolean update(SysRoleEntity entity) {
         validateRoleCodeUnique(entity.getRoleCode(), entity.getTenantId(), entity.getId());
-        validateMenuScope(entity);
+        validateMenuLevel(entity);
         writeRepository.removeRoleMenus(entity.getId());
         if (!CollectionUtils.isEmpty(entity.getMenuIds())) {
             writeRepository.saveRoleMenus(entity.getId(), entity.getMenuIds());
@@ -73,29 +73,25 @@ public class SysRoleService implements ISysRoleService {
     }
 
     @Override
-    public SysRoleId initTenantAdminRole(SysTenantId tenantId, String menuIdStr) {
-        List<SysMenuId> menuIds = Collections.emptyList();
-        if (StringUtils.hasText(menuIdStr)) {
-            menuIds = Arrays.stream(menuIdStr.split(","))
-                    .map(String::trim)
-                    .filter(StringUtils::hasText)
-                    .map(Long::parseLong)
-                    .map(id -> SysMenuId.builder().id(id).build())
-                    .toList();
-        }
+    public SysRoleId initTenantAdminRole(SysTenantId tenantId) {
+        List<Long> menuIds = tenantAppRepository.queryMenuIdsByTenantId(tenantId);
+
+        List<SysMenuId> sysMenuIds = menuIds.stream()
+                .map(id -> SysMenuId.builder().id(id).build())
+                .toList();
 
         SysRoleEntity adminRole = SysRoleEntity.builder()
                 .roleName("租户管理员")
                 .roleCode("tenant_admin")
                 .roleDesc("租户创建时自动生成的管理员角色")
                 .dsType(SysRoleDataScope.ALL.getCode())
-                .menuIds(menuIds)
+                .menuIds(sysMenuIds)
                 .tenantId(tenantId)
                 .build();
 
         SysRoleId roleId = writeRepository.create(adminRole);
-        if (!CollectionUtils.isEmpty(menuIds)) {
-            writeRepository.saveRoleMenus(roleId, menuIds);
+        if (!CollectionUtils.isEmpty(sysMenuIds)) {
+            writeRepository.saveRoleMenus(roleId, sysMenuIds);
         }
         return roleId;
     }
@@ -107,7 +103,7 @@ public class SysRoleService implements ISysRoleService {
         }
     }
 
-    private void validateMenuScope(SysRoleEntity entity) {
+    private void validateMenuLevel(SysRoleEntity entity) {
         if (CollectionUtils.isEmpty(entity.getMenuIds())) {
             return;
         }
@@ -115,13 +111,21 @@ public class SysRoleService implements ISysRoleService {
         List<SysMenuEntity> menus = menuRepository.queryByIds(entity.getMenuIds());
         boolean isTenantRole = entity.getTenantId() != null;
 
-        for (SysMenuEntity menu : menus) {
-            String scope = menu.getScope();
-            if (isTenantRole && SysMenuScope.SYSTEM.getCode().equals(scope)) {
-                throw new UpmsBizException(UpmsBizErrorCodeEnum.MENU_SCOPE_INVALID);
+        if (isTenantRole) {
+            List<Long> allowedMenuIds = tenantAppRepository.queryMenuIdsByTenantId(entity.getTenantId());
+            for (SysMenuEntity menu : menus) {
+                if (SysMenuLevel.PLATFORM.equals(menu.getLevel())) {
+                    throw new UpmsBizException(UpmsBizErrorCodeEnum.MENU_SCOPE_INVALID);
+                }
+                if (!allowedMenuIds.contains(menu.getId().getId())) {
+                    throw new UpmsBizException(UpmsBizErrorCodeEnum.TENANT_APP_MENU_OUT_OF_SCOPE);
+                }
             }
-            if (!isTenantRole && SysMenuScope.TENANT.getCode().equals(scope)) {
-                throw new UpmsBizException(UpmsBizErrorCodeEnum.MENU_SCOPE_INVALID);
+        } else {
+            for (SysMenuEntity menu : menus) {
+                if (SysMenuLevel.TENANT.equals(menu.getLevel())) {
+                    throw new UpmsBizException(UpmsBizErrorCodeEnum.MENU_SCOPE_INVALID);
+                }
             }
         }
     }

@@ -73,7 +73,6 @@ public class SysTenantListResponse implements Serializable {
 	 */
 	private String status;
 
-	private String menuId;
 
 	/**
 	 * 创建人

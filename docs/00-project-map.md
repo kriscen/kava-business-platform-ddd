@@ -125,6 +125,7 @@ docs/
 | [vision.md](07-product/vision.md) | 产品愿景与定位 — Kava 是什么、解决什么问题、核心价值、App 接入模型、平台边界、发展阶段 |
 | [user-roles.md](07-product/user-roles.md) | 用户角色定义 — B端（平台管理员、租户管理员）/ C端（App 终端用户）的角色、权限、使用场景 |
 | [auth-chain.md](07-product/auth-chain.md) | 认证链路 — JWT Token 结构（标准/自定义 Claims）、验证流程、租户上下文传播机制 |
+| [menu-app-model.md](07-product/menu-app-model.md) | 菜单与应用模型 — 菜单 level 体系、App 菜单组合包、购买分发机制、白标 SaaS 模式 |
 | [platform-architecture.md](07-product/platform-architecture.md) | 平台架构概念 — Gateway 纯路由设计、租户模型、App 与 OAuth2 Client 关系、密码模式登录流程、数据隔离策略 |
 
 ---

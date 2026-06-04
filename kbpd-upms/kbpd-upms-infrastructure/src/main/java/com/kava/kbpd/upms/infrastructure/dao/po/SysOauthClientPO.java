@@ -74,4 +74,9 @@ public class SysOauthClientPO extends TenantDeletablePO {
 	 * 用户类型
 	 */
 	private Integer userType;
+
+	/**
+	 * 关联应用ID（可选）
+	 */
+	private Long appId;
 }

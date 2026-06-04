@@ -24,5 +24,4 @@ public class SysTenantUpdateCommand {
     private String background;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String menuId;
 }

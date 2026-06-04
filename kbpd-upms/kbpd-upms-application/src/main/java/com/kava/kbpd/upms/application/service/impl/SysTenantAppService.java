@@ -12,8 +12,11 @@ import com.kava.kbpd.upms.application.model.dto.SysTenantAppListDTO;
 import com.kava.kbpd.upms.application.model.dto.TenantStatusAppDTO;
 import com.kava.kbpd.upms.application.service.ISysTenantAppService;
 import com.kava.kbpd.upms.application.service.ISysUserAppService;
+import com.kava.kbpd.upms.domain.model.entity.SysTenantAppEntity;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
+import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysTenantAppRepository;
 import com.kava.kbpd.upms.domain.service.ISysRoleService;
 import com.kava.kbpd.upms.domain.service.ISysTenantService;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +36,24 @@ public class SysTenantAppService implements ISysTenantAppService {
     private final ISysRoleService sysRoleService;
     private final ISysUserAppService sysUserAppService;
     private final SysTenantAppConverter sysTenantAppConverter;
+    private final ISysTenantAppRepository sysTenantAppRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public SysTenantId createTenant(SysTenantCreateCommand command) {
         SysTenantEntity sysTenantEntity = sysTenantAppConverter.convertCreateCommand2Entity(command);
         SysTenantId tenantId = sysTenantService.create(sysTenantEntity);
-        SysRoleId adminRoleId = sysRoleService.initTenantAdminRole(tenantId, sysTenantEntity.getMenuId());
+
+        // Auto-subscribe kava-base
+        SysAppId kavaBaseAppId = SysAppId.builder().id(1L).build();
+        SysTenantAppEntity tenantApp = SysTenantAppEntity.builder()
+                .tenantId(tenantId)
+                .appId(kavaBaseAppId)
+                .status(com.kava.kbpd.upms.types.enums.SysTenantAppStatus.ACTIVE)
+                .build();
+        sysTenantAppRepository.create(tenantApp);
+
+        SysRoleId adminRoleId = sysRoleService.initTenantAdminRole(tenantId);
 
         if (StringUtils.hasText(command.getAdminUsername())) {
             SysUserCreateCommand userCommand = SysUserCreateCommand.builder()

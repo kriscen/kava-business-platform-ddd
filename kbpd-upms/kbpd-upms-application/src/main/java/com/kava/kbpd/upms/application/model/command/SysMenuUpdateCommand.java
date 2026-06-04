@@ -40,4 +40,6 @@ public class SysMenuUpdateCommand {
     private String keepAlive;
 
     private String embedded;
+
+    private String level;
 }

@@ -2,6 +2,7 @@ package com.kava.kbpd.upms.domain.model.entity;
 
 import com.kava.kbpd.common.core.label.Entity;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
+import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.model.valobj.SysOauthClientId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,6 +82,11 @@ public class SysOauthClientEntity implements Entity<SysOauthClientId> {
 	 * 租户ID
 	 */
 	private SysTenantId tenantId;
+
+	/**
+	 * 关联应用ID（可选）
+	 */
+	private SysAppId appId;
 
 	/**
 	 * 对应user场景

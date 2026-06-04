@@ -81,8 +81,6 @@ public class SysTenantEntity implements Entity<SysTenantId> {
 	 */
 	private SysTenantStatus status;
 
-	private String menuId;
-
 	private LocalDateTime gmtCreate;
 
 	private LocalDateTime gmtModified;

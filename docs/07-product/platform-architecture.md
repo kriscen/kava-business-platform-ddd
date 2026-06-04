@@ -108,7 +108,7 @@ App A/B/C 的用户 → 都是该家庭的 Member
    │←── 返回 client_id/secret │                            │
 ```
 
-> **注意**：当前 `SysOauthClient` 同时承担了 App 业务属性和认证配置。未来如果 App 概念变得更复杂（如需要 App 名称、图标、独立生命周期管理），可能需要拆分为独立的 `SysApp` 实体。
+> **注意**：App 概念已独立设计。当前 `SysOauthClient` 仍承担认证配置，但 App 作为独立的 `SysApp` 实体管理菜单组合和分发。详见 [menu-app-model.md](menu-app-model.md)。
 
 ## OAuth2 登录流程
 
@@ -177,7 +177,7 @@ User 3 ──────→ Tenant B（家庭 B）
 ## 扩展方向
 
 1. **更多 OAuth2 授权类型**：支持授权码模式、客户端凭证模式等
-2. **App 市场**：家庭可浏览和接入预制 App 模板
+2. **App 市场**：已进入设计阶段，详见 [menu-app-model.md](menu-app-model.md)
 3. **平台级服务**：消息推送、数据分析、文件存储等共享服务
 4. **计费系统**：基于租户的订阅或用量计费（商业模式确定后建设）
 5. **开放 API**：为 App 开发者提供标准化的平台能力 API

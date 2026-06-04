@@ -19,5 +19,5 @@ public interface ISysRoleService {
 
     Boolean removeBatchByIds(List<SysRoleId> ids);
 
-    SysRoleId initTenantAdminRole(SysTenantId tenantId, String menuIdStr);
+    SysRoleId initTenantAdminRole(SysTenantId tenantId);
 }

@@ -38,4 +38,6 @@ public class SysMenuCreateCommand {
     private String keepAlive;
 
     private String embedded;
+
+    private String level;
 }

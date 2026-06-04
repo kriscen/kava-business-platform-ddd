@@ -74,6 +74,11 @@ public class SysMenuRequest implements Serializable {
     private String embedded;
 
     /**
+     * 菜单级别
+     */
+    private String level;
+
+    /**
      * 创建人
      */
     private String creator;

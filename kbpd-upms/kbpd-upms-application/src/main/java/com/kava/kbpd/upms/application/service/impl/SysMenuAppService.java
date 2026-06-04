@@ -10,9 +10,10 @@ import com.kava.kbpd.upms.application.service.ISysMenuAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysMenuEntity;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuListQuery;
+import com.kava.kbpd.upms.domain.repository.ISysTenantAppRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
 import com.kava.kbpd.upms.domain.service.ISysMenuService;
-import com.kava.kbpd.upms.types.enums.SysMenuScope;
+import com.kava.kbpd.upms.types.enums.SysMenuLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysMenuAppService implements ISysMenuAppService {
+
     private final ISysMenuService sysMenuService;
     private final SysMenuAppConverter sysMenuAppConverter;
     private final ISysUserReadRepository sysUserReadRepository;
+    private final ISysTenantAppRepository sysTenantAppRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -77,10 +80,10 @@ public class SysMenuAppService implements ISysMenuAppService {
     }
 
     @Override
-    public List<SysMenuAppListDTO> queryMenuTree(Long userId, Set<String> roles) {
+    public List<SysMenuAppListDTO> queryMenuTree(Long userId, Long tenantId, Set<String> roles) {
         List<SysMenuEntity> allMenus = sysMenuService.queryAll();
 
-        List<SysMenuEntity> visibleMenus = filterByScope(allMenus, userId, roles);
+        List<SysMenuEntity> visibleMenus = filterByLevel(allMenus, userId, tenantId, roles);
 
         visibleMenus.sort(Comparator.comparingInt(m -> m.getSortOrder() != null ? m.getSortOrder() : 0));
 
@@ -91,29 +94,38 @@ public class SysMenuAppService implements ISysMenuAppService {
         return buildTree(visibleMenus, nameMap);
     }
 
-    private List<SysMenuEntity> filterByScope(List<SysMenuEntity> allMenus, Long userId, Set<String> roles) {
+    private List<SysMenuEntity> filterByLevel(List<SysMenuEntity> allMenus, Long userId, Long tenantId, Set<String> roles) {
         boolean isAdmin = roles != null && roles.contains("ROLE_ADMIN");
 
         if (isAdmin) {
             return allMenus.stream()
-                    .filter(m -> SysMenuScope.SYSTEM.getCode().equals(m.getScope())
-                            || SysMenuScope.SYSTEM_TENANT.getCode().equals(m.getScope()))
+                    .filter(m -> SysMenuLevel.PLATFORM.equals(m.getLevel()))
                     .toList();
         }
 
+        List<Long> tenantMenuIds = getTenantMenuIds(tenantId);
+        if (tenantMenuIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Set<Long> tenantMenuIdSet = new HashSet<>(tenantMenuIds);
+
         Set<Long> assignedMenuIds = getAssignedMenuIds(userId);
+        Set<Long> visibleMenuIds = tenantMenuIdSet.stream()
+                .filter(assignedMenuIds::contains)
+                .collect(Collectors.toSet());
+
         return allMenus.stream()
-                .filter(m -> {
-                    String scope = m.getScope();
-                    if (SysMenuScope.TENANT.getCode().equals(scope)) {
-                        return true;
-                    }
-                    if (SysMenuScope.SYSTEM_TENANT.getCode().equals(scope)) {
-                        return m.getId() != null && assignedMenuIds.contains(m.getId().getId());
-                    }
-                    return false;
-                })
+                .filter(m -> SysMenuLevel.TENANT.equals(m.getLevel()) && m.getId() != null
+                        && visibleMenuIds.contains(m.getId().getId()))
                 .toList();
+    }
+
+    private List<Long> getTenantMenuIds(Long tenantId) {
+        if (tenantId == null) {
+            return Collections.emptyList();
+        }
+        return sysTenantAppRepository.queryMenuIdsByTenantId(
+                com.kava.kbpd.common.core.model.valobj.SysTenantId.of(tenantId));
     }
 
     private Set<Long> getAssignedMenuIds(Long userId) {

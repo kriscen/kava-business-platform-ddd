@@ -21,6 +21,6 @@ public class SysMenuListQuery implements ValueObject {
     QueryParamValObj queryParam;
     String menuName;
     Integer type;
-    String scope;
+    String level;
 
 }

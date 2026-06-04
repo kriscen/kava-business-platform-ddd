@@ -30,6 +30,6 @@ public interface ISysMenuAppService {
     /**
      * 根据用户角色解析可见菜单并构建树结构
      */
-    List<SysMenuAppListDTO> queryMenuTree(Long userId, Set<String> roles);
+    List<SysMenuAppListDTO> queryMenuTree(Long userId, Long tenantId, Set<String> roles);
 
 }

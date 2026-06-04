@@ -182,7 +182,7 @@ CREATE TABLE `sys_menu` (
                             `keep_alive` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '是否缓存，0否，1是',
                             `embedded` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否内嵌，0否，1是',
                             `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '菜单类型，0目录，1菜单，2按钮',
-                            `scope` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单范围，区分平台还是租户',
+                            `level` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单级别，PLATFORM平台级，TENANT租户级',
                             `tenant_id` bigint unsigned DEFAULT NULL COMMENT '租户ID',
                             `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志，0未删除，1已删除',
                             `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
@@ -219,6 +219,58 @@ CREATE TABLE `sys_oauth_client` (
                                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='终端信息表';
 
+
+-- ----------------------------
+-- Table structure for sys_app
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_app`;
+CREATE TABLE `sys_app` (
+                           `id` bigint NOT NULL COMMENT '应用ID',
+                           `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '应用编码',
+                           `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '应用名称',
+                           `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '应用图标',
+                           `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '应用描述',
+                           `status` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ACTIVE' COMMENT '应用状态，ACTIVE可用，DISABLED停用',
+                           `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标记，0未删除，1已删除',
+                           `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
+                           `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                           `modifier` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
+                           `gmt_modified` datetime DEFAULT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                           PRIMARY KEY (`id`) USING BTREE,
+                           UNIQUE KEY `uk_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用管理表';
+
+-- ----------------------------
+-- Table structure for sys_app_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_app_menu`;
+CREATE TABLE `sys_app_menu` (
+                                `id` bigint NOT NULL COMMENT '主键ID',
+                                `app_id` bigint NOT NULL COMMENT '应用ID',
+                                `menu_id` bigint NOT NULL COMMENT '菜单ID',
+                                PRIMARY KEY (`id`) USING BTREE,
+                                KEY `idx_app_id` (`app_id`) USING BTREE,
+                                KEY `idx_menu_id` (`menu_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用菜单关联表';
+
+-- ----------------------------
+-- Table structure for sys_tenant_app
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tenant_app`;
+CREATE TABLE `sys_tenant_app` (
+                                  `id` bigint NOT NULL COMMENT '主键ID',
+                                  `tenant_id` bigint NOT NULL COMMENT '租户ID',
+                                  `app_id` bigint NOT NULL COMMENT '应用ID',
+                                  `status` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'ACTIVE' COMMENT '订阅状态，ACTIVE有效，EXPIRED过期',
+                                  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
+                                  `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                  `modifier` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
+                                  `gmt_modified` datetime DEFAULT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                  PRIMARY KEY (`id`) USING BTREE,
+                                  UNIQUE KEY `uk_tenant_app` (`tenant_id`, `app_id`),
+                                  KEY `idx_tenant_id` (`tenant_id`) USING BTREE,
+                                  KEY `idx_app_id` (`app_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='租户应用订阅表';
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -286,7 +338,8 @@ CREATE TABLE `sys_tenant` (
                               `background` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '登录页背景图',
                               `footer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '页脚信息',
                               `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'logo',
-                              `menu_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '租户菜单ID',
+                              `start_time` datetime DEFAULT NULL COMMENT '开始时间',
+                              `end_time` datetime DEFAULT NULL COMMENT '结束时间',
                               `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '租户状态，0正常，1停用',
                               `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标记，0未删除，1已删除',
                               `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',

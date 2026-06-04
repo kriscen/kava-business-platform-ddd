@@ -70,7 +70,7 @@ public class SysMenuPO extends TenantDeletablePO {
     private String embedded;
 
     /**
-     * 菜单范围，区分平台还是租户
+     * 菜单级别，PLATFORM平台级，TENANT租户级
      */
-    private String scope;
+    private String level;
 }

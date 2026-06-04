@@ -50,7 +50,7 @@ public class SysMenuRepository implements ISysMenuRepository {
                 Wrappers.lambdaQuery(SysMenuPO.class)
                         .like(query.getMenuName() != null, SysMenuPO::getName, query.getMenuName())
                         .eq(query.getType() != null, SysMenuPO::getMenuType, query.getType())
-                        .eq(query.getScope() != null, SysMenuPO::getScope, query.getScope()));
+                        .eq(query.getLevel() != null, SysMenuPO::getLevel, query.getLevel()));
         return PagingInfo.toResponse(sysMenuPOPage.getRecords().stream()
                         .map(sysMenuConverter::convertPO2Entity).toList(),
                 sysMenuPOPage.getTotal(), sysMenuPOPage.getCurrent(), sysMenuPOPage.getSize());

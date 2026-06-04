@@ -19,7 +19,6 @@ public class SysTenantAppDetailDTO {
     private SysTenantStatus status;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String menuId;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
 }

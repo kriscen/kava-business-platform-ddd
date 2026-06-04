@@ -8,15 +8,16 @@
 
 ### Requirement: 租户 CRUD 管理
 
-系统 SHALL 提供平台管理员管理租户的完整 CRUD 接口（创建、查询、更新、删除），并增加状态变更端点。创建和更新接口 SHALL 使用 `SysTenantStatus` 枚举，创建时默认状态为 `NORMAL`。
+系统 SHALL 提供平台管理员管理租户的完整 CRUD 接口（创建、查询、更新、删除），并增加状态变更端点。创建和更新接口 SHALL 使用 `SysTenantStatus` 枚举，创建时默认状态为 `NORMAL`。创建租户时系统 SHALL 自动关联 kava-base 系统应用，不再需要手动传入菜单 ID。
 
 Tenant 实体 MUST 使用 `SysTenantId` 值对象作为 ID 类型，与其他子域保持一致的 ID 值对象模式。
 
 #### Scenario: 创建租户
-- **WHEN** 平台管理员提交租户创建请求，包含 name、code、tenantDomain、startTime、endTime 等
+- **WHEN** 平台管理员提交租户创建请求，包含 name、code、tenantDomain、startTime、endTime 等（不包含 menuId）
 - **THEN** 系统校验 code 唯一性
 - **AND** 创建租户记录，状态默认为 NORMAL
-- **AND** 自动初始化 tenant_admin 角色
+- **AND** 自动在 sys_tenant_app 中创建租户与 kava-base 的关联（status=ACTIVE）
+- **AND** 自动初始化 tenant_admin 角色，关联 kava-base 包含的所有 TENANT 级菜单
 - **AND** 若指定了管理员信息则创建管理员用户
 - **AND** 返回新创建的租户 ID
 
@@ -48,32 +49,14 @@ Tenant 实体 MUST 使用 `SysTenantId` 值对象作为 ID 类型，与其他子
 - **WHEN** 平台管理员对租户执行启用操作（PUT /api/{version}/sys/tenant/{id}/enable）
 - **THEN** 系统校验当前状态并变更为 NORMAL
 
-### Requirement: 租户菜单分配
-
-平台管理员 SHALL 能为租户分配可用的 SYSTEM_TENANT 菜单范围。
-
-#### Scenario: 为租户分配菜单
-- **WHEN** 平台管理员为租户分配 SYSTEM_TENANT 菜单 ID 列表
-- **THEN** 系统更新 sys_tenant.menu_id 字段
-- **AND** 租户管理员此后可看到并使用这些菜单
-
-#### Scenario: 缩小租户菜单范围
-- **WHEN** 平台管理员减少租户的菜单分配
-- **THEN** 已分配但不在新范围内的菜单变为不可见
-- **AND** 租户下引用了被移除菜单的角色需要清理关联（可标记异常或由管理员手动处理）
-
-#### Scenario: 分配非 SYSTEM_TENANT 菜单
-- **WHEN** 平台管理员尝试为租户分配 scope 为 SYSTEM 的菜单
-- **THEN** 系统拒绝操作并返回错误
-
 ### Requirement: 新租户自动初始化必备角色
 
-创建租户时，系统 SHALL 自动创建一个"租户管理员"角色，关联该租户所有已分配菜单的权限。
+创建租户时，系统 SHALL 自动创建一个"租户管理员"角色，关联 kava-base 系统应用包含的所有 TENANT 级菜单。
 
 #### Scenario: 创建租户时自动创建管理员角色
-- **WHEN** 平台管理员创建租户并分配了菜单
+- **WHEN** 平台管理员创建租户
 - **THEN** 系统自动创建角色 code 为 `tenant_admin` 的角色
-- **AND** 该角色关联租户所有已分配的 SYSTEM_TENANT 菜单
+- **AND** 该角色关联 kava-base 包含的所有 TENANT 级菜单
 - **AND** 该角色的 dsType 为 ALL（租户全数据可见）
 
 ### Requirement: 租户管理员初始用户绑定

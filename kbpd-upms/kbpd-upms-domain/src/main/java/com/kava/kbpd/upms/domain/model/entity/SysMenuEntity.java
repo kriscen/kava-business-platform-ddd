@@ -3,6 +3,7 @@ package com.kava.kbpd.upms.domain.model.entity;
 import com.kava.kbpd.common.core.label.Entity;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.upms.domain.model.valobj.SysMenuId;
+import com.kava.kbpd.upms.types.enums.SysMenuLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -80,9 +81,9 @@ public class SysMenuEntity implements Entity<SysMenuId> {
     private String embedded;
 
     /**
-     * 菜单范围，区分平台还是租户
+     * 菜单级别，PLATFORM平台级，TENANT租户级
      */
-    private String scope;
+    private SysMenuLevel level;
 
     /**
      * 租户ID

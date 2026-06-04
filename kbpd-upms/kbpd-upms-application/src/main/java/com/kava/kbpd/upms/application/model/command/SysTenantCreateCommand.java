@@ -22,7 +22,6 @@ public class SysTenantCreateCommand {
     private String background;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String menuId;
     private String adminUsername;
     private String adminPassword;
 }

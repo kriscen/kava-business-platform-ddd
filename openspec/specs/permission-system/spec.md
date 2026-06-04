@@ -6,51 +6,51 @@
 
 ## Requirements
 
-### Requirement: 菜单作用域三值枚举
+### Requirement: 菜单作用域两值枚举
 
-系统 SHALL 将 `SysMenuScope` 枚举扩展为三个值：SYSTEM（平台专属）、TENANT（租户专属）、SYSTEM_TENANT（双方可见）。
+系统 SHALL 将 `SysMenuLevel` 枚举定义为两个值：PLATFORM（平台管理级菜单）、TENANT（租户级菜单）。取代原有的三值 `SysMenuScope`。
 
-#### Scenario: 创建平台专属菜单
-- **WHEN** 平台管理员创建菜单并设置 scope 为 SYSTEM
+#### Scenario: 创建平台级菜单
+- **WHEN** 平台管理员创建菜单并设置 level 为 PLATFORM
 - **THEN** 该菜单仅对平台管理员可见
 - **AND** 租户管理员无法看到此菜单
 
-#### Scenario: 创建租户专属菜单
-- **WHEN** 租户管理员创建菜单并设置 scope 为 TENANT
-- **THEN** 该菜单仅在本租户范围内可见
-- **AND** 平台管理员无法看到此菜单（除非平台管理员查看租户配置）
+#### Scenario: 创建租户级菜单
+- **WHEN** 创建菜单并设置 level 为 TENANT
+- **THEN** 该菜单仅对拥有包含此菜单的 App 的租户管理员可见
+- **AND** 平台管理员无法看到此菜单
 
-#### Scenario: 创建双方可见菜单
-- **WHEN** 平台管理员创建菜单并设置 scope 为 SYSTEM_TENANT
-- **THEN** 该菜单在平台管理和租户管理界面均可见
-- **AND** 租户是否实际可见取决于租户是否被分配了此菜单
+### Requirement: 菜单可见性基于 App 购买关系过滤
 
-### Requirement: 租户菜单可见性过滤
-
-查询菜单时，系统 SHALL 根据当前用户的身份和租户的菜单分配情况过滤可见菜单。
+查询菜单时，系统 SHALL 根据当前用户身份和租户的 App 购买关系过滤可见菜单。
 
 #### Scenario: 平台管理员查询菜单列表
 - **WHEN** 平台管理员查询菜单列表
-- **THEN** 返回所有 scope 为 SYSTEM 和 SYSTEM_TENANT 的菜单
-- **AND** 不返回 scope 为 TENANT 的租户自有菜单
+- **THEN** 返回所有 level 为 PLATFORM 的菜单
+- **AND** 不返回 level 为 TENANT 的菜单
 
 #### Scenario: 租户管理员查询菜单列表
 - **WHEN** 租户管理员查询菜单列表
-- **THEN** 返回租户已分配的 SYSTEM_TENANT 菜单 + 本租户自建的 TENANT 菜单
-- **AND** 不返回 scope 为 SYSTEM 的平台专属菜单
-- **AND** 不返回其他租户的 TENANT 菜单
+- **THEN** 返回该租户已购 App（sys_tenant_app status=ACTIVE）通过 sys_app_menu 关联的 TENANT 菜单并集（自动去重）
+- **AND** 不返回 level 为 PLATFORM 的菜单
+- **AND** 不返回其他租户的菜单
 
-### Requirement: 角色绑定时校验菜单作用域
+### Requirement: 角色绑定时校验菜单 level 和 App 购买范围
 
-角色绑定菜单时，系统 SHALL 校验菜单是否在当前上下文的可见范围内。
+角色绑定菜单时，系统 SHALL 校验菜单 level 是否匹配角色上下文，且租户角色只能绑定已购 App 范围内的菜单。
 
-#### Scenario: 租户管理员绑定租户范围外的菜单
-- **WHEN** 租户管理员创建/更新角色，尝试绑定未被分配的 SYSTEM_TENANT 菜单
-- **THEN** 系统拒绝操作并返回权限错误
-
-#### Scenario: 平台管理员绑定任意菜单
+#### Scenario: 平台管理员绑定菜单
 - **WHEN** 平台管理员创建/更新角色
-- **THEN** 可绑定 SYSTEM 和 SYSTEM_TENANT 范围的菜单
+- **THEN** 可绑定 level 为 PLATFORM 的菜单
+- **AND** 不能绑定 level 为 TENANT 的菜单
+
+#### Scenario: 租户管理员绑定已购 App 范围内的菜单
+- **WHEN** 租户管理员创建/更新角色，绑定属于 (kava-base ∪ 已购App) 范围内的 TENANT 菜单
+- **THEN** 系统接受操作
+
+#### Scenario: 租户管理员绑定未购 App 的菜单
+- **WHEN** 租户管理员创建/更新角色，尝试绑定未购买 App 包含的 TENANT 菜单
+- **THEN** 系统拒绝操作并返回权限错误
 
 ### Requirement: 权限缓存加载
 
@@ -88,7 +88,7 @@
 
 ### Requirement: 登录后返回用户菜单树
 
-登录认证成功后，系统 SHALL 返回当前用户可见的菜单树，仅包含用户有权限访问的菜单项。
+登录认证成功后，系统 SHALL 返回当前用户可见的菜单树，仅包含用户有权限访问的菜单项。菜单可见性基于 App 购买关系计算。
 
 #### Scenario: B 端用户登录后获取菜单树
 - **WHEN** B 端用户登录成功并请求菜单树接口
@@ -98,11 +98,13 @@
 
 #### Scenario: 平台管理员获取菜单树
 - **WHEN** 平台管理员请求菜单树接口
-- **THEN** 返回所有 scope 为 system 和 system_tenant 的菜单
+- **THEN** 返回所有 level 为 PLATFORM 的菜单
+- **AND** 菜单树按 sortOrder 排序，按 parentId 构建层级
 
 #### Scenario: 租户管理员获取菜单树
 - **WHEN** 租户管理员请求菜单树接口
-- **THEN** 返回租户已分配的 system_tenant 菜单 + 租户自建的 tenant 菜单，且在用户角色关联范围内
+- **THEN** 返回该租户已购 App 的 TENANT 菜单并集，且在用户角色关联范围内
+- **AND** 菜单树按 sortOrder 排序，按 parentId 构建层级
 
 ### Requirement: DataScope 注解标记
 
