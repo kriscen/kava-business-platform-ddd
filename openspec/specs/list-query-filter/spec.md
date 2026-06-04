@@ -16,7 +16,7 @@ ListQuery 值对象 MUST 包含对应实体的实际过滤条件字段，MUST NO
 
 #### Scenario: SysMenuListQuery 包含菜单过滤字段
 - **WHEN** 查询菜单列表
-- **THEN** SysMenuListQuery MUST 包含以下可选过滤字段：menuName（String）、type（Integer）、scope（String）
+- **THEN** SysMenuListQuery MUST 包含以下可选过滤字段：menuName（String）、type（Integer）、level（String）
 
 #### Scenario: SysTenantListQuery 包含租户过滤字段
 - **WHEN** 查询租户列表

@@ -23,6 +23,12 @@
 - **WHEN** 遍历 `CommonErrorCodeEnum` 和 `UpmsBizErrorCodeEnum` 的所有枚举值
 - **THEN** 任意两个枚举值的 `errorCode` MUST 不相同
 
+#### Scenario: 文档与代码格式一致
+- **WHEN** `docs/04-reference/error-codes.md` 描述错误码格式
+- **THEN** MUST 使用 8 位数字格式（如 `10010001`）
+- **AND** `docs/06-modules/kbpd-upms/business-rules.md` 中的错误码表 MUST 使用相同的 8 位数字格式
+- **AND** MUST NOT 使用简写格式（如 `A00101`）
+
 ### Requirement: 通用错误码定义
 
 `CommonErrorCodeEnum` MUST 包含以下错误码分区：
@@ -53,6 +59,8 @@
 - `10-05`：分组（Group）
 - `10-06`：OAuth 客户端（Client）
 - `10-08`：国际化（I18n）
+- `10-09`：应用（App）
+- `10-10`：租户应用订阅（TenantApp）
 
 #### Scenario: 角色子模块错误码
 - **WHEN** 查询不存在的角色
@@ -65,6 +73,14 @@
 #### Scenario: 码值冲突已修复
 - **WHEN** 检查 `ROLE_MENU_EMPTY` 和 `MENU_NOT_FOUND` 的码值
 - **THEN** 两者 MUST 不同，`ROLE_MENU_EMPTY` 为 `"10010003"`，`MENU_NOT_FOUND` 为 `"10030001"`
+
+#### Scenario: 应用子模块错误码
+- **WHEN** 查询不存在的应用
+- **THEN** `UpmsBizErrorCodeEnum.APP_NOT_FOUND` 的码值 MUST 为 `"10090001"`
+
+#### Scenario: 租户应用订阅子模块错误码
+- **WHEN** 租户重复订阅同一应用
+- **THEN** `UpmsBizErrorCodeEnum.TENANT_APP_ALREADY_SUBSCRIBED` 的码值 MUST 为 `"10100001"`
 
 ### Requirement: 全局异常处理器统一返回 JsonResult
 

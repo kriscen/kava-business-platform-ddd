@@ -46,7 +46,7 @@ This project implements Domain-Driven Design (DDD) with Hexagonal Architecture (
 
 Dependencies must flow inward: `adapter/infrastructure → application → domain`
 
-- **domain**: Core business logic - must NOT depend on any external frameworks (Spring, database drivers)
+- **domain**: Core business logic - must NOT depend on Spring Boot / MyBatis etc., allows lightweight spring-context annotations
 - **application**: Application services that orchestrate domain objects
 - **adapter**: Controllers, RPC implementations - converts external requests to domain format
 - **infrastructure**: Persistence implementations, external service access

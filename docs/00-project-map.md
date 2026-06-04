@@ -28,9 +28,6 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [kbpd-upms.sql](01-sql/kbpd-upms.sql) | UPMS 数据库建表脚本，包含用户、角色、菜单、分组、租户、应用等表结构定义 |
-| [V2__tenant_add_time_columns.sql](01-sql/V2__tenant_add_time_columns.sql) | 租户表增量迁移：新增 start_time、end_time 列 |
-| [V3__menu_app_model.sql](01-sql/V3__menu_app_model.sql) | 菜单-应用模型迁移：新增 sys_app、sys_tenant_app、sys_app_menu 关联表 |
-| [V4__rename_dept_to_group.sql](01-sql/V4__rename_dept_to_group.sql) | 语义重命名：sys_dept → sys_group，sys_user.dept_id → group_id |
 
 ---
 

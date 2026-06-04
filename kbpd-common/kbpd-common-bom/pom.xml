@@ -53,11 +53,6 @@
             </dependency>
             <dependency>
                 <groupId>com.kava.kbpd</groupId>
-                <artifactId>kbpd-auth-api</artifactId>
-                <version>${kava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.kava.kbpd</groupId>
                 <artifactId>kbpd-member-api</artifactId>
                 <version>${kava.version}</version>
             </dependency>

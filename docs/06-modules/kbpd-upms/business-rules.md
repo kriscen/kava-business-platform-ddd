@@ -72,29 +72,29 @@
 
 | 规则 | 描述 |
 |---|---|
-| pid 自引用校验 | 创建/更新菜单时，pid 等于自身 id 抛出 MENU_PID_SELF_REFERENCE（A00303） |
-| pid 环检测 | 创建/更新菜单时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 MENU_PID_CIRCULAR（A00304） |
-| 删除前子菜单检查 | 删除菜单前检查是否有直接子菜单，有则抛出 MENU_HAS_CHILDREN（A00305） |
-| 删除前角色引用检查 | 删除菜单前检查 sys_role_menu 是否有角色绑定，有则抛出 MENU_REFERENCED_BY_ROLE（A00306） |
+| pid 自引用校验 | 创建/更新菜单时，pid 等于自身 id 抛出 MENU_PID_SELF_REFERENCE（10030003） |
+| pid 环检测 | 创建/更新菜单时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 MENU_PID_CIRCULAR（10030004） |
+| 删除前子菜单检查 | 删除菜单前检查是否有直接子菜单，有则抛出 MENU_HAS_CHILDREN（10030005） |
+| 删除前角色引用检查 | 删除菜单前检查 sys_role_menu 是否有角色绑定，有则抛出 MENU_REFERENCED_BY_ROLE（10030006） |
 | sortOrder 默认值 | 创建菜单时 sortOrder 为 null 自动设为 0 |
 
 ### 分组管理
 
 | 规则 | 描述 |
 |---|---|
-| pid 自引用校验 | 创建/更新分组时，pid 等于自身 id 抛出 GROUP_PID_SELF_REFERENCE（A00501） |
-| pid 环检测 | 创建/更新分组时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 GROUP_PID_CIRCULAR（A00502） |
-| 删除前子分组检查 | 删除分组前检查是否有直接子分组，有则抛出 GROUP_HAS_CHILDREN（A00503） |
-| 删除前用户引用检查 | 删除分组前检查 sys_user.group_id 是否有用户关联，有则抛出 GROUP_REFERENCED_BY_USER（A00504） |
+| pid 自引用校验 | 创建/更新分组时，pid 等于自身 id 抛出 GROUP_PID_SELF_REFERENCE（10050001） |
+| pid 环检测 | 创建/更新分组时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 GROUP_PID_CIRCULAR（10050002） |
+| 删除前子分组检查 | 删除分组前检查是否有直接子分组，有则抛出 GROUP_HAS_CHILDREN（10050003） |
+| 删除前用户引用检查 | 删除分组前检查 sys_user.group_id 是否有用户关联，有则抛出 GROUP_REFERENCED_BY_USER（10050004） |
 
 ### OAuth 客户端管理
 
 | 规则 | 描述 |
 |---|---|
-| clientId 唯一性 | 创建客户端时校验 clientId 全局唯一；更新时若 clientId 变更则校验新 clientId 唯一性（排除自身）（`CLIENT_ID_DUPLICATE` A00601） |
-| clientSecret 非空 | 创建和更新客户端时 clientSecret 不可为空（`CLIENT_SECRET_REQUIRED` A00602） |
-| token 有效期范围 | accessTokenValidity 和 refreshTokenValidity 必须大于 0（`CLIENT_TOKEN_VALIDITY_INVALID` A00603） |
-| authorizedGrantTypes 非空 | 授权方式不可为空数组（`CLIENT_GRANT_TYPES_REQUIRED` A00604） |
+| clientId 唯一性 | 创建客户端时校验 clientId 全局唯一；更新时若 clientId 变更则校验新 clientId 唯一性（排除自身）（`CLIENT_ID_DUPLICATE` 10060001） |
+| clientSecret 非空 | 创建和更新客户端时 clientSecret 不可为空（`CLIENT_SECRET_REQUIRED` 10060002） |
+| token 有效期范围 | accessTokenValidity 和 refreshTokenValidity 必须大于 0（`CLIENT_TOKEN_VALIDITY_INVALID` 10060003） |
+| authorizedGrantTypes 非空 | 授权方式不可为空数组（`CLIENT_GRANT_TYPES_REQUIRED` 10060004） |
 | AppService 调用链路 | SysOauthClientAppService 通过 ISysOauthClientService 调用 Repository，不直接注入 Repository |
 | 写操作事务保障 | AppService 的 create/update/remove 方法均有 `@Transactional(rollbackFor = Exception.class)` |
 
@@ -116,37 +116,53 @@
 | 租户创建自动初始化 | 创建租户时自动创建 `tenant_admin` 角色，关联所有已分配菜单，dsType=ALL |
 | 租户菜单分配 | 通过 `sys_tenant.menu_id` 字段存储分配的菜单 ID 列表 |
 | 租户状态枚举 | `SysTenantStatus`: NORMAL("0")/DISABLED("9")，创建时默认 NORMAL，到期状态通过 `endTime` 实时计算 |
-| 租户编码唯一性 | 创建/更新时校验 `code` 全局唯一（排除自身），违反抛 `TENANT_CODE_DUPLICATE`（A00402） |
-| 租户生命周期管理 | enable/disable 操作校验状态流转合法性，重复操作抛 `TENANT_STATUS_INVALID_TRANSITION`（A00403） |
+| 租户编码唯一性 | 创建/更新时校验 `code` 全局唯一（排除自身），违反抛 `TENANT_CODE_DUPLICATE`（10040002） |
+| 租户生命周期管理 | enable/disable 操作校验状态流转合法性，重复操作抛 `TENANT_STATUS_INVALID_TRANSITION`（10040003） |
 | 租户到期自动判定 | `isExpired()` 实时比较 `endTime` 与当前时间；`queryEffectiveStatus()` 综合到期+显式状态返回最终有效状态 |
 | 租户创建管理员用户 | 创建租户时可传入 adminUsername/adminPassword，自动创建管理员用户并绑定 tenant_admin 角色 |
+
+### 基础设施
+
+| 规则 | 描述 |
+|---|---|
+| MetaObjectHandler 自动填充 | `KavaMetaObjectHandler` 自动填充 creator、gmtCreate、modifier、gmtModified、delFlag 字段，insert 时设置创建/修改信息，update 时更新修改信息 |
 
 ### 错误码
 
 | 分类 | 错误码 | 说明 |
 |---|---|---|
-| 角色 | A00101 | 角色不存在 |
-| 角色 | A00102 | 角色编码已存在 |
-| 角色 | A00103 | 角色必须关联至少一个菜单 |
-| 用户 | A00201 | 用户不存在 |
-| 用户 | A00202 | 用户名已存在 |
-| 菜单 | A00301 | 菜单不存在 |
-| 菜单 | A00302 | 菜单作用域无效 |
-| 菜单 | A00303 | 菜单父节点不能为自身 |
-| 菜单 | A00304 | 菜单父节点不能形成循环引用 |
-| 菜单 | A00305 | 菜单存在子菜单，无法删除 |
-| 菜单 | A00306 | 菜单已被角色引用，无法删除 |
-| 租户 | A00401 | 租户不存在 |
-| 租户 | A00402 | 租户编码已存在 |
-| 租户 | A00403 | 租户状态流转不合法 |
-| 分组 | A00501 | 分组父节点不能为自身 |
-| 分组 | A00502 | 分组父节点不能形成循环引用 |
-| 分组 | A00503 | 分组存在子分组，无法删除 |
-| 分组 | A00504 | 分组已被用户引用，无法删除 |
-| OAuth客户端 | A00601 | 客户端ID已存在 |
-| OAuth客户端 | A00602 | 客户端密钥不能为空 |
-| OAuth客户端 | A00603 | 令牌有效期无效 |
-| OAuth客户端 | A00604 | 授权方式不能为空 |
+| 角色 | 10010001 | 角色不存在 |
+| 角色 | 10010002 | 角色编码已存在 |
+| 角色 | 10010003 | 角色必须关联至少一个菜单 |
+| 用户 | 10020001 | 用户不存在 |
+| 用户 | 10020002 | 用户名已存在 |
+| 菜单 | 10030001 | 菜单不存在 |
+| 菜单 | 10030002 | 菜单作用域无效 |
+| 菜单 | 10030003 | 菜单父节点不能为自身 |
+| 菜单 | 10030004 | 菜单父节点不能形成循环引用 |
+| 菜单 | 10030005 | 菜单存在子菜单，无法删除 |
+| 菜单 | 10030006 | 菜单已被角色引用，无法删除 |
+| 租户 | 10040001 | 租户不存在 |
+| 租户 | 10040002 | 租户编码已存在 |
+| 租户 | 10040003 | 租户状态流转不合法 |
+| 分组 | 10050001 | 分组父节点不能为自身 |
+| 分组 | 10050002 | 分组父节点不能形成循环引用 |
+| 分组 | 10050003 | 分组存在子分组，无法删除 |
+| 分组 | 10050004 | 分组已被用户引用，无法删除 |
+| OAuth客户端 | 10060001 | 客户端ID已存在 |
+| OAuth客户端 | 10060002 | 客户端密钥不能为空 |
+| OAuth客户端 | 10060003 | 令牌有效期无效 |
+| OAuth客户端 | 10060004 | 授权方式不能为空 |
+| 应用 | 10090001 | 应用不存在 |
+| 应用 | 10090002 | 应用编码已存在 |
+| 应用 | 10090003 | 系统应用不可删除 |
+| 应用 | 10090004 | 系统应用不可停用 |
+| 应用 | 10090005 | 应用仍有租户使用，无法删除 |
+| 应用 | 10090006 | 应用已停用，无法订阅 |
+| 租户应用 | 10100001 | 租户已订阅该应用 |
+| 租户应用 | 10100002 | kava-base 系统应用不可退订 |
+| 租户应用 | 10100003 | 菜单超出可分配范围 |
+| 租户应用 | 10100004 | 关联的菜单不存在 |
 
 ---
 
@@ -163,7 +179,6 @@
 | 多角色数据权限合并 | 当前取第一个角色 dsType，需按优先级取最大范围 | P1 | DEFERRED |
 | GROUP_AND_CHILD 递归 | 未实现分组子树递归查询 | P1 | DEFERRED |
 | 租户创建管理员用户 | 创建租户时可传入管理员信息，自动创建用户并绑定 tenant_admin 角色 | P1 | 已实现 |
-| MetaObjectHandler | PO 层 FieldFill 注解无对应 Handler | P1 | 未实现 |
 | loginByPwd 完善 | Dubbo RPC `loginByPwd` 仍为桩实现 | P0 | 未实现 |
 | 操作日志自动记录 | AOP 拦截关键操作写入 sys_log | P2 | 未实现 |
 | 审计日志字段追踪 | 敏感字段变更记录 beforeVal / afterVal | P2 | 未实现 |

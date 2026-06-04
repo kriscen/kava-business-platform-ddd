@@ -22,8 +22,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_area`;
 CREATE TABLE `sys_area` (
-                            `id` bigint unsigned NOT NULL COMMENT '主键ID',
-                            `pid` bigint unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
+                            `id` bigint NOT NULL COMMENT '主键ID',
+                            `pid` bigint NOT NULL DEFAULT '0' COMMENT '父ID',
                             `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '地区名称',
                             `letter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '地区字母',
                             `adcode` bigint NOT NULL COMMENT '高德地区code',
@@ -105,7 +105,7 @@ CREATE TABLE `sys_file` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_file_group`;
 CREATE TABLE `sys_file_group` (
-                                  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+                                  `id` bigint NOT NULL COMMENT '主键ID',
                                   `type` tinyint unsigned DEFAULT '10' COMMENT '类型: [10=图片, 20=视频]',
                                   `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '分类名称',
                                   `pid` bigint DEFAULT NULL COMMENT '父ID',
