@@ -46,9 +46,9 @@ public class UserContext {
     private String username;
 
     /**
-     * 部门ID（仅 B端用户有值）
+     * 分组ID（仅 B端用户有值）
      */
-    private Long deptId;
+    private Long groupId;
 
     /**
      * 角色集合
@@ -86,7 +86,7 @@ public class UserContext {
                 .userId(toLong(claims.get(JwtClaimConstants.USER_ID)))
                 .memberId(toLong(claims.get(JwtClaimConstants.MEMBER_ID)))
                 .username(toStr(claims.get(JwtClaimConstants.USERNAME)))
-                .deptId(toLong(claims.get(JwtClaimConstants.DEPT_ID)))
+                .groupId(toLong(claims.get(JwtClaimConstants.GROUP_ID)))
                 .roles(roles)
                 .dataScope(toStr(claims.get(JwtClaimConstants.DATA_SCOPE)))
                 .build();

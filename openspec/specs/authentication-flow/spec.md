@@ -42,12 +42,12 @@
 
 ### Requirement: SysUserDTO 携带构造 UserDetails 所需的全部字段
 
-`SysUserDTO`（UPMS API）MUST 包含以下字段：id、username、password（哈希值）、deptId、lockFlag、permissions、roles。其中 password 为数据库中存储的密码哈希（带前缀如 `{bcrypt}`），lockFlag 反映用户的锁定状态（`"0"` 正常，`"1"` 锁定，与数据库 `lock_flag` 字段对齐）。
+`SysUserDTO`（UPMS API）MUST 包含以下字段：id、username、password（哈希值）、groupId、lockFlag、permissions、roles。其中 password 为数据库中存储的密码哈希（带前缀如 `{bcrypt}`），lockFlag 反映用户的锁定状态（`"0"` 正常，`"1"` 锁定，与数据库 `lock_flag` 字段对齐）。
 
 #### Scenario: SysUserDTO 包含认证所需的全部信息
 - **WHEN** UPMS 的 `RemoteUserService.findByUsername(tenantId, username)` 被调用
 - **AND** 数据库中存在该用户
-- **THEN** 返回的 `SysUserDTO` MUST 包含 id、username、password（哈希值）、deptId、lockFlag、permissions、roles 字段
+- **THEN** 返回的 `SysUserDTO` MUST 包含 id、username、password（哈希值）、groupId、lockFlag、permissions、roles 字段
 - **AND** password 字段为数据库中存储的完整哈希值（含编码前缀）
 
 #### Scenario: 用户不存在时返回 null
@@ -76,7 +76,7 @@
 #### Scenario: B端用户认证 — 使用真实 SysUserDTO
 - **WHEN** `loadUserByUsername(username, tenantId, userType)` 被调用且 userType 为 TO_B
 - **AND** `remoteUserService.findByUsername(tenantId, username)` 返回非 null 的 `SysUserDTO`
-- **THEN** MUST 使用 DTO 中的 id、username、password、deptId、enabled 构造 `SysUserDetails`
+- **THEN** MUST 使用 DTO 中的 id、username、password、groupId、enabled 构造 `SysUserDetails`
 - **AND** password 字段 MUST 为 DTO 中的原始哈希值，不得修改或替换
 - **AND** DTO 中的 roles 列表 MUST 转换为 `GrantedAuthority` 集合
 

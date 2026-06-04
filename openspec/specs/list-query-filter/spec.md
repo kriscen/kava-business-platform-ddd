@@ -3,16 +3,16 @@ ListQuery 值对象 MUST 包含对应实体的实际过滤条件字段，MUST NO
 
 #### Scenario: SysUserListQuery 包含用户过滤字段
 - **WHEN** 查询用户列表
-- **THEN** SysUserListQuery MUST 包含以下可选过滤字段：username（String）、phone（String）、lockFlag（Integer）、deptId（Long）
+- **THEN** SysUserListQuery MUST 包含以下可选过滤字段：username（String）、phone（String）、lockFlag（Integer）、groupId（Long）
 - **AND** 所有过滤字段为可选（nullable）
 
 #### Scenario: SysRoleListQuery 包含角色过滤字段
 - **WHEN** 查询角色列表
 - **THEN** SysRoleListQuery MUST 包含以下可选过滤字段：roleName（String）、roleCode（String）
 
-#### Scenario: SysDeptListQuery 包含部门过滤字段
-- **WHEN** 查询部门列表
-- **THEN** SysDeptListQuery MUST 包含以下可选过滤字段：deptName（String）
+#### Scenario: SysGroupListQuery 包含分组过滤字段
+- **WHEN** 查询分组列表
+- **THEN** SysGroupListQuery MUST 包含以下可选过滤字段：groupName（String）
 
 #### Scenario: SysMenuListQuery 包含菜单过滤字段
 - **WHEN** 查询菜单列表

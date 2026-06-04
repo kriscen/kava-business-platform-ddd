@@ -58,9 +58,9 @@ public class SysUserPO extends TenantDeletablePO {
 	private String avatar;
 
 	/**
-	 * 部门ID
+	 * 分组ID
 	 */
-	private Long deptId;
+	private Long groupId;
 
 	/**
 	 * 微信openid

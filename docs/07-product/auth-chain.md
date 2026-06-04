@@ -23,7 +23,7 @@
 | `userType` | `JwtClaimConstants.USER_TYPE` | `"1"` (TO_B) | `"2"` (TO_C) |
 | `userId` | `JwtClaimConstants.USER_ID` | 用户 ID | — |
 | `username` | `JwtClaimConstants.USERNAME` | 用户名 | — |
-| `deptId` | `JwtClaimConstants.DEPT_ID` | 部门 ID | — |
+| `groupId` | `JwtClaimConstants.GROUP_ID` | 分组 ID | — |
 | `memberId` | `JwtClaimConstants.MEMBER_ID` | — | 会员 ID |
 | `roles` | `JwtClaimConstants.ROLES` | 角色列表 | 空列表 |
 
@@ -131,7 +131,7 @@ ConsumerUserContextFilter              │
 | userId | UserContextHolder | `ctx_userId` |
 | memberId | UserContextHolder | `ctx_memberId` |
 | username | UserContextHolder | `ctx_username` |
-| deptId | UserContextHolder | `ctx_deptId` |
+| groupId | UserContextHolder | `ctx_groupId` |
 | roles | UserContextHolder | `ctx_roles` |
 
 ## 关键组件索引

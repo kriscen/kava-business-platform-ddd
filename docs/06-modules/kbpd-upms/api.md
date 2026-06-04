@@ -50,7 +50,7 @@
 | `id` | `Long` | 用户 ID |
 | `username` | `String` | 用户名 |
 | `password` | `String` | 密码（加密） |
-| `deptId` | `Long` | 部门 ID |
+| `groupId` | `Long` | 分组 ID |
 | `tenantId` | `Long` | 租户 ID |
 | `lockFlag` | `String` | 锁定标记 |
 | `permissions` | `List<String>` | 权限标识列表 |
@@ -90,4 +90,4 @@
 - **分页查询** 使用 query string 传参（`@ModelAttribute`）
 - **创建 / 更新** 使用 JSON body（`@RequestBody`）
 - **所有下拉接口** 不分页，返回完整列表
-- **树形接口**（Menu/Dept/Area）返回嵌套 `children` 结构
+- **树形接口**（Menu/Group/Area）返回嵌套 `children` 结构

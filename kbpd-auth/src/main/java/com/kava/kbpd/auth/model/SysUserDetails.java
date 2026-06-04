@@ -25,9 +25,9 @@ public class SysUserDetails implements UserDetails, CredentialsContainer {
     private Long userId;
 
     /**
-     * 扩展字段：部门ID
+     * 扩展字段：分组ID
      */
-    private Long deptId;
+    private Long groupId;
 
     /**
      * 默认字段
@@ -48,7 +48,7 @@ public class SysUserDetails implements UserDetails, CredentialsContainer {
     private String dataScope;
 
     public SysUserDetails(Long userId,String username,String password,
-            Long deptId,boolean enabled,Set<? extends GrantedAuthority> authorities,
+            Long groupId,boolean enabled,Set<? extends GrantedAuthority> authorities,
             String dataScope
     ) {
         Assert.isTrue(username != null && !username.isEmpty() && password != null,
@@ -56,7 +56,7 @@ public class SysUserDetails implements UserDetails, CredentialsContainer {
         this.userId = userId;
         this.username = username;
         this.password = password;
-        this.deptId = deptId;
+        this.groupId = groupId;
         this.enabled = enabled;
         this.authorities = Collections.unmodifiableSet(authorities);
         this.dataScope = dataScope;

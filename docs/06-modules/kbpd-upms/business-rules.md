@@ -15,11 +15,11 @@
 | 软删除 | PO 继承 `SysDeletablePO`，通过 `delFlag` 实现逻辑删除 | 基础设施层 |
 | 三级 PO 继承 | `BasePO` → `SysDeletablePO`（+delFlag）→ `TenantDeletablePO`（+tenantId） | 基础设施层 |
 | 树形数据构建 | 地区实体使用 `TreeBuilder` 构建树，按 `areaStatus=YES` 过滤、`areaSort DESC` 排序 | SysAreaService |
-| 统一异常体系 | `UpmsBizException` 继承 `BaseBizException`，错误码枚举 `UpmsBizErrorCodeEnum` 覆盖角色/用户/菜单/部门/租户 | types 层 |
+| 统一异常体系 | `UpmsBizException` 继承 `BaseBizException`，错误码枚举 `UpmsBizErrorCodeEnum` 覆盖角色/用户/菜单/分组/租户 | types 层 |
 | 拦截器执行顺序 | TenantLine → DataScope → Pagination（在 `MybatisPlusConfig` 中注册） | kbpd-common-database |
 | 平台管理员跳过 | `ROLE_ADMIN` 角色跳过租户隔离和数据权限过滤 | upms-permission-system |
 | 平台管理员无角色 | 平台管理员不经过 RBAC 角色体系，直接可见所有平台级菜单（SYSTEM + SYSTEM_TENANT），角色体系仅服务于租户 | 产品设计 |
-| 关联名称 Infrastructure 层查询 | 响应中的关联名称（deptName、tenantName、roleNames、menuNames）在 Infrastructure 层通过批量 IN 或 JOIN 查询获取，不在 Domain/Application 层跨 Repository 调用 | upms-crud-api-completeness |
+| 关联名称 Infrastructure 层查询 | 响应中的关联名称（groupName、tenantName、roleNames、menuNames）在 Infrastructure 层通过批量 IN 或 JOIN 查询获取，不在 Domain/Application 层跨 Repository 调用 | upms-crud-api-completeness |
 
 ---
 
@@ -35,7 +35,7 @@
        │ N:1                 │ N:1
        ▼                     ▼
 ┌─────────────┐       ┌─────────────┐
-│   SysDept   │       │  SysTenant  │
+│   SysGroup  │       │  SysTenant  │
 │   (实体)     │       │   (实体)     │
 └─────────────┘       │  menuId     │
                       └─────────────┘
@@ -66,7 +66,7 @@
 | 角色编码唯一性 | 创建和更新角色时校验同一租户下 roleCode 不可重复（`UpmsBizErrorCodeEnum.ROLE_CODE_DUPLICATE`），不同租户允许相同 roleCode |
 | 菜单作用域三值模型 | `SysMenuScope`: SYSTEM（平台专属）、TENANT（租户专属）、SYSTEM_TENANT（双方可见） |
 | 角色绑定校验 | 角色绑定菜单时校验 scope 可见性：租户角色不可绑定 SYSTEM 菜单，平台角色不可绑定 TENANT 菜单 |
-| 数据权限 dsType | 角色持有 dsType（0=ALL/1=CUSTOM/2=DEPT_AND_CHILD/3=DEPT_ONLY/4=SELF）和 dsScope 字段 |
+| 数据权限 dsType | 角色持有 dsType（0=ALL/1=CUSTOM/2=GROUP_AND_CHILD/3=GROUP_ONLY/4=SELF）和 dsScope 字段 |
 
 ### 菜单管理
 
@@ -78,14 +78,14 @@
 | 删除前角色引用检查 | 删除菜单前检查 sys_role_menu 是否有角色绑定，有则抛出 MENU_REFERENCED_BY_ROLE（A00306） |
 | sortOrder 默认值 | 创建菜单时 sortOrder 为 null 自动设为 0 |
 
-### 部门管理
+### 分组管理
 
 | 规则 | 描述 |
 |---|---|
-| pid 自引用校验 | 创建/更新部门时，pid 等于自身 id 抛出 DEPT_PID_SELF_REFERENCE（A00501） |
-| pid 环检测 | 创建/更新部门时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 DEPT_PID_CIRCULAR（A00502） |
-| 删除前子部门检查 | 删除部门前检查是否有直接子部门，有则抛出 DEPT_HAS_CHILDREN（A00503） |
-| 删除前用户引用检查 | 删除部门前检查 sys_user.dept_id 是否有用户关联，有则抛出 DEPT_REFERENCED_BY_USER（A00504） |
+| pid 自引用校验 | 创建/更新分组时，pid 等于自身 id 抛出 GROUP_PID_SELF_REFERENCE（A00501） |
+| pid 环检测 | 创建/更新分组时，通过全量查询 + 内存遍历 pid 链检测循环引用，发现则抛出 GROUP_PID_CIRCULAR（A00502） |
+| 删除前子分组检查 | 删除分组前检查是否有直接子分组，有则抛出 GROUP_HAS_CHILDREN（A00503） |
+| 删除前用户引用检查 | 删除分组前检查 sys_user.group_id 是否有用户关联，有则抛出 GROUP_REFERENCED_BY_USER（A00504） |
 
 ### OAuth 客户端管理
 
@@ -139,10 +139,10 @@
 | 租户 | A00401 | 租户不存在 |
 | 租户 | A00402 | 租户编码已存在 |
 | 租户 | A00403 | 租户状态流转不合法 |
-| 部门 | A00501 | 部门父节点不能为自身 |
-| 部门 | A00502 | 部门父节点不能形成循环引用 |
-| 部门 | A00503 | 部门存在子部门，无法删除 |
-| 部门 | A00504 | 部门已被用户引用，无法删除 |
+| 分组 | A00501 | 分组父节点不能为自身 |
+| 分组 | A00502 | 分组父节点不能形成循环引用 |
+| 分组 | A00503 | 分组存在子分组，无法删除 |
+| 分组 | A00504 | 分组已被用户引用，无法删除 |
 | OAuth客户端 | A00601 | 客户端ID已存在 |
 | OAuth客户端 | A00602 | 客户端密钥不能为空 |
 | OAuth客户端 | A00603 | 令牌有效期无效 |
@@ -159,9 +159,9 @@
 | 密码过期检测 | `passwordExpireFlag` + `passwordModifyTime` 判断 | P1 | 未实现 |
 | DataScope SQL 注入 | `DataScopeInnerInterceptor.beforeQuery()` 未调用 `buildDataScopeCondition()` | P0 | DEFERRED |
 | @DataScope 注解使用 | 注解已定义但无方法标注，拦截器未检查注解 | P1 | DEFERRED |
-| CUSTOM dsType 实现 | dsType "1" 未使用 dsScope 字段，与 DEPT_ONLY 逻辑相同 | P1 | DEFERRED |
+| CUSTOM dsType 实现 | dsType "1" 未使用 dsScope 字段，与 GROUP_ONLY 逻辑相同 | P1 | DEFERRED |
 | 多角色数据权限合并 | 当前取第一个角色 dsType，需按优先级取最大范围 | P1 | DEFERRED |
-| DEPT_AND_CHILD 递归 | 未实现部门子树递归查询 | P1 | DEFERRED |
+| GROUP_AND_CHILD 递归 | 未实现分组子树递归查询 | P1 | DEFERRED |
 | 租户创建管理员用户 | 创建租户时可传入管理员信息，自动创建用户并绑定 tenant_admin 角色 | P1 | 已实现 |
 | MetaObjectHandler | PO 层 FieldFill 注解无对应 Handler | P1 | 未实现 |
 | loginByPwd 完善 | Dubbo RPC `loginByPwd` 仍为桩实现 | P0 | 未实现 |

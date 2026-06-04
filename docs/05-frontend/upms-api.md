@@ -48,8 +48,8 @@
 
 | 方法 | 路径 | 入参 | 返回值 | 说明 |
 |---|---|---|---|---|
-| GET | `/page` | `SysUserAdapterListQuery` (query) | `JsonResult<PagingInfo<SysUserListResponse>>` | 分页查询用户（响应含 deptName、tenantName、roleIds） |
-| GET | `/{id}` | `id` (path) | `JsonResult<SysUserDetailResponse>` | 用户详情（响应含 deptName、tenantName、roleNames、roleIds） |
+| GET | `/page` | `SysUserAdapterListQuery` (query) | `JsonResult<PagingInfo<SysUserListResponse>>` | 分页查询用户（响应含 groupName、tenantName、roleIds） |
+| GET | `/{id}` | `id` (path) | `JsonResult<SysUserDetailResponse>` | 用户详情（响应含 groupName、tenantName、roleNames、roleIds） |
 | POST | — | `SysUserRequest` (body) | `JsonResult<Long>` | 创建用户，返回新 ID |
 | PUT | — | `SysUserRequest` (body，含 id) | `JsonResult<Boolean>` | 更新用户 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Boolean>` | 批量删除用户 |
@@ -76,16 +76,16 @@
 | DELETE | — | `List<Long>` (body) | `JsonResult<Void>` | 批量删除菜单 |
 | GET | `/tree` | — (从 UserContext 解析) | `JsonResult<List<SysMenuListResponse>>` | 当前用户菜单树（按 scope 和角色过滤，sortOrder 排序） |
 
-### 部门管理 `/api/v1/sys/dept/`
+### 分组管理 `/api/v1/sys/group/`
 
 | 方法 | 路径 | 入参 | 返回值 | 说明 |
 |---|---|---|---|---|
-| GET | `/page` | `SysDeptAdapterListQuery` (query) | `JsonResult<PagingInfo<SysDeptListResponse>>` | 分页查询部门 |
-| GET | `/{id}` | `id` (path) | `JsonResult<SysDeptDetailResponse>` | 部门详情 |
-| POST | — | `SysDeptRequest` (body) | `JsonResult<Long>` | 创建部门 |
-| PUT | `/{id}` | `id` (path) + `SysDeptRequest` (body) | `JsonResult<Void>` | 更新部门 |
-| DELETE | — | `List<Long>` (body) | `JsonResult<Void>` | 批量删除部门 |
-| GET | `/tree` | — | `JsonResult<List<SysDeptListResponse>>` | 部门树形结构（按 pid 组装） |
+| GET | `/page` | `SysGroupAdapterListQuery` (query) | `JsonResult<PagingInfo<SysGroupListResponse>>` | 分页查询分组 |
+| GET | `/{id}` | `id` (path) | `JsonResult<SysGroupDetailResponse>` | 分组详情 |
+| POST | — | `SysGroupRequest` (body) | `JsonResult<Long>` | 创建分组 |
+| PUT | `/{id}` | `id` (path) + `SysGroupRequest` (body) | `JsonResult<Void>` | 更新分组 |
+| DELETE | — | `List<Long>` (body) | `JsonResult<Void>` | 批量删除分组 |
+| GET | `/tree` | — | `JsonResult<List<SysGroupListResponse>>` | 分组树形结构（按 pid 组装） |
 
 ### 租户管理 `/api/v1/sys/tenant/`
 
@@ -207,7 +207,7 @@
 | `password` | `String` | 创建必填 | 密码 |
 | `phone` | `String` | 否 | 手机号 |
 | `avatar` | `String` | 否 | 头像 |
-| `deptId` | `Long` | 否 | 部门 ID |
+| `groupId` | `Long` | 否 | 分组 ID |
 | `tenantId` | `Long` | 否 | 租户 ID |
 | `nickname` | `String` | 否 | 昵称 |
 | `name` | `String` | 否 | 真实姓名 |
@@ -244,13 +244,13 @@
 | `keepAlive` | `String` | 否 | 路由缓存 |
 | `embedded` | `String` | 否 | 是否内嵌 |
 
-### SysDeptRequest
+### SysGroupRequest
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `id` | `Long` | PUT 必填 | 部门 ID |
-| `name` | `String` | 是 | 部门名称 |
-| `pid` | `Long` | 否 | 父部门 ID |
+| `id` | `Long` | PUT 必填 | 分组 ID |
+| `name` | `String` | 是 | 分组名称 |
+| `pid` | `Long` | 否 | 父分组 ID |
 | `sortOrder` | `Integer` | 否 | 排序 |
 
 ### SysTenantRequest
@@ -329,8 +329,8 @@
 | `nickname` | `String` | 昵称 |
 | `name` | `String` | 真实姓名 |
 | `email` | `String` | 邮箱 |
-| `deptId` | `Long` | 部门 ID |
-| `deptName` | `String` | 部门名称（富化字段） |
+| `groupId` | `Long` | 分组 ID |
+| `groupName` | `String` | 分组名称（富化字段） |
 | `tenantId` | `Long` | 租户 ID |
 | `tenantName` | `String` | 租户名称（富化字段） |
 | `lockFlag` | `String` | 锁定标记 |
@@ -402,21 +402,21 @@
 
 与 ListResponse 类似，但不包含 `children`，包含 `parentName`。
 
-### 部门
+### 分组
 
-**SysDeptListResponse**（列表/树）
+**SysGroupListResponse**（列表/树）
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| `id` | `Long` | 部门 ID |
-| `name` | `String` | 部门名称 |
+| `id` | `Long` | 分组 ID |
+| `name` | `String` | 分组名称 |
 | `sortOrder` | `Integer` | 排序 |
-| `pid` | `Long` | 父部门 ID |
-| `parentName` | `String` | 父部门名称 |
-| `children` | `List<SysDeptListResponse>` | 子部门（树形结构） |
+| `pid` | `Long` | 父分组 ID |
+| `parentName` | `String` | 父分组名称 |
+| `children` | `List<SysGroupListResponse>` | 子分组（树形结构） |
 | `gmtCreate` | `LocalDateTime` | 创建时间 |
 
-**SysDeptDetailResponse**（详情）
+**SysGroupDetailResponse**（详情）
 
 与 ListResponse 类似，但不包含 `children`，包含 `parentName`。
 
@@ -477,10 +477,10 @@
 
 | 资源 | 常用过滤参数 |
 |---|---|
-| 用户 | `username`, `phone`, `deptId`, `tenantId`, `lockFlag` |
+| 用户 | `username`, `phone`, `groupId`, `tenantId`, `lockFlag` |
 | 角色 | `roleName`, `roleCode` |
 | 菜单 | `name`, `menuType`, `visible` |
-| 部门 | `name` |
+| 分组 | `name` |
 | 租户 | `name`, `code`, `status` |
 | 地区 | `name`, `areaType`, `pid`, `adcode` |
 | 日志 | `logType`, `title`, `createBy`, `serviceId` |
@@ -499,4 +499,4 @@
 - **分页查询** 使用 query string 传参（`@ModelAttribute`）
 - **创建 / 更新** 使用 JSON body（`@RequestBody`）
 - **所有下拉接口** 不分页，返回完整列表
-- **树形接口**（Menu/Dept/Area）返回嵌套 `children` 结构
+- **树形接口**（Menu/Group/Area）返回嵌套 `children` 结构

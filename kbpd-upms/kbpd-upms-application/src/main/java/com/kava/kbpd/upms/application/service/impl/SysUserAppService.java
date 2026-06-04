@@ -10,12 +10,12 @@ import com.kava.kbpd.upms.application.model.dto.SysUserAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysUserAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysUserAppService;
 import com.kava.kbpd.upms.domain.model.aggregate.SysUserEntity;
-import com.kava.kbpd.upms.domain.model.entity.SysDeptEntity;
+import com.kava.kbpd.upms.domain.model.entity.SysGroupEntity;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
+import com.kava.kbpd.upms.domain.model.valobj.SysGroupId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import com.kava.kbpd.upms.domain.model.valobj.SysUserListQuery;
-import com.kava.kbpd.upms.domain.repository.ISysDeptRepository;
+import com.kava.kbpd.upms.domain.repository.ISysGroupRepository;
 import com.kava.kbpd.upms.domain.repository.ISysRoleReadRepository;
 import com.kava.kbpd.upms.domain.repository.ISysTenantRepository;
 import com.kava.kbpd.upms.domain.repository.ISysUserReadRepository;
@@ -47,7 +47,7 @@ public class SysUserAppService implements ISysUserAppService {
     private final ISysUserWriteRepository writeRepository;
     private final ISysUserService sysUserService;
     private final SysUserAppConverter sysUserAppConverter;
-    private final ISysDeptRepository sysDeptRepository;
+    private final ISysGroupRepository sysGroupRepository;
     private final ISysTenantRepository sysTenantRepository;
     private final ISysRoleReadRepository sysRoleReadRepository;
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -126,9 +126,9 @@ public class SysUserAppService implements ISysUserAppService {
     }
 
     private void enrichUserDetailDTO(SysUserAppDetailDTO dto, SysUserEntity entity) {
-        if (dto.getDeptId() != null) {
-            SysDeptEntity dept = sysDeptRepository.queryById(SysDeptId.of(dto.getDeptId()));
-            dto.setDeptName(dept != null ? dept.getName() : null);
+        if (dto.getGroupId() != null) {
+            SysGroupEntity group = sysGroupRepository.queryById(SysGroupId.of(dto.getGroupId()));
+            dto.setGroupName(group != null ? group.getName() : null);
         }
         if (dto.getTenantId() != null) {
             SysTenantEntity tenant = sysTenantRepository.queryById(SysTenantId.of(dto.getTenantId()));
@@ -144,11 +144,11 @@ public class SysUserAppService implements ISysUserAppService {
     }
 
     private void enrichUserListDTOs(List<SysUserAppListDTO> dtos, List<SysUserEntity> entities) {
-        List<Long> deptIds = entities.stream().map(e -> e.getDeptId() != null ? e.getDeptId().getId() : null).filter(Objects::nonNull).distinct().toList();
+        List<Long> groupIds = entities.stream().map(e -> e.getGroupId() != null ? e.getGroupId().getId() : null).filter(Objects::nonNull).distinct().toList();
         List<Long> tenantIds = entities.stream().map(e -> e.getTenantId() != null ? e.getTenantId().getId() : null).filter(Objects::nonNull).distinct().toList();
 
-        Map<Long, String> deptNameMap = deptIds.isEmpty() ? Collections.emptyMap() :
-                sysDeptRepository.queryByIds(deptIds.stream().map(SysDeptId::of).toList())
+        Map<Long, String> groupNameMap = groupIds.isEmpty() ? Collections.emptyMap() :
+                sysGroupRepository.queryByIds(groupIds.stream().map(SysGroupId::of).toList())
                         .stream().collect(Collectors.toMap(d -> d.getId().getId(), d -> d.getName(), (a, b) -> a));
         Map<Long, String> tenantNameMap = tenantIds.isEmpty() ? Collections.emptyMap() :
                 sysTenantRepository.queryByIds(tenantIds.stream().map(SysTenantId::of).toList())
@@ -158,8 +158,8 @@ public class SysUserAppService implements ISysUserAppService {
             SysUserAppListDTO dto = dtos.get(i);
             SysUserEntity entity = entities.get(i);
 
-            if (entity.getDeptId() != null) {
-                dto.setDeptName(deptNameMap.get(entity.getDeptId().getId()));
+            if (entity.getGroupId() != null) {
+                dto.setGroupName(groupNameMap.get(entity.getGroupId().getId()));
             }
             if (entity.getTenantId() != null) {
                 dto.setTenantName(tenantNameMap.get(entity.getTenantId().getId()));

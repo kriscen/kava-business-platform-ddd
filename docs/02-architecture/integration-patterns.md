@@ -56,7 +56,7 @@
                           转换 + 简单编排
                           不涉及复杂业务规则
 
-典型模块：Area、Dept、OauthClient
+典型模块：Area、Group、OauthClient
 
 
 模式 B（复杂业务）：Application → DomainService → Repository
@@ -136,7 +136,7 @@ public class SysAreaService implements ISysAreaService {
 **模式 A 的要点**：
 - CRUD 操作不经过 DomainService，避免空壳透传
 - DomainService 只在有真正业务逻辑时才定义方法
-- 当前使用：Area、Dept、Tenant、OauthClient、Menu
+- 当前使用：Area、Group、Tenant、OauthClient、Menu
 
 ### 4.2.3 模式 B 示例：复杂业务（SysUserAppService，演进中）
 
@@ -248,7 +248,7 @@ CQRS 分离型（复杂实体，如 User、Role）：
   ISysUserReadRepository   → queryPage, queryById
   ISysUserWriteRepository  → create, update, removeBatchByIds
 
-简单合并型（简单实体，如 Area、Dept、Tenant、OauthClient）：
+简单合并型（简单实体，如 Area、Group、Tenant、OauthClient）：
   ISysAreaRepository extends IBaseSimpleRepository<...>
     → create, update, removeById, queryPage, queryById
 ```
@@ -256,7 +256,7 @@ CQRS 分离型（复杂实体，如 User、Role）：
 | 策略 | 基类 | 适用场景 | 当前使用 |
 |------|------|---------|---------|
 | CQRS | `IBaseReadRepository` + `IBaseWriteRepository` | 读写模型差异大、读写量差异大 | User, Role |
-| 简单 | `IBaseSimpleRepository` | 简单 CRUD，读写模型一致 | Area, Dept, Tenant, OauthClient, Menu |
+| 简单 | `IBaseSimpleRepository` | 简单 CRUD，读写模型一致 | Area, Group, Tenant, OauthClient, Menu |
 
 ## 4.3 HTTP 通信规范
 

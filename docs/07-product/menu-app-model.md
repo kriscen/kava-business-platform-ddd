@@ -61,7 +61,7 @@ level=TENANT, app_id=NULL:
   租户基础菜单（kava-base 提供，所有租户自动拥有）
   ├── 用户管理
   ├── 角色管理
-  ├── 部门管理
+  ├── 分组管理
   └── ...
 
 level=TENANT, app_id=ledger:

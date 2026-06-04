@@ -124,33 +124,33 @@
 
 #### Scenario: 角色拥有全部数据权限
 - **WHEN** 用户主角色的 dsType 为 ALL
-- **THEN** 查询不追加部门或人员过滤条件
+- **THEN** 查询不追加分组或人员过滤条件
 - **AND** 在租户范围内可查看所有数据
 
 ### Requirement: 自定义数据权限（dsType = CUSTOM）
 
-当角色的数据权限策略为 CUSTOM 时，系统 SHALL 根据角色的 dsScope 字段追加部门过滤条件。
+当角色的数据权限策略为 CUSTOM 时，系统 SHALL 根据角色的 dsScope 字段追加分组过滤条件。
 
 #### Scenario: 角色拥有自定义数据权限
-- **WHEN** 用户主角色的 dsType 为 CUSTOM，dsScope 包含部门 ID 列表 "1,2,3"
-- **THEN** 查询追加 `WHERE dept_id IN (1, 2, 3)`
+- **WHEN** 用户主角色的 dsType 为 CUSTOM，dsScope 包含分组 ID 列表 "1,2,3"
+- **THEN** 查询追加 `WHERE group_id IN (1, 2, 3)`
 
-### Requirement: 本部门及以下数据权限（dsType = DEPT_AND_CHILD）
+### Requirement: 本分组及以下数据权限（dsType = GROUP_AND_CHILD）
 
-当角色的数据权限策略为 DEPT_AND_CHILD 时，系统 SHALL 追加用户所在部门及其递归子部门的过滤条件。
+当角色的数据权限策略为 GROUP_AND_CHILD 时，系统 SHALL 追加用户所在分组及其递归子分组的过滤条件。
 
-#### Scenario: 角色拥有本部门及以下权限
-- **WHEN** 用户主角色的 dsType 为 DEPT_AND_CHILD，用户所在部门 ID 为 1
-- **THEN** 系统递归查询部门 ID 1 的所有子部门
-- **AND** 查询追加 `WHERE dept_id IN (1, 子部门1, 子部门2, ...)`
+#### Scenario: 角色拥有本分组及以下权限
+- **WHEN** 用户主角色的 dsType 为 GROUP_AND_CHILD，用户所在分组 ID 为 1
+- **THEN** 系统递归查询分组 ID 1 的所有子分组
+- **AND** 查询追加 `WHERE group_id IN (1, 子分组1, 子分组2, ...)`
 
-### Requirement: 本部门数据权限（dsType = DEPT_ONLY）
+### Requirement: 本分组数据权限（dsType = GROUP_ONLY）
 
-当角色的数据权限策略为 DEPT_ONLY 时，系统 SHALL 仅追加用户所在部门的过滤条件。
+当角色的数据权限策略为 GROUP_ONLY 时，系统 SHALL 仅追加用户所在分组的过滤条件。
 
-#### Scenario: 角色拥有本部门权限
-- **WHEN** 用户主角色的 dsType 为 DEPT_ONLY，用户所在部门 ID 为 1
-- **THEN** 查询追加 `WHERE dept_id = 1`
+#### Scenario: 角色拥有本分组权限
+- **WHEN** 用户主角色的 dsType 为 GROUP_ONLY，用户所在分组 ID 为 1
+- **THEN** 查询追加 `WHERE group_id = 1`
 
 ### Requirement: 仅本人数据权限（dsType = SELF）
 
@@ -165,9 +165,9 @@
 当用户拥有多个角色时，系统 SHALL 取权限范围最大的角色策略。
 
 #### Scenario: 用户拥有多个角色
-- **WHEN** 用户同时拥有 dsType=SELF 和 dsType=DEPT_ONLY 的两个角色
-- **THEN** 系统采用 DEPT_ONLY（权限范围更大）策略
-- **AND** dsType 优先级排序为：ALL > CUSTOM > DEPT_AND_CHILD > DEPT_ONLY > SELF
+- **WHEN** 用户同时拥有 dsType=SELF 和 dsType=GROUP_ONLY 的两个角色
+- **THEN** 系统采用 GROUP_ONLY（权限范围更大）策略
+- **AND** dsType 优先级排序为：ALL > CUSTOM > GROUP_AND_CHILD > GROUP_ONLY > SELF
 
 ### Requirement: 平台管理员跳过数据权限过滤
 
@@ -175,7 +175,7 @@
 
 #### Scenario: 平台管理员查询带 @DataScope 的数据
 - **WHEN** 平台管理员执行标记了 `@DataScope` 的查询
-- **THEN** 不追加任何部门/人员过滤条件
+- **THEN** 不追加任何分组/人员过滤条件
 
 ### Requirement: Dubbo RPC 调用传播权限上下文
 

@@ -28,7 +28,7 @@ public class ProviderUserContextFilter implements Filter {
                         .userId(parseLong(RpcContext.getServerAttachment().getAttachment("ctx_userId")))
                         .memberId(parseLong(RpcContext.getServerAttachment().getAttachment("ctx_memberId")))
                         .username(RpcContext.getServerAttachment().getAttachment("ctx_username"))
-                        .deptId(parseLong(RpcContext.getServerAttachment().getAttachment("ctx_deptId")))
+                        .groupId(parseLong(RpcContext.getServerAttachment().getAttachment("ctx_groupId")))
                         .roles(parseRoles(RpcContext.getServerAttachment().getAttachment("ctx_roles")))
                         .dataScope(RpcContext.getServerAttachment().getAttachment("ctx_dataScope"))
                         .permissions(parseRoles(RpcContext.getServerAttachment().getAttachment("ctx_permissions")))

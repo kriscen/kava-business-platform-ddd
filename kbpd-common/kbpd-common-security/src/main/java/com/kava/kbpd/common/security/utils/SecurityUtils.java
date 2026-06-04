@@ -80,11 +80,11 @@ public class SecurityUtils {
     }
 
     /**
-     * 获取部门ID
+     * 获取分组ID
      */
-    public static Long getDeptId() {
+    public static Long getGroupId() {
         UserContext ctx = getUserContext();
-        return ctx != null ? ctx.getDeptId() : null;
+        return ctx != null ? ctx.getGroupId() : null;
     }
 
     /**

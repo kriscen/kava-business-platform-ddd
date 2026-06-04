@@ -35,11 +35,11 @@ public enum UpmsBizErrorCodeEnum implements BaseErrorCodeEnum {
     TENANT_CODE_DUPLICATE("10040002", "租户编码已存在"),
     TENANT_STATUS_INVALID_TRANSITION("10040003", "租户状态流转不合法"),
 
-    // ---- 10-05 部门 ----
-    DEPT_PID_SELF_REFERENCE("10050001", "部门父节点不能为自身"),
-    DEPT_PID_CIRCULAR("10050002", "部门父节点不能形成循环引用"),
-    DEPT_HAS_CHILDREN("10050003", "部门存在子部门，无法删除"),
-    DEPT_REFERENCED_BY_USER("10050004", "部门已被用户引用，无法删除"),
+    // ---- 10-05 分组 ----
+    GROUP_PID_SELF_REFERENCE("10050001", "分组父节点不能为自身"),
+    GROUP_PID_CIRCULAR("10050002", "分组父节点不能形成循环引用"),
+    GROUP_HAS_CHILDREN("10050003", "分组存在子分组，无法删除"),
+    GROUP_REFERENCED_BY_USER("10050004", "分组已被用户引用，无法删除"),
 
     // ---- 10-06 OAuth客户端 ----
     CLIENT_ID_DUPLICATE("10060001", "客户端ID已存在"),

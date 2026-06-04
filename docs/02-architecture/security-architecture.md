@@ -75,7 +75,7 @@ OAuth2 Client 通过 `user_type` 字段区分认证通道：
 | `sub` | String | 全部 | Subject（用户名） |
 | `userId` | Long | TO_B | 系统用户 ID |
 | `username` | String | TO_B | 登录名 |
-| `deptId` | Long | TO_B | 所属部门 ID |
+| `groupId` | Long | TO_B | 所属分组 ID |
 | `authorities` | Set\<String\> | TO_B | 角色/权限编码集合 |
 | `dataScope` | String | TO_B | 数据权限范围 |
 | `memberId` | Long | TO_C | 会员 ID |
@@ -105,7 +105,7 @@ Claim Key 定义在 `kbpd-common-core` 的 `JwtClaimConstants` 中。
 ┌──────────┐     ┌──────────────┐     ┌──────────┐
 │ sys_user │────<│ sys_user_role │>────│ sys_role │
 │          │     │ (user_id,     │     │          │
-│ dept_id  │     │  role_id)     │     │ ds_type  │
+│ group_id │     │  role_id)     │     │ ds_type  │
 └──────────┘     └──────────────┘     │ ds_scope │
                                       └────┬─────┘
                                            │
@@ -130,9 +130,9 @@ Claim Key 定义在 `kbpd-common-core` 的 `JwtClaimConstants` 中。
 | 范围 | ds_type 值 | 说明 |
 |------|-----------|------|
 | ALL | 0 | 全部数据 |
-| CUSTOM | 1 | 自定义（通过 ds_scope 指定部门） |
-| DEPT_AND_CHILD | 2 | 本部门及子部门 |
-| DEPT_ONLY | 3 | 仅本部门 |
+| CUSTOM | 1 | 自定义（通过 ds_scope 指定分组） |
+| GROUP_AND_CHILD | 2 | 本分组及子分组 |
+| GROUP_ONLY | 3 | 仅本分组 |
 | SELF | 4 | 仅本人数据 |
 
 ### 3.3.4 权限流转链路
@@ -157,7 +157,7 @@ AuthorizationServiceConfig.jwtTokenCustomizer()
 SecurityContextHolder → @PreAuthorize("hasAuthority('sys_user_add')")
     │
     ▼
-SecurityUtils.getRoles() / getUserId() / getDeptId()
+SecurityUtils.getRoles() / getUserId() / getGroupId()
 ```
 
 ### 3.3.5 菜单作用域
@@ -235,7 +235,7 @@ UPMS 服务按 tenantId 过滤用户数据
 | `getUserId()` | Long | JWT claim `userId` |
 | `getUsername()` | String | `Authentication.getName()` |
 | `getRoles()` | Collection | `Authentication.getAuthorities()` |
-| `getDeptId()` | Long | JWT claim `deptId` |
+| `getGroupId()` | Long | JWT claim `groupId` |
 | `getMemberId()` | Long | JWT claim `memberId` |
 | `getTokenAttributes()` | Map | JWT 全部 claims |
 

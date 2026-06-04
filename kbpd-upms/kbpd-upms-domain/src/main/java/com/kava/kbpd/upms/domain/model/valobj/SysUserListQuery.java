@@ -22,6 +22,6 @@ public class SysUserListQuery implements ValueObject {
     String username;
     String phone;
     Integer lockFlag;
-    Long deptId;
+    Long groupId;
 
 }

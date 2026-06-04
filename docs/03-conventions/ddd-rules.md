@@ -261,7 +261,7 @@ Infra Converter:    Domain Entity → PO
 SysUserId id = SysUserId.of(idParam);
 
 // App Converter: Command(Long fields) → Entity(ID fields)
-@Mapping(source = "deptId", target = "deptId.id")
+@Mapping(source = "groupId", target = "groupId.id")
 SysUserEntity convertCreateCommand2Entity(SysUserCreateCommand command);
 
 // Infra Converter: Entity(ID) → PO(Long)
@@ -315,4 +315,4 @@ public interface IBaseSimpleRepository<I extends Identifier, E extends Entity<I>
 | 模式 | 聚合 |
 |------|------|
 | CQRS Split | SysUser（关联 sys_user_role）、SysRole（关联 sys_role_menu） |
-| SimpleRepository | SysTenant、SysMenu、SysDept、SysFile、SysLog、SysOauthClient、SysArea、SysAuditLog、SysRouteConf、SysI18nMessage、SysFileGroup、SysPublicParam |
+| SimpleRepository | SysTenant、SysMenu、SysGroup、SysFile、SysLog、SysOauthClient、SysArea、SysAuditLog、SysRouteConf、SysI18nMessage、SysFileGroup、SysPublicParam |

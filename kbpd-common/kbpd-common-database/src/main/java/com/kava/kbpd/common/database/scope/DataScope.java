@@ -12,9 +12,9 @@ import java.lang.annotation.*;
 public @interface DataScope {
 
     /**
-     * 部门表别名，默认 "dept"
+     * 分组表别名，默认 "grp"
      */
-    String deptAlias() default "dept";
+    String groupAlias() default "grp";
 
     /**
      * 用户表别名，默认 "u"

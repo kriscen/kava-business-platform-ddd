@@ -367,7 +367,7 @@ public class AuthorizationServiceConfig {
                     if (principal instanceof SysUserDetails userDetails) {
                         claims.claim(JwtClaimConstants.USER_ID, userDetails.getUserId());
                         claims.claim(JwtClaimConstants.USERNAME, userDetails.getUsername());
-                        claims.claim(JwtClaimConstants.DEPT_ID, userDetails.getDeptId());
+                        claims.claim(JwtClaimConstants.GROUP_ID, userDetails.getGroupId());
 
                         // 仅写入角色代码（不含细粒度权限），用于下游鉴权
                         Set<String> roles = AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities());

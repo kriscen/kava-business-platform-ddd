@@ -120,7 +120,7 @@ BaseBizException (运行时异常, 支持 MessageFormat 参数替换)
 
 ### 常量与枚举
 
-**常量**：`CoreConstant`（时区、日期格式）、`CollectionSize`、`PathType`、`JwtClaimConstants`（JWT Claim 键名：userId、username、deptId、dataScope、authorities、memberId、tenantId、userType、roles）、`SecretConstants`
+**常量**：`CoreConstant`（时区、日期格式）、`CollectionSize`、`PathType`、`JwtClaimConstants`（JWT Claim 键名：userId、username、groupId、dataScope、authorities、memberId、tenantId、userType、roles）、`SecretConstants`
 
 **枚举**：`YesNoEnum`、`Status`（启用/禁用）、`UserType`（B 端/C 端用户）、`ScopeType`（认证范围分类）
 
@@ -228,7 +228,7 @@ JWT 验证成功后，系统自动构造 `UserContext` 对象（位于 `kbpd-com
 | `userId` | `Long` | B端用户 ID |
 | `memberId` | `Long` | C端会员 ID |
 | `username` | `String` | 用户名 |
-| `deptId` | `Long` | 部门 ID（仅 B端） |
+| `groupId` | `Long` | 分组 ID（仅 B端） |
 | `roles` | `Set<String>` | 角色集合 |
 
 `UserContext` 持有在 `UserContextHolder`（ThreadLocal），通过 Dubbo Filter 在 RPC 调用时自动传播。
@@ -244,7 +244,7 @@ JWT 验证成功后，系统自动构造 `UserContext` 对象（位于 `kbpd-com
 | `getUserType()` | `UserContext.userType` |
 | `getUserId()` | `UserContext.userId` |
 | `getUsername()` | `UserContext.username` |
-| `getDeptId()` | `UserContext.deptId` |
+| `getGroupId()` | `UserContext.groupId` |
 | `getMemberId()` | `UserContext.memberId` |
 | `getRoles()` | `UserContext.roles`（fallback: Authentication authorities） |
 | `getTokenAttributes()` | 完整 JWT Claims Map |

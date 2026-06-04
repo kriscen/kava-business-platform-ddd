@@ -211,7 +211,7 @@ RFC 7009 Token Revocation。
   "jti": "{token_id}",
   "userId": 1,
   "username": "admin",
-  "deptId": 1,
+  "groupId": 1,
   "authorities": ["ROLE_ADMIN", "sys:user:list"]
 }
 ```

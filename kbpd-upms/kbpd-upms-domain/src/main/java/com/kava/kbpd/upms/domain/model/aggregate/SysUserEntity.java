@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.domain.model.aggregate;
 import com.kava.kbpd.common.core.label.AggregateRoot;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.common.core.model.valobj.SysUserId;
-import com.kava.kbpd.upms.domain.model.valobj.SysDeptId;
+import com.kava.kbpd.upms.domain.model.valobj.SysGroupId;
 import com.kava.kbpd.upms.domain.model.valobj.SysRoleId;
 import lombok.*;
 
@@ -62,9 +62,9 @@ public class SysUserEntity implements AggregateRoot<SysUserId> {
 	private String avatar;
 
 	/**
-	 * 部门ID
+	 * 分组ID
 	 */
-	private SysDeptId deptId;
+	private SysGroupId groupId;
 
 	/**
 	 * 租户ID

@@ -83,9 +83,9 @@ public class SysUserDetailResponse implements Serializable {
 	private String avatar;
 
 	/**
-	 * 部门ID
+	 * 分组ID
 	 */
-	private Long deptId;
+	private Long groupId;
 
 	/**
 	 * 租户ID
@@ -138,9 +138,9 @@ public class SysUserDetailResponse implements Serializable {
 	private List<Long> roleIds;
 
 	/**
-	 * 部门名称
+	 * 分组名称
 	 */
-	private String deptName;
+	private String groupName;
 
 	/**
 	 * 租户名称

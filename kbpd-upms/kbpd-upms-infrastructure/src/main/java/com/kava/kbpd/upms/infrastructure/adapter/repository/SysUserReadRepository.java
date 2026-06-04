@@ -49,7 +49,7 @@ public class SysUserReadRepository implements ISysUserReadRepository {
                         .like(query.getUsername() != null, SysUserPO::getUsername, query.getUsername())
                         .like(query.getPhone() != null, SysUserPO::getPhone, query.getPhone())
                         .eq(query.getLockFlag() != null, SysUserPO::getLockFlag, query.getLockFlag())
-                        .eq(query.getDeptId() != null, SysUserPO::getDeptId, query.getDeptId()));
+                        .eq(query.getGroupId() != null, SysUserPO::getGroupId, query.getGroupId()));
         return PagingInfo.toResponse(sysUserPOPage.getRecords().stream()
                         .map(sysUserConverter::convertPO2Entity).toList(),
                 sysUserPOPage.getTotal(), sysUserPOPage.getCurrent(), sysUserPOPage.getSize());

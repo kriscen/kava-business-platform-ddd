@@ -20,7 +20,7 @@ public class SysUserAppDetailDTO {
      */
     private String password;
 
-    private Long deptId;
+    private Long groupId;
 
     private Long tenantId;
 
@@ -44,7 +44,7 @@ public class SysUserAppDetailDTO {
      */
     private List<Long> roleIds;
 
-    private String deptName;
+    private String groupName;
 
     private String tenantName;
 

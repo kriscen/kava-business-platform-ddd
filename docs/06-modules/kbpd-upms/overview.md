@@ -9,7 +9,7 @@ kbpd-upms 是平台的**用户权限管理**核心服务，负责用户、角色
 - 用户管理（User）：账号创建、密码策略、锁定/解锁
 - 角色管理（Role）：角色定义、数据权限范围
 - 菜单权限（Menu）：树形菜单、按钮级权限、菜单作用域
-- 部门管理（Dept）：组织架构树
+- 分组管理（Group）：组织架构树
 - 租户管理（Tenant）：多租户隔离、租户域名绑定
 - 地区数据（Area）：省市区树形数据
 - 日志审计（Log / AuditLog）：操作日志、字段变更审计
@@ -60,7 +60,7 @@ kbpd-upms/
 │   └── exception/                    #   UpmsBizException、UpmsBizErrorCodeEnum
 ├── kbpd-upms-domain/                 # 领域层：实体、聚合、领域服务、仓储接口
 │   ├── model/aggregate/              #   SysUserEntity、SysRoleEntity（聚合根）
-│   ├── model/entity/                 #   Menu、Dept、Tenant、Area 等 12 个实体
+│   ├── model/entity/                 #   Menu、Group、Tenant、Area 等 12 个实体
 │   ├── model/valobj/                 #   值对象 ID（12 个）+ 列表查询对象（14 个）
 │   ├── service/                      #   领域服务接口
 │   ├── service/impl/                 #   领域服务实现
@@ -116,7 +116,7 @@ kbpd-upms/
 ```
 SysUser (聚合根)
   ├── id: SysUserId
-  ├── deptId: SysDeptId         ← 关联部门
+  ├── groupId: SysGroupId         ← 关联分组
   ├── tenantId: SysTenantId     ← 所属租户
   └── roleIds: List<SysRoleId>  ← 关联角色（聚合内）
 
@@ -125,7 +125,7 @@ SysRole (聚合根)
   ├── tenantId: SysTenantId     ← 所属租户
   └── menuIds: List<SysMenuId>  ← 关联菜单（聚合内）
 
-SysMenu / SysDept / SysTenant / SysArea 等 → 独立实体
+SysMenu / SysGroup / SysTenant / SysArea 等 → 独立实体
 ```
 
 ### CQRS 模式
@@ -197,7 +197,7 @@ cd kbpd-upms/kbpd-upms-bootstrap && mvn spring-boot:run
 | 角色 CRUD | ✅ | 含角色-菜单关联持久化（sys_role_menu 读写）、数据权限范围（dsType/dsScope） |
 | 菜单 CRUD | ✅ | 树形菜单、按钮权限、三值作用域（system/tenant/system_tenant） |
 | 菜单树接口 | ✅ | GET /menu/tree，按用户角色和 scope 过滤可见菜单 |
-| 部门 CRUD | ✅ | 组织架构树 |
+| 分组 CRUD | ✅ | 组织架构树 |
 | 租户 CRUD | ✅ | 含菜单分配、创建时自动初始化 tenant_admin 角色、可选创建管理员用户 |
 | 权限运行时 | ✅ | Redis 缓存权限（`perm:user:{userId}`）、@PreAuthorize 方法级鉴权、ROLE_ADMIN 跳过 |
 | 租户数据隔离 | ✅ | KavaTenantLineInnerInterceptor 自动注入 tenant_id，平台管理员跳过 |

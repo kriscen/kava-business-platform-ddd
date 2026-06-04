@@ -22,7 +22,7 @@ public class SysUserDTO implements Serializable {
 	 */
 	private String password;
 
-	private Long deptId;
+	private Long groupId;
 
 	private Long tenantId;
 

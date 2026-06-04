@@ -19,9 +19,9 @@ import java.sql.SQLException;
  *
  * dsType 策略：
  * 0=ALL（全部数据）
- * 1=CUSTOM（自定义，由 dsScope 指定部门ID）
- * 2=DEPT_AND_CHILD（本部门及子部门）
- * 3=DEPT_ONLY（仅本部门）
+ * 1=CUSTOM（自定义，由 dsScope 指定分组ID）
+ * 2=GROUP_AND_CHILD（本分组及子分组）
+ * 3=GROUP_ONLY（仅本分组）
  * 4=SELF（仅本人）
  */
 @SuppressWarnings("rawtypes")
@@ -49,10 +49,10 @@ public class DataScopeInnerInterceptor implements InnerInterceptor {
         }
 
         Long userId = ctx.getUserId();
-        Long deptId = ctx.getDeptId();
+        Long groupId = ctx.getGroupId();
 
         return switch (dataScope) {
-            case "1", "2", "3" -> deptId != null ? eq("dept_id", deptId) : null;
+            case "1", "2", "3" -> groupId != null ? eq("group_id", groupId) : null;
             case "4" -> userId != null ? eq("creator", userId) : null;
             default -> null;
         };

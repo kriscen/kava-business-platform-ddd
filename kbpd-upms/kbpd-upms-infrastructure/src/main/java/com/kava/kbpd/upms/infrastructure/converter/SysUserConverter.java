@@ -15,11 +15,11 @@ public interface SysUserConverter {
 
     @Mapping(source = "id", target = "id.id")
     @Mapping(source = "tenantId", target = "tenantId.id")
-    @Mapping(source = "deptId", target = "deptId.id")
+    @Mapping(source = "groupId", target = "groupId.id")
     SysUserEntity convertPO2Entity(SysUserPO sysUserPO);
 
     @Mapping(source = "id.id", target = "id")
     @Mapping(source = "tenantId.id", target = "tenantId")
-    @Mapping(source = "deptId.id", target = "deptId")
+    @Mapping(source = "groupId.id", target = "groupId")
     SysUserPO convertEntity2PO(SysUserEntity entity);
 }

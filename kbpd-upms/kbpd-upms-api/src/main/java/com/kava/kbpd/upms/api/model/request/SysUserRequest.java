@@ -81,9 +81,9 @@ public class SysUserRequest implements Serializable {
 	private String avatar;
 
 	/**
-	 * 部门ID
+	 * 分组ID
 	 */
-	private Long deptId;
+	private Long groupId;
 
 	/**
 	 * 租户ID

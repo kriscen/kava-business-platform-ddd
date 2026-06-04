@@ -20,12 +20,12 @@ public class SysUserAppListDTO {
     private String name;
     private String email;
     private String avatar;
-    private Long deptId;
+    private Long groupId;
     private Long tenantId;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
 
-    private String deptName;
+    private String groupName;
     private String tenantName;
     private List<Long> roleIds;
 }

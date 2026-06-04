@@ -118,7 +118,7 @@ kbpd-auth/
 | `roles` | `SysUserDetails.authorities` / 空 | 角色代码集合（如 `["ROLE_ADMIN"]`），C端为 `[]` |
 | `userId` | `SysUserDetails` | B端用户 ID |
 | `username` | `SysUserDetails` | B端用户名 |
-| `deptId` | `SysUserDetails` | B端部门 ID |
+| `groupId` | `SysUserDetails` | B端分组 ID |
 | `memberId` | `MemberDetails` | C端会员 ID |
 
 > **注意**：JWT 仅携带角色（`roles`），不携带细粒度权限。权限查询由下游服务通过 RPC 调用 UPMS 按需获取。

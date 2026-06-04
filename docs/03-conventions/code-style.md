@@ -24,11 +24,11 @@
 | 类型 | 命名规则 | 示例 |
 |------|---------|------|
 | 聚合根 | `Sys{Entity}Entity`（放在 `model.aggregate` 包） | `SysUserEntity`, `SysRoleEntity` |
-| 实体（非聚合根） | `Sys{Entity}Entity`（放在 `model.entity` 包） | `SysDeptEntity`, `SysMenuEntity`, `SysTenantEntity` |
+| 实体（非聚合根） | `Sys{Entity}Entity`（放在 `model.entity` 包） | `SysGroupEntity`, `SysMenuEntity`, `SysTenantEntity` |
 | ID 值对象 | `Sys{Entity}Id` | `SysUserId`, `SysTenantId`, `SysRoleId` |
 | 列表查询值对象 | `Sys{Entity}ListQuery` | `SysUserListQuery`, `SysTenantListQuery` |
 | 仓储接口（CQRS） | `ISys{Entity}ReadRepository` / `ISys{Entity}WriteRepository` | `ISysUserReadRepository` |
-| 仓储接口（简单） | `ISys{Entity}Repository` | `ISysDeptRepository`, `ISysTenantRepository` |
+| 仓储接口（简单） | `ISys{Entity}Repository` | `ISysGroupRepository`, `ISysTenantRepository` |
 | 领域服务接口 | `ISys{Entity}Service` | `ISysUserService` |
 | 领域服务实现 | `Sys{Entity}Service` | `SysUserService` |
 
@@ -131,7 +131,7 @@ public class SysUserEntity implements AggregateRoot<SysUserId> {
 ```java
 // ✗ 不推荐：参数过多
 public void createUser(String name, String email, String phone,
-    String password, Long deptId, Long tenantId, ...) { }
+    String password, Long groupId, Long tenantId, ...) { }
 
 // ✓ 推荐：使用 Command 对象
 public void createUser(SysUserCreateCommand command) { }
@@ -145,21 +145,21 @@ public void createUser(SysUserCreateCommand command) { }
 
 ```java
 /**
- * 部门实体 - 非聚合根，放在 domain.model.entity 包
+ * 分组实体 - 非聚合根，放在 domain.model.entity 包
  * 实现 Entity<T> 标记接口
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysDeptEntity implements Entity<SysDeptId> {
-    private SysDeptId id;
+public class SysGroupEntity implements Entity<SysGroupId> {
+    private SysGroupId id;
     private String name;
-    private SysDeptId parentId;
+    private SysGroupId parentId;
     private Integer sort;
 
     @Override
-    public SysDeptId identifier() { return id; }
+    public SysGroupId identifier() { return id; }
 }
 ```
 

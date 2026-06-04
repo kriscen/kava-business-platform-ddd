@@ -8,7 +8,7 @@
 |------|----------|-----------|
 | **kbpd-gateway** | 统一入口、路由、鉴权、限流、日志 | 业务逻辑、持久化 |
 | **kbpd-auth** | OAuth2 认证、Token 发放、SSO | 业务数据、权限判断 |
-| **kbpd-upms** | 用户、角色、权限、租户、菜单、部门 | 业务领域逻辑（如订单、会员） |
+| **kbpd-upms** | 用户、角色、权限、租户、菜单、分组 | 业务领域逻辑（如订单、会员） |
 | **kbpd-member** | 会员、会员等级、会员权益 | 用户管理、认证 |
 | **kbpd-xxx** | 对应业务领域 | 用户权限、认证 |
 
@@ -89,10 +89,10 @@ public class SysUserServiceImpl implements SysUserService {
 
 | 层 | 命名规则 | 示例 |
 |---|---------|------|
-| Entity（非聚合根） | `{Name}Entity` | `SysDeptEntity` |
+| Entity（非聚合根） | `{Name}Entity` | `SysGroupEntity` |
 | Aggregate（聚合根） | `{AggregateName}Entity` | `SysUserEntity` |
 | Value Object | `{Name}Id` / `{Name}ListQuery` | `SysUserId`, `SysUserListQuery` |
-| Repository（简单 CRUD） | `I{Entity}Repository` | `ISysDeptRepository` |
+| Repository（简单 CRUD） | `I{Entity}Repository` | `ISysGroupRepository` |
 | Repository（CQRS 读写分离） | `I{Entity}ReadRepository`, `I{Entity}WriteRepository` | `ISysUserReadRepository` |
 | Repository Impl | `{Entity}Repository`（在 infrastructure） | `SysUserReadRepository` |
 | ApplicationService | `{Entity}AppService` | `SysUserAppService` |
@@ -177,7 +177,7 @@ public class SysUserEntity implements AggregateRoot<SysUserId> {
 | 场景 | 策略 | 示例 |
 |------|------|------|
 | **复杂领域** | 读写分离：`I{Entity}ReadRepository` + `I{Entity}WriteRepository` | `SysUser`、`SysRole` |
-| **简单 CRUD** | 单一接口：`I{Entity}Repository` | `SysDept`、`SysMenu`、`SysTenant` 等 |
+| **简单 CRUD** | 单一接口：`I{Entity}Repository` | `SysGroup`、`SysMenu`、`SysTenant` 等 |
 
 **判断标准**：聚合是否有复杂的业务规则、多表关联查询、或需要独立的查询优化？是则拆分，否则保持简单。
 
@@ -188,14 +188,14 @@ public class SysUserEntity implements AggregateRoot<SysUserId> {
 com.kava.kbpd.upms.domain
 ├── model/
 │   ├── entity/              # 实体（非聚合根）
-│   │   └── SysDeptEntity.java
+│   │   └── SysGroupEntity.java
 │   ├── aggregate/           # 聚合根
 │   │   └── SysUserEntity.java
 │   │   └── SysRoleEntity.java
 │   └── valobj/              # 值对象 / 查询参数
 │       ├── SysUserId.java
 │       ├── SysUserListQuery.java
-│       └── SysDeptId.java
+│       └── SysGroupId.java
 ├── service/                 # 领域服务
 │   ├── ISysUserService.java
 │   └── impl/
@@ -203,7 +203,7 @@ com.kava.kbpd.upms.domain
 └── repository/              # 仓储接口
     ├── ISysUserReadRepository.java
     ├── ISysUserWriteRepository.java
-    └── ISysDeptRepository.java
+    └── ISysGroupRepository.java
 
 # 应用层（kbpd-upms-application）
 com.kava.kbpd.upms.application
@@ -230,7 +230,7 @@ com.kava.kbpd.upms.infrastructure
 ├── adapter/repository/      # 仓储实现
 │   ├── SysUserReadRepository.java
 │   ├── SysUserWriteRepository.java
-│   └── SysDeptRepository.java
+│   └── SysGroupRepository.java
 └── converter/               # MapStruct 转换器
     └── SysUserConverter.java
 

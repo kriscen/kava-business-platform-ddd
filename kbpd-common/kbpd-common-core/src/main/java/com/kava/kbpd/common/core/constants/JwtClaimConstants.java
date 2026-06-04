@@ -13,9 +13,9 @@ public interface JwtClaimConstants {
     String USERNAME = "username";
 
     /**
-     * 部门ID
+     * 分组ID
      */
-    String DEPT_ID = "deptId";
+    String GROUP_ID = "groupId";
 
     /**
      * 数据权限

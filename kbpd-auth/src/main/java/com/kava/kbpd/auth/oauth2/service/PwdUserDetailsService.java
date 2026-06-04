@@ -52,7 +52,7 @@ public class PwdUserDetailsService implements UserDetailsService {
                     user.getId(),
                     user.getUsername(),
                     user.getPassword(),
-                    user.getDeptId(),
+                    user.getGroupId(),
                     enabled,
                     authorities,
                     user.getDataScope()
