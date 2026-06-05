@@ -83,7 +83,6 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [overview.md](06-modules/kbpd-auth/overview.md) | Auth 模块概览，OAuth2 认证授权中心定位、双 Security 过滤链、多租户认证流程、Token 存储策略 |
-| [api.md](06-modules/kbpd-auth/api.md) | Auth 模块后端接口文档（Dubbo RPC 依赖、静态资源白名单），前端对接见 [auth-api.md](05-frontend/auth-api.md) |
 | [business-rules.md](06-modules/kbpd-auth/business-rules.md) | Auth 模块业务规则，多租户认证路由、Token 生命周期管理、客户端校验规则 |
 
 ### kbpd-common/ — 公共模块
@@ -103,7 +102,6 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，会员管理微服务定位、DDD 分层结构与 Dubbo RPC 骨架 |
-| [api.md](06-modules/kbpd-member/api.md) | Member 模块接口文档，定义 IRemoteMemberService Dubbo RPC 接口与 DTO |
 | [business-rules.md](06-modules/kbpd-member/business-rules.md) | Member 模块业务规则（规划），多租户隔离、CQRS、DDD 分层约束 |
 
 ### kbpd-upms/ — 用户权限管理服务
@@ -111,7 +109,6 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览，用户权限管理核心服务、14 个资源 CRUD 体系、RBAC 权限模型与数据隔离策略 |
-| [api.md](06-modules/kbpd-upms/api.md) | UPMS 模块后端接口文档（Dubbo RPC 接口与 DTO），前端对接见 [upms-api.md](05-frontend/upms-api.md) |
 | [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则，RBAC 关联持久化、权限运行时、租户管理及数据隔离规则 |
 
 ---

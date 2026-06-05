@@ -1,7 +1,6 @@
 # UPMS 前端对接文档
 
 > 本文档面向前端开发者，包含 HTTP REST 接口、请求/响应字段定义和查询参数。
-> 后端内部接口（Dubbo RPC）请参考 [api.md](../06-modules/kbpd-upms/api.md)。
 
 ## 接入信息
 
