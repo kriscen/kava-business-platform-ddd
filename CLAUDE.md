@@ -136,6 +136,7 @@ Available skills:
 - `/opsx:sync` - Sync delta specs from a change to main specs
 - `/opsx:onboard` - Walk through a complete OpenSpec workflow cycle
 - `/openspec-explore` - Explore ideas and investigate problems
+- `/openspec-cleanup` - 整理 openspec 目录：清理归档冗余 delta specs、合并相关 main specs
 
 OpenSpec artifact rules (from `openspec/config.yaml`):
 - Use Chinese language for all artifacts
