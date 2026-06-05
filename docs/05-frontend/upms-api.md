@@ -194,6 +194,26 @@
 | PUT | `/{id}` | `id` (path) + `SysOauthClientRequest` (body) | `JsonResult<Void>` | 更新 |
 | DELETE | — | `List<Long>` (body) | `JsonResult<Void>` | 批量删除 |
 
+### 应用管理 `/api/v1/sys/app/`
+
+| 方法 | 路径 | 入参 | 返回值 | 说明 |
+|---|---|---|---|---|
+| GET | `/page` | `appName`、`pageNo`、`pageSize` (query) | `JsonResult<PagingInfo<SysAppListResponse>>` | 分页查询应用 |
+| GET | `/{id}` | `id` (path) | `JsonResult<SysAppDetailResponse>` | 应用详情 |
+| POST | — | `SysAppRequest` (body) | `JsonResult<Long>` | 创建应用，返回新 ID |
+| PUT | `/{id}` | `id` (path) + `SysAppRequest` (body) | `JsonResult<Void>` | 更新应用 |
+| DELETE | — | `List<Long>` (body) | `JsonResult<Void>` | 批量删除应用 |
+| GET | `/dropdown` | — | `JsonResult<List<SysAppDropdownResponse>>` | 应用下拉列表（id、code、name） |
+| PUT | `/{id}/menus` | `id` (path) + `List<Long>` (body) | `JsonResult<Void>` | 绑定应用菜单 |
+
+### 租户应用订阅 `/api/v1/sys/tenant-app/`
+
+| 方法 | 路径 | 入参 | 返回值 | 说明 |
+|---|---|---|---|---|
+| POST | `/subscribe` | `SysTenantAppRequest` (body) | `JsonResult<Void>` | 租户订阅应用 |
+| POST | `/unsubscribe` | `SysTenantAppRequest` (body) | `JsonResult<Void>` | 租户退订应用 |
+| GET | `/tenant/{tenantId}` | `tenantId` (path) | `JsonResult<List<SysTenantAppListResponse>>` | 查询租户已订阅的应用列表 |
+
 ---
 
 ## 请求体字段（RequestBody）
@@ -297,6 +317,24 @@
 | `autoapprove` | `String` | 否 | 自动授权 |
 | `tenantId` | `Long` | 否 | 所属租户（传递 `additionalInformation` 中） |
 | `userType` | `String` | 否 | 用户类型（传递 `additionalInformation` 中） |
+
+### SysAppRequest
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `id` | `Long` | PUT 必填 | 应用 ID |
+| `code` | `String` | 是 | 应用编码 |
+| `name` | `String` | 是 | 应用名称 |
+| `icon` | `String` | 否 | 应用图标 |
+| `description` | `String` | 否 | 应用描述 |
+| `menuIds` | `List<Long>` | 否 | 关联菜单 ID 列表 |
+
+### SysTenantAppRequest
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `tenantId` | `Long` | 是 | 租户 ID |
+| `appId` | `Long` | 是 | 应用 ID |
 
 ### 其他 Request（通用字段模式）
 
@@ -462,6 +500,51 @@
 | `areaStatus` | `String` | 状态（0-停用, 1-启用） |
 | `cityCode` | `String` | 城市编码 |
 
+### 应用
+
+**SysAppListResponse**（列表）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `Long` | 应用 ID |
+| `code` | `String` | 应用编码 |
+| `name` | `String` | 应用名称 |
+| `icon` | `String` | 应用图标 |
+| `status` | `String` | 状态 |
+
+**SysAppDetailResponse**（详情）
+
+在 ListResponse 基础上额外返回：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `description` | `String` | 应用描述 |
+| `gmtCreate` | `LocalDateTime` | 创建时间 |
+| `gmtModified` | `LocalDateTime` | 更新时间 |
+
+**SysAppDropdownResponse**（下拉）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `Long` | 应用 ID |
+| `code` | `String` | 应用编码 |
+| `name` | `String` | 应用名称 |
+
+### 租户应用订阅
+
+**SysTenantAppListResponse**
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | `Long` | 记录 ID |
+| `tenantId` | `Long` | 租户 ID |
+| `appId` | `Long` | 应用 ID |
+| `appCode` | `String` | 应用编码（富化字段） |
+| `appName` | `String` | 应用名称（富化字段） |
+| `appIcon` | `String` | 应用图标（富化字段） |
+| `status` | `String` | 状态 |
+| `gmtCreate` | `LocalDateTime` | 创建时间 |
+
 ---
 
 ## 查询参数（Query Params）
@@ -485,6 +568,7 @@
 | 地区 | `name`, `areaType`, `pid`, `adcode` |
 | 日志 | `logType`, `title`, `createBy`, `serviceId` |
 | 国际化 | `code`（模糊匹配）, `language`（精确匹配） |
+| 应用 | `appName`（直接 `@RequestParam`，非 AdapterListQuery） |
 
 > 未列出的资源（审计日志、文件、文件分组、公共参数、路由配置、OAuth 客户端）支持按自身字段过滤，前端按需传递即可。
 
