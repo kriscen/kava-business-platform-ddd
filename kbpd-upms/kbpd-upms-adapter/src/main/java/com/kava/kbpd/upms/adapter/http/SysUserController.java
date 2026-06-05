@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/user/")
+@RequestMapping("/api/${app.config.api-version}/sys/user")
 public class SysUserController {
     @Resource
     private ISysUserAppService sysUserAppService;
@@ -75,8 +75,9 @@ public class SysUserController {
      * @param req 修改请求
      * @return R
      */
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysUserRequest req) {
+    @PutMapping("/{id}")
+    public JsonResult<Boolean> updateById(@PathVariable("id") Long id, @RequestBody SysUserRequest req) {
+        req.setId(id);
         sysUserAppService.updateUser(sysUserTriggerConverter.convertRequest2UpdateCommand(req));
         return JsonResult.buildSuccess();
     }

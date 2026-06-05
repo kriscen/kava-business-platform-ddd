@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/menu/")
+@RequestMapping("/api/${app.config.api-version}/sys/menu")
 public class SysMenuController {
     @Resource
     private ISysMenuAppService appService;

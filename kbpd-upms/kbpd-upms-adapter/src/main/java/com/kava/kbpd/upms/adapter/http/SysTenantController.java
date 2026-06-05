@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/tenant/")
+@RequestMapping("/api/${app.config.api-version}/sys/tenant")
 public class SysTenantController {
     @Resource
     private ISysTenantAppService appService;

@@ -15,26 +15,26 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/tenant-app/")
+@RequestMapping("/api/${app.config.api-version}/sys/tenant/{tenantId}/apps")
 public class SysTenantAppController {
     @Resource
     private ISysTenantAppAppService appService;
     @Resource
     private SysTenantAppAdapterConverter adapterConverter;
 
-    @PostMapping("/subscribe")
-    public JsonResult<Void> subscribe(@RequestBody SysTenantAppRequest req) {
-        appService.subscribe(req.getTenantId(), req.getAppId());
+    @PostMapping
+    public JsonResult<Void> subscribe(@PathVariable("tenantId") Long tenantId, @RequestBody SysTenantAppRequest req) {
+        appService.subscribe(tenantId, req.getAppId());
         return JsonResult.buildSuccess();
     }
 
-    @PostMapping("/unsubscribe")
-    public JsonResult<Void> unsubscribe(@RequestBody SysTenantAppRequest req) {
-        appService.unsubscribe(req.getTenantId(), req.getAppId());
+    @DeleteMapping("/{appId}")
+    public JsonResult<Void> unsubscribe(@PathVariable("tenantId") Long tenantId, @PathVariable("appId") Long appId) {
+        appService.unsubscribe(tenantId, appId);
         return JsonResult.buildSuccess();
     }
 
-    @GetMapping("/tenant/{tenantId}")
+    @GetMapping
     public JsonResult<List<SysTenantAppListResponse>> getByTenantId(@PathVariable("tenantId") Long tenantId) {
         List<TenantAppListDTO> dtos = appService.queryByTenantId(tenantId);
         List<SysTenantAppListResponse> result = dtos.stream()

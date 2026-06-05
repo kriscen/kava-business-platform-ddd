@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/area/")
+@RequestMapping("/api/${app.config.api-version}/sys/area")
 public class SysAreaController {
     @Resource
     private ISysAreaAppService appService;

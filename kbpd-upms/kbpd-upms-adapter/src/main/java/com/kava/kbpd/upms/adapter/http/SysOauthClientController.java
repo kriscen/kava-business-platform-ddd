@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/oauth-client-details/")
+@RequestMapping("/api/${app.config.api-version}/sys/oauth-client")
 public class SysOauthClientController {
     @Resource
     private ISysOauthClientAppService appService;

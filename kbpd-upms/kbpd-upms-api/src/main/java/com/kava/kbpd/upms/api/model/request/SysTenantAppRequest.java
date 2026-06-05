@@ -6,6 +6,5 @@ import java.io.Serializable;
 
 @Data
 public class SysTenantAppRequest implements Serializable {
-    private Long tenantId;
     private Long appId;
 }

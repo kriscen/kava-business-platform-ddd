@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/role/")
+@RequestMapping("/api/${app.config.api-version}/sys/role")
 @RequiredArgsConstructor
 public class SysRoleController {
 
@@ -63,8 +63,9 @@ public class SysRoleController {
         return JsonResult.buildSuccess(id.getId());
     }
 
-    @PutMapping
-    public JsonResult<Boolean> updateById(@RequestBody SysRoleRequest req) {
+    @PutMapping("/{id}")
+    public JsonResult<Boolean> updateById(@PathVariable("id") Long id, @RequestBody SysRoleRequest req) {
+        req.setId(id);
         sysRoleAppService.updateRole(sysRoleAdapterConverter.convertRequest2UpdateCommand(req));
         return JsonResult.buildSuccess();
     }

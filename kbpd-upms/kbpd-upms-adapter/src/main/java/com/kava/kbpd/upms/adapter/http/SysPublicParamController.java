@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/public-param/")
+@RequestMapping("/api/${app.config.api-version}/sys/public-param")
 public class SysPublicParamController {
     @Resource
     private ISysPublicParamAppService appService;

@@ -1,10 +1,4 @@
-# Capability: tenant-app-subscription
-
-## Purpose
-
-管理租户与 App 的订阅关系：租户购买/退订 App、订阅状态生命周期、租户 App 菜单聚合查询，为基于 App 购买关系的菜单可见性提供数据基础。
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: 租户购买 App
 
@@ -65,38 +59,3 @@
 #### Scenario: 租户无已购 App
 - **WHEN** 查询租户的已购 App 列表，该租户仅有 kava-base
 - **THEN** 返回仅包含 kava-base 的列表
-
-### Requirement: 租户创建时自动关联 kava-base
-
-创建租户时，系统 SHALL 自动在 sys_tenant_app 中创建租户与 kava-base 的关联记录（status=ACTIVE）。
-
-#### Scenario: 创建租户自动关联 kava-base
-- **WHEN** 平台管理员创建新租户
-- **THEN** 系统自动写入 sys_tenant_app（tenant_id, app_id=kava-base的ID, status=ACTIVE）
-- **AND** 租户立即获得 kava-base 包含的所有菜单
-
-### Requirement: 订阅状态生命周期
-
-sys_tenant_app 的 status SHALL 支持 ACTIVE 和 EXPIRED 两个状态。ACTIVE 表示有效订阅，EXPIRED 表示已过期或已退订。
-
-#### Scenario: 有效订阅
-- **WHEN** sys_tenant_app 记录 status 为 ACTIVE
-- **THEN** 该 App 的菜单参与租户菜单可见性计算
-
-#### Scenario: 过期订阅
-- **WHEN** sys_tenant_app 记录 status 为 EXPIRED
-- **THEN** 该 App 的菜单不参与租户菜单可见性计算
-- **AND** 角色已分配的该 App 菜单关联保留但查询时过滤
-
-### Requirement: 租户 App 菜单聚合查询
-
-系统 SHALL 支持查询指定租户通过已购 App 获得的所有菜单 ID 集合（自动去重）。
-
-#### Scenario: 查询租户菜单集
-- **WHEN** 系统需要计算某租户的可见菜单
-- **THEN** 查询 sys_tenant_app（status=ACTIVE）→ 关联 sys_app_menu → 汇总所有 menu_id
-- **AND** 多个 App 包含同一菜单时自动去重
-
-#### Scenario: 查询租户菜单集包含 kava-base
-- **WHEN** 租户仅关联 kava-base
-- **THEN** 返回 kava-base 关联的所有菜单 ID

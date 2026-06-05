@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/route-conf/")
+@RequestMapping("/api/${app.config.api-version}/sys/route-conf")
 public class SysRouteConfController {
     @Resource
     private ISysRouteConfAppService appService;

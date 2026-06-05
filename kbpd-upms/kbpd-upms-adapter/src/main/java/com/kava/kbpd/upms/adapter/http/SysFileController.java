@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/sys/file/")
+@RequestMapping("/api/${app.config.api-version}/sys/file")
 public class SysFileController {
     @Resource
     private ISysFileAppService appService;
