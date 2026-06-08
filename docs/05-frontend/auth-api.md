@@ -128,14 +128,15 @@ OAuth2 标准令牌签发端点。
 
 ```json
 {
-  "code": "0",
-  "msg": "success",
+  "success": true,
   "data": {
     "access_token": "eyJhbGciOiJ...",
     "refresh_token": "vKjH...",
     "token_type": "Bearer",
     "expires_in": 43200
-  }
+  },
+  "errorCode": null,
+  "errorMessage": null
 }
 ```
 
@@ -143,9 +144,10 @@ OAuth2 标准令牌签发端点。
 
 ```json
 {
-  "code": "{OAuth2 错误码}",
-  "msg": "{错误描述}",
-  "data": null
+  "success": false,
+  "data": null,
+  "errorCode": "{OAuth2 错误码}",
+  "errorMessage": "{错误描述}"
 }
 ```
 
@@ -208,12 +210,17 @@ RFC 7009 Token Revocation。
   "exp": 1714022400,
   "iat": 1713979200,
   "jti": "{token_id}",
-  "userId": 1,
+  "tenantId": "{tenant_id}",
+  "userType": "1",
+  "userId": "{user_id}",
   "username": "admin",
-  "groupId": 1,
-  "authorities": ["ROLE_ADMIN", "sys:user:list"]
+  "groupId": "{group_id}",
+  "roles": ["ROLE_ADMIN"],
+  "dataScope": "0"
 }
 ```
+
+> `roles` 仅包含角色编码，不含细粒度权限标识（如 `sys:user:list`）。按钮级权限通过 `GET /menu/tree` 的 `permission` 字段获取。
 
 **Payload — C 端会员**：
 
@@ -225,7 +232,10 @@ RFC 7009 Token Revocation。
   "exp": 1714022400,
   "iat": 1713979200,
   "jti": "{token_id}",
-  "memberId": 1
+  "tenantId": "{tenant_id}",
+  "userType": "2",
+  "memberId": "{member_id}",
+  "roles": []
 }
 ```
 

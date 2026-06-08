@@ -73,12 +73,14 @@ OAuth2 Client 通过 `user_type` 字段区分认证通道：
 | Claim | 类型 | 适用用户类型 | 说明 |
 |-------|------|------------|------|
 | `sub` | String | 全部 | Subject（用户名） |
-| `userId` | Long | TO_B | 系统用户 ID |
+| `tenantId` | String | 全部 | 租户 ID |
+| `userType` | String | 全部 | 用户类型（"1"=B端，"2"=C端） |
+| `userId` | String | TO_B | 系统用户 ID |
 | `username` | String | TO_B | 登录名 |
-| `groupId` | Long | TO_B | 所属分组 ID |
-| `authorities` | Set\<String\> | TO_B | 角色/权限编码集合 |
+| `groupId` | String | TO_B | 所属分组 ID |
+| `roles` | Set\<String\> | TO_B | 角色编码集合（仅角色代码，不含细粒度权限标识） |
 | `dataScope` | String | TO_B | 数据权限范围 |
-| `memberId` | Long | TO_C | 会员 ID |
+| `memberId` | String | TO_C | 会员 ID |
 
 Claim Key 定义在 `kbpd-common-core` 的 `JwtClaimConstants` 中。
 
@@ -142,13 +144,13 @@ Claim Key 定义在 `kbpd-common-core` 的 `JwtClaimConstants` 中。
     │
     ▼
 PwdUserDetailsService.loadUserByUsername()
-    │  收集用户的 roleCode / permission 集合
+    │  收集用户的 roleCode 集合
     ▼
-SysUserDetails.authorities
+SysUserDetails.authorities（Spring Security 的 getAuthorities()）
     │
     ▼
 AuthorizationServiceConfig.jwtTokenCustomizer()
-    │  写入 JWT claims["authorities"]
+    │  写入 JWT claims["roles"]（仅角色代码，不含细粒度权限）
     ▼
 下游服务 ResourceServerConfiguration
     │  JwtAuthenticationConverter 读取 claims

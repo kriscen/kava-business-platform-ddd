@@ -65,8 +65,12 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [auth-api.md](05-frontend/auth-api.md) | Auth 前端对接文档，登录流程、OAuth2 协议端点和 JWT Token 结构 |
-| [upms-api.md](05-frontend/upms-api.md) | UPMS 前端对接文档，HTTP REST 接口、请求/响应字段定义和查询参数 |
+| [environment.md](05-frontend/environment.md) | 环境与网络配置，服务端口、路由规则、CORS、Header 要求 |
+| [auth-guide.md](05-frontend/auth-guide.md) | 登录集成指南，从零对接认证系统的完整步骤（密码模式、Token 刷新、JWT 结构） |
+| [business-guide.md](05-frontend/business-guide.md) | 前端业务知识指南，菜单消费、权限控制、数据权限、租户模型、App 模型 |
+| [request-guide.md](05-frontend/request-guide.md) | 请求与响应指南，JsonResult 格式、分页结构、错误码处理、Axios 配置建议 |
+| [auth-api.md](05-frontend/auth-api.md) | Auth API 参考，OAuth2 协议端点详细定义 |
+| [upms-api.md](05-frontend/upms-api.md) | UPMS API 参考，全部 REST 接口、请求/响应字段定义和查询参数 |
 
 ---
 
@@ -132,7 +136,7 @@ docs/
 
 **了解产品**：`07-product/vision.md` → `07-product/user-roles.md` → `07-product/platform-architecture.md` → `07-product/auth-chain.md`
 
-**前端对接**：`05-frontend/auth-api.md`（认证流程） → `05-frontend/upms-api.md`（业务接口）
+**前端对接**：`05-frontend/environment.md`（环境配置） → `05-frontend/auth-guide.md`（登录集成） → `05-frontend/business-guide.md`（业务知识） → `05-frontend/request-guide.md`（请求指南） → `upms-api.md` / `auth-api.md`（API 参考）
 
 **开发接口**：`04-reference/error-codes.md`
 
