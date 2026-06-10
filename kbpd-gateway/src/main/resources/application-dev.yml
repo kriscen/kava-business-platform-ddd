@@ -7,6 +7,19 @@ logging:
 spring:
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins:
+              - "http://localhost:*"
+            allowed-methods:
+              - GET
+              - POST
+              - OPTIONS
+            allowed-headers:
+              - Authorization
+              - Content-Type
+            max-age: 3600
       routes:
         - id: kbpd-auth
           uri: http://localhost:8600

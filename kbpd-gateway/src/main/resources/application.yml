@@ -20,3 +20,18 @@ spring:
     import:
       - optional:nacos:application-${spring.profiles.active}.yml
       - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
+
+# =====================================================================
+# 生产环境 CORS 配置模板 (通过 Nacos: kbpd-gateway-prod.yml 注入)
+# =====================================================================
+# spring.cloud.gateway.globalcors.cors-configurations.'[/**]'.allowed-origins:
+#   - https://admin.kava.example.com
+#   - https://app.kava.example.com
+# spring.cloud.gateway.globalcors.cors-configurations.'[/**]'.allowed-methods:
+#   - GET
+#   - POST
+#   - OPTIONS
+# spring.cloud.gateway.globalcors.cors-configurations.'[/**]'.allowed-headers:
+#   - Authorization
+#   - Content-Type
+# spring.cloud.gateway.globalcors.cors-configurations.'[/**]'.max-age: 3600

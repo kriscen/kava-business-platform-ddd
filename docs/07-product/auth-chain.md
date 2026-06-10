@@ -36,11 +36,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        登录阶段                                      │
+│                     登录阶段 (Auth Code + PKCE)                       │
 │                                                                     │
-│  [客户端]                                                            │
-│     │ POST /oauth2/login                                             │
-│     │ (username, password, client_id)                                │
+│  [前端 SPA]                                                          │
+│     │ 1. 生成 code_verifier, code_challenge (SHA-256), state         │
+│     │ 2. 重定向到 GET /auth/oauth2/authorize                         │
+│     │    ?client_id=xxx&response_type=code                           │
+│     │    &code_challenge=xxx&code_challenge_method=S256              │
+│     │    &redirect_uri=xxx&scope=xxx&state=xxx                       │
+│     ▼                                                                │
+│  [Spring Authorization Server]                                       │
+│     │ 验证 PKCE 参数 (code_challenge 必须存在)                        │
+│     │ 未认证 → 重定向到 /oauth2/login                                 │
 │     ▼                                                                │
 │  [TenantAwareAuthenticationFilter]                                   │
 │     │ 1. 通过 client_id 查询 RegisteredClient                        │
@@ -53,11 +60,21 @@
 │     │  userType=1 → Dubbo→UPMS → SysUserDetails + roles             │
 │     │  userType=2 → Dubbo→Member → MemberDetails                    │
 │     ▼                                                                │
-│  [OAuth2 Token Endpoint]                                            │
-│     │ jwtTokenCustomizer 注入自定义 Claims                            │
-│     │ JWT Generator 用 RSA 密钥签名                                   │
+│  [Spring Authorization Server]                                       │
+│     │ 认证成功 → 302 重定向到 redirect_uri?code=xxx&state=xxx         │
 │     ▼                                                                │
-│  [客户端] ← access_token (JWT) + refresh_token                       │
+│  [前端 SPA (回调)]                                                    │
+│     │ 1. 验证 state 匹配                                             │
+│     │ 2. POST /auth/oauth2/token                                     │
+│     │    grant_type=authorization_code&code=xxx                      │
+│     │    &code_verifier=xxx&client_id=xxx&redirect_uri=xxx           │
+│     ▼                                                                │
+│  [OAuth2 Token Endpoint]                                            │
+│     │ 1. 验证 code_verifier SHA-256 哈希 == 存储的 code_challenge    │
+│     │ 2. jwtTokenCustomizer 注入自定义 Claims                         │
+│     │ 3. JWT Generator 用 RSA 密钥签名                                │
+│     ▼                                                                │
+│  [前端 SPA] ← access_token (JWT) + refresh_token                     │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐

@@ -53,12 +53,18 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
             return null;
         }
 
+        boolean toolClient = isToolClient(clientDetails.getClientId());
+
         RegisteredClient.Builder builder = RegisteredClient.withId(clientDetails.getClientId())
                 .clientId(clientDetails.getClientId())
                 .clientSecret(SecretConstants.NOOP + clientDetails.getClientSecret())
                 .clientAuthenticationMethods(clientAuthenticationMethods -> {
-                    clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
-                    clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+                    if (toolClient) {
+                        clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+                        clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+                    } else {
+                        clientAuthenticationMethods.add(ClientAuthenticationMethod.NONE);
+                    }
                 });
 
         for (String authorizedGrantType : clientDetails.getAuthorizedGrantTypes()) {
@@ -86,11 +92,17 @@ public class DBRegisteredClientRepository implements RegisteredClientRepository 
                                 .orElse(kbpdAuthProperties.getRefreshTokenValiditySeconds())))
                         .build())
                 .clientSettings(ClientSettings.builder()
+                        .requireProofKey(!toolClient)
                         .requireAuthorizationConsent(!"1".equals(clientDetails.getAutoapprove()))
                         //传入userType和TenantId
                         .setting(AuthConstants.URL_PARAM_USER_TYPE,clientDetails.getUserType())
                         .setting(AuthConstants.URL_PARAM_TENANT_ID,clientDetails.getTenantId())
                         .build())
                 .build();
+    }
+
+    private boolean isToolClient(String clientId) {
+        return kbpdAuthProperties.getToolClientId() != null
+                && kbpdAuthProperties.getToolClientId().contains(clientId);
     }
 }

@@ -6,9 +6,12 @@
 
 kbpd-auth 是 OAuth2 认证授权中心，前端主要对接：
 
-1. **登录页面**：用户输入凭证，获取授权码
-2. **Token 端点**：用授权码或密码换取 Access Token
-3. **JWT Token**：携带 Token 访问业务接口
+1. **授权端点**：发起 Authorization Code + PKCE 流程
+2. **登录页面**：用户输入凭证完成认证
+3. **Token 端点**：用授权码 + PKCE code_verifier 换取 Access Token
+4. **JWT Token**：携带 Token 访问业务接口
+
+> **推荐使用 Authorization Code + PKCE 模式**。所有前端 SPA 作为 Public Client，不需要 `client_secret`，通过 PKCE 保证安全。
 
 ---
 
@@ -91,19 +94,22 @@ OAuth2 标准令牌签发端点。
 
 **支持的 Grant Type**：
 
-| Grant Type | 说明 |
-|------------|------|
-| `authorization_code` | 授权码模式（推荐） |
-| `refresh_token` | 刷新令牌 |
-| `client_credentials` | 客户端凭证模式（需 Client 配置支持） |
-| `password` * | 资源所有者密码模式（自定义扩展） |
+| Grant Type | 说明 | 推荐度 |
+|------------|------|--------|
+| `authorization_code` | 授权码模式 + PKCE（**推荐**，前端 SPA 必须使用） | ★★★★★ |
+| `refresh_token` | 刷新令牌（配合 `authorization_code` 使用） | ★★★★★ |
+| `client_credentials` | 客户端凭证模式（仅服务间调用） | ★★☆☆☆ |
+| `password` * | 资源所有者密码模式（仅限调试工具客户端，不推荐前端使用） | ★☆☆☆☆ |
 
-> *密码模式通过自定义的 `TenantAwareAuthenticationFilter` + `CustomerAuthenticationProvider` 实现，非 Spring Authorization Server 内置支持。
+> **PKCE 必需参数**：使用 `authorization_code` 时，授权请求必须携带 `code_challenge` 和 `code_challenge_method=S256`，Token 请求必须携带 `code_verifier`。
+>
+> *密码模式通过自定义的 `TenantAwareAuthenticationFilter` + `CustomerAuthenticationProvider` 实现，非 Spring Authorization Server 内置支持。仅 `tool-client-id` 配置的调试客户端（如 `local`）可使用，且免除 PKCE 要求。
 
 **客户端认证方式**：
 
-- `client_secret_basic`（HTTP Basic Auth）
-- `client_secret_post`（请求体携带 client_id / client_secret）
+- **Public Client（推荐）**：仅传 `client_id`，不需要 `client_secret`。Token 端点通过 PKCE `code_verifier` 验证请求合法性。前端 SPA 必须使用此方式。
+- `client_secret_basic`（HTTP Basic Auth）：仅服务端/调试工具使用
+- `client_secret_post`（请求体携带 client_id / client_secret）：仅服务端/调试工具使用
 
 **成功响应**：
 
@@ -153,7 +159,7 @@ OAuth2 标准令牌签发端点。
 
 ### GET /oauth2/authorize — 授权端点
 
-OAuth2 标准授权端点，启动 Authorization Code 流程。
+OAuth2 标准授权端点，启动 Authorization Code + PKCE 流程。
 
 **请求参数**：
 
@@ -164,6 +170,8 @@ OAuth2 标准授权端点，启动 Authorization Code 流程。
 | `scope` | String | 否 | 请求的授权范围（空格分隔） |
 | `redirect_uri` | String | 条件必填 | 回调地址 |
 | `state` | String | 推荐 | 防 CSRF |
+| `code_challenge` | String | 是 | PKCE 挑战码（`code_verifier` 的 SHA-256 哈希，Base64URL 编码） |
+| `code_challenge_method` | String | 是 | 固定值 `S256` |
 
 **流程**：
 
