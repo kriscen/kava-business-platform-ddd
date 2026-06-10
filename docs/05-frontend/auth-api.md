@@ -67,10 +67,10 @@ kbpd-auth 是 OAuth2 认证授权中心，前端主要对接：
 
 | Scope | 描述 |
 |-------|------|
-| `profile` | 查看您的基本个人信息 |
-| `message.read` | 读取您的消息 |
-| `message.write` | 发送消息 |
-| 其他 | `Unknown scope: {scope}` |
+| `internal` | 访问自有系统功能 |
+| `third_party` | 访问第三方应用功能 |
+| `open_api` | 访问开放API |
+| 其他 | `未知权限 - 无法获取此权限的说明信息，请谨慎授权。` |
 
 **表单提交**：
 

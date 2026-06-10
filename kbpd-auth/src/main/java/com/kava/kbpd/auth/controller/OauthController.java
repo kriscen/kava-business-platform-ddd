@@ -1,6 +1,7 @@
 package com.kava.kbpd.auth.controller;
 
 import com.kava.kbpd.auth.constants.AuthConstants;
+import com.kava.kbpd.common.core.enums.ScopeType;
 import com.kava.kbpd.upms.api.model.dto.SysOauthClientDTO;
 import com.kava.kbpd.upms.api.service.IRemoteOauthClientService;
 import jakarta.annotation.Resource;
@@ -113,24 +114,28 @@ public class OauthController {
 
 	@Data
 	public static class ScopeWithDescription {
-		private static final String DEFAULT_DESCRIPTION = "UNKNOWN SCOPE - We cannot provide information about this permission, use caution when granting this.";
+		private static final String DEFAULT_DESCRIPTION = "未知权限 - 无法获取此权限的说明信息，请谨慎授权。";
 		private static final Map<String, String> scopeDescriptions = new HashMap<>();
 		static {
 			scopeDescriptions.put(
+					OidcScopes.OPENID,
+					"用于身份认证。"
+			);
+			scopeDescriptions.put(
 					OidcScopes.PROFILE,
-					"This application will be able to read your profile information."
+					"访问您的基本资料信息。"
 			);
 			scopeDescriptions.put(
-					"message.read",
-					"This application will be able to read your message."
+					ScopeType.INTERNAL.getCode(),
+					"访问自有系统功能。"
 			);
 			scopeDescriptions.put(
-					"message.write",
-					"This application will be able to add new messages. It will also be able to edit and delete existing messages."
+					ScopeType.THIRD_PARTY.getCode(),
+					"访问第三方应用功能。"
 			);
 			scopeDescriptions.put(
-					"other.scope",
-					"This is another scope example of a scope description."
+					ScopeType.OPEN_API.getCode(),
+					"访问开放API。"
 			);
 		}
 

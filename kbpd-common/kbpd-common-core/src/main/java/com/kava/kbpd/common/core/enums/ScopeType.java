@@ -12,24 +12,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ScopeType {
     /**
-     * 自有 B端 系统
+     * 自有系统（内部App）
      */
-    INTERNAL_B("internal:b", "自有B端系统"),
+    INTERNAL("internal", "自有系统"),
 
     /**
-     * 自有 C端 系统
+     * 第三方应用
      */
-    INTERNAL_C("internal:c", "自有C端系统"),
-
-    /**
-     * 第三方 C端 应用
-     */
-    THIRD_PARTY_C("third_party:c", "第三方C端应用"),
-
-    /**
-     * 第三方 OpenAPI / B端 合作方
-     */
-    THIRD_PARTY_B("third_party:b", "第三方B端系统"),
+    THIRD_PARTY("third_party", "第三方应用"),
 
     /**
      * 开放 API

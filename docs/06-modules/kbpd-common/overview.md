@@ -122,7 +122,7 @@ BaseBizException (运行时异常, 支持 MessageFormat 参数替换)
 
 **常量**：`CoreConstant`（时区、日期格式）、`CollectionSize`、`PathType`、`JwtClaimConstants`（JWT Claim 键名：userId、username、groupId、dataScope、authorities、memberId、tenantId、userType、roles）、`SecretConstants`
 
-**枚举**：`YesNoEnum`、`Status`（启用/禁用）、`UserType`（B 端/C 端用户）、`ScopeType`（认证范围分类）
+**枚举**：`YesNoEnum`、`Status`（启用/禁用）、`UserType`（B 端/C 端用户）、`ScopeType`（客户端归属类型：`internal`/`third_party`/`open_api`）
 
 ## kbpd-common-cache
 
