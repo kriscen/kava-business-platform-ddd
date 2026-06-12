@@ -106,7 +106,7 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，DDD 分层结构、MVP 领域模型与持久化层已完成、Dubbo RPC 骨架 |
+| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，DDD 分层依赖已对齐 UPMS、JWT 资源服务器已激活、冒烟测试已补充 |
 | [domain-model.md](06-modules/kbpd-member/domain-model.md) | Member 领域模型，聚合根、值对象（MemberId/SysAppId）、读写分离 Repository、持久化层设计 |
 | [business-rules.md](06-modules/kbpd-member/business-rules.md) | Member 模块业务规则（规划），多租户隔离、CQRS、DDD 分层约束 |
 

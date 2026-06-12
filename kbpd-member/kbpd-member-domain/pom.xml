@@ -18,14 +18,15 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <!-- spring-context for @Service + constructor injection -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
         <!-- 系统模块 -->
         <dependency>
             <groupId>com.kava.kbpd</groupId>
             <artifactId>kbpd-member-types</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.kava.kbpd</groupId>
-            <artifactId>kbpd-common-core</artifactId>
         </dependency>
     </dependencies>
 

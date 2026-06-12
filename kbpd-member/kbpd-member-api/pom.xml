@@ -15,6 +15,10 @@
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.kava.kbpd</groupId>
             <artifactId>kbpd-member-types</artifactId>
             <version>${project.version}</version>

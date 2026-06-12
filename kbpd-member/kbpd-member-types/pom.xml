@@ -11,12 +11,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>com.kava.kbpd</groupId>
+            <artifactId>kbpd-common-core</artifactId>
         </dependency>
     </dependencies>
 

@@ -57,7 +57,7 @@ kbpd-member/
 │           └── repository/
 │               ├── IMemberReadRepository.java  # 读仓储接口
 │               └── IMemberWriteRepository.java # 写仓储接口
-├── kbpd-member-application/          # 应用层：应用服务（仅占位 App.java）
+├── kbpd-member-application/          # 应用层：应用服务（待实现）
 ├── kbpd-member-infrastructure/       # 基础设施层：持久化实现
 │   └── src/main/java/
 │       └── com/kava/kbpd/member/infrastructure/
@@ -82,7 +82,7 @@ kbpd-member/
 └── kbpd-member-bootstrap/            # Spring Boot 启动模块
     └── src/main/
         ├── java/com/kava/kbpd/member/
-        │   ├── MemberApplication.java       # 启动类（@EnableDubbo）
+        │   ├── MemberApplication.java       # 启动类（@EnableDubbo, @EnableResourceServer）
         │   └── config/
         │       └── MemberSecurityConfig.java  # 安全配置（空）
         └── resources/
@@ -137,17 +137,17 @@ kbpd-member/
 ### 子模块依赖关系
 
 ```
-kbpd-member-types
+kbpd-member-types ←── (kbpd-common-core)
     ↓
-kbpd-member-api  ←── (types, jakarta.validation-api)
+kbpd-member-api  ←── (types, jackson-annotations, jakarta.validation-api)
     ↓
-kbpd-member-domain ←── (types, commons-lang3, guava)
+kbpd-member-domain ←── (types, spring-context)
     ↓
-kbpd-member-application ←── (domain)
+kbpd-member-application ←── (domain, mapstruct, spring-tx, slf4j-api)
     ↓
 kbpd-member-infrastructure ←── (domain, mybatis-plus)
     ↓
-kbpd-member-adapter ←── (types, application, api, common-security, dubbo)
+kbpd-member-adapter ←── (types, application, api, common-web, common-security, dubbo, nacos)
     ↓
 kbpd-member-bootstrap ←── (adapter, infrastructure, mysql, nacos, redis)
 ```
@@ -213,6 +213,7 @@ cd kbpd-member/kbpd-member-bootstrap && mvn spring-boot:run
 | HTTP Controller | ❌ 未实现 | admin/app 目录为空 |
 | 枚举与常量 | ❌ 未实现 | types 层为空 |
 | 缓存策略 | ❌ 未实现 | Redis 依赖已配置 |
-| 安全配置 | ❌ 未实现 | MemberSecurityConfig 为空 |
+| 安全配置 | ✅ 已激活 | `@EnableResourceServer` 启用 JWT 资源服务器，dev profile 放行 |
+| 冒烟测试 | ✅ 已完成 | `MemberApplicationTest` 验证 Spring 上下文加载 |
 
 > 详细领域模型设计见 [domain-model.md](domain-model.md)
