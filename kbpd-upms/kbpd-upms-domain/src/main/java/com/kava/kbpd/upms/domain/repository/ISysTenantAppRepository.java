@@ -2,7 +2,7 @@ package com.kava.kbpd.upms.domain.repository;
 
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantAppEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
+import com.kava.kbpd.common.core.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantAppId;
 
 import java.util.List;

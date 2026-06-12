@@ -8,7 +8,7 @@ import com.kava.kbpd.upms.application.model.dto.SysAppDetailDTO;
 import com.kava.kbpd.upms.application.model.dto.SysAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysAppAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysAppEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
+import com.kava.kbpd.common.core.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.model.valobj.SysAppListQuery;
 import com.kava.kbpd.upms.domain.repository.ISysAppMenuRepository;
 import com.kava.kbpd.upms.domain.service.ISysAppService;

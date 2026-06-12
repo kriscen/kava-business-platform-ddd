@@ -1,6 +1,6 @@
 package com.kava.kbpd.upms.domain.repository;
 
-import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
+import com.kava.kbpd.common.core.model.valobj.SysAppId;
 
 import java.util.List;
 

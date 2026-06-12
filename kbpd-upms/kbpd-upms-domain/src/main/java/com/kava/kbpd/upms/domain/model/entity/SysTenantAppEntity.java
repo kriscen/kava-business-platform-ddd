@@ -2,7 +2,7 @@ package com.kava.kbpd.upms.domain.model.entity;
 
 import com.kava.kbpd.common.core.label.Entity;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
-import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
+import com.kava.kbpd.common.core.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.model.valobj.SysTenantAppId;
 import com.kava.kbpd.upms.types.enums.SysTenantAppStatus;
 import lombok.AllArgsConstructor;

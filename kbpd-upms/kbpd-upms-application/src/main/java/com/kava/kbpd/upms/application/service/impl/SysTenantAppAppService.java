@@ -5,7 +5,7 @@ import com.kava.kbpd.upms.application.model.dto.TenantAppListDTO;
 import com.kava.kbpd.upms.application.service.ISysTenantAppAppService;
 import com.kava.kbpd.upms.domain.model.entity.SysAppEntity;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantAppEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
+import com.kava.kbpd.common.core.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.repository.ISysAppRepository;
 import com.kava.kbpd.upms.domain.service.ISysTenantAppService;
 import lombok.RequiredArgsConstructor;

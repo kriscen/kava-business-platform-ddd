@@ -3,7 +3,7 @@ package com.kava.kbpd.upms.domain.service.impl;
 import com.kava.kbpd.common.core.model.valobj.SysTenantId;
 import com.kava.kbpd.upms.domain.model.entity.SysAppEntity;
 import com.kava.kbpd.upms.domain.model.entity.SysTenantAppEntity;
-import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
+import com.kava.kbpd.common.core.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.repository.ISysAppRepository;
 import com.kava.kbpd.upms.domain.repository.ISysTenantAppRepository;
 import com.kava.kbpd.upms.domain.service.ISysTenantAppService;

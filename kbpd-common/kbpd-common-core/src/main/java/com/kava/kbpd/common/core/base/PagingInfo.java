@@ -40,7 +40,7 @@ public class PagingInfo<T> implements Serializable {
         this.list = list;
     }
 
-    public static <T> PagingInfo<T> toResponse(List<T> data, PagingInfo page) {
+    public static <T> PagingInfo<T> toResponse(List<T> data, PagingInfo<T> page) {
         PagingInfo<T> pagingObj = new PagingInfo<>();
         pagingObj.setTotal(page.getTotal());
         pagingObj.setList(data);

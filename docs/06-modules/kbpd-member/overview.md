@@ -4,7 +4,7 @@
 
 kbpd-member 是基于 DDD 分层架构的会员管理微服务，负责平台会员的注册、信息管理、角色权限等核心业务。
 
-当前为**早期脚手架阶段**，仅搭建了完整的 DDD 分层目录结构和基础的 Dubbo RPC 通信骨架，尚未实现具体的业务逻辑。领域层、应用层、基础设施层均为空目录占位。
+当前已完成 MVP 领域模型搭建（聚合根、值对象、读写分离 Repository、持久化层），尚未实现业务行为（注册、登录等）和应用层服务。
 
 **核心职责（规划）：**
 
@@ -44,14 +44,31 @@ kbpd-member/
 │   └── src/main/java/
 │       └── com/kava/kbpd/member/api/
 │           ├── model/dto/
-│           │   └── MemberInfoDTO.java    # 会员信息 DTO（id, roles, permissions）
+│           │   └── MemberInfoDTO.java    # 会员信息 DTO（id, mobile, tenantId, appId, enabled）
 │           └── service/
 │               └── IRemoteMemberService.java  # Dubbo RPC 服务接口
 │
 ├── kbpd-member-types/                # 枚举、常量（空）
-├── kbpd-member-domain/               # 领域层：实体、聚合根、仓储接口（空）
+├── kbpd-member-domain/               # 领域层：实体、聚合根、仓储接口
+│   └── src/main/java/
+│       └── com/kava/kbpd/member/domain/
+│           ├── model/aggregate/
+│           │   └── MemberEntity.java         # 会员聚合根
+│           └── repository/
+│               ├── IMemberReadRepository.java  # 读仓储接口
+│               └── IMemberWriteRepository.java # 写仓储接口
 ├── kbpd-member-application/          # 应用层：应用服务（仅占位 App.java）
-├── kbpd-member-infrastructure/       # 基础设施层：持久化、外部服务（空）
+├── kbpd-member-infrastructure/       # 基础设施层：持久化实现
+│   └── src/main/java/
+│       └── com/kava/kbpd/member/infrastructure/
+│           ├── dao/
+│           │   ├── MemberMapper.java          # MyBatis-Plus Mapper
+│           │   └── po/MemberPO.java           # 持久化对象
+│           ├── converter/
+│           │   └── MemberConverter.java        # MapStruct PO↔Entity 转换
+│           └── adapter/repository/
+│               ├── MemberReadRepository.java   # 读仓储实现
+│               └── MemberWriteRepository.java  # 写仓储实现
 │
 ├── kbpd-member-adapter/              # 适配器层：RPC Provider、HTTP Controller
 │   └── src/main/java/
@@ -188,12 +205,14 @@ cd kbpd-member/kbpd-member-bootstrap && mvn spring-boot:run
 | Dubbo RPC 骨架 | ✅ 已搭建 | `IRemoteMemberService` + 桩实现 |
 | Nacos 配置集成 | ✅ 已搭建 | 本地 + 远程双层配置 |
 | 数据源配置 | ✅ 已搭建 | MySQL + Druid 已配置 |
-| 领域模型（实体、聚合根） | ❌ 未实现 | domain 层为空 |
-| 仓储接口与实现（CQRS） | ❌ 未实现 | 无 Repository、Mapper、PO |
+| 领域模型（实体、聚合根） | ✅ MVP 已完成 | `MemberEntity` 聚合根，含 6 个 MVP 字段 |
+| 仓储接口与实现（CQRS） | ✅ MVP 已完成 | 读写分离 Repository + MyBatis-Plus 持久化 |
+| 对象映射（MapStruct） | ✅ MVP 已完成 | `MemberConverter` PO↔Entity 双向转换 |
+| 数据库脚本 | ✅ 已创建 | `docs/01-sql/kbpd-member.sql`（mbr_member 表） |
 | 应用服务 | ❌ 未实现 | application 层为空 |
 | HTTP Controller | ❌ 未实现 | admin/app 目录为空 |
 | 枚举与常量 | ❌ 未实现 | types 层为空 |
-| 对象映射（MapStruct） | ❌ 未实现 | 依赖已引入 |
 | 缓存策略 | ❌ 未实现 | Redis 依赖已配置 |
 | 安全配置 | ❌ 未实现 | MemberSecurityConfig 为空 |
-| 数据库脚本 | ❌ 未创建 | 无 SQL 文件 |
+
+> 详细领域模型设计见 [domain-model.md](domain-model.md)

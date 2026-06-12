@@ -23,6 +23,10 @@
             <groupId>com.kava.kbpd</groupId>
             <artifactId>kbpd-member-types</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.kava.kbpd</groupId>
+            <artifactId>kbpd-common-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

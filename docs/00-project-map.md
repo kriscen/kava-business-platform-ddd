@@ -28,6 +28,7 @@ docs/
 | 文件 | 说明 |
 |------|------|
 | [kbpd-upms.sql](01-sql/kbpd-upms.sql) | UPMS 数据库建表脚本，包含用户、角色、菜单、分组、租户、应用等表结构定义 |
+| [kbpd-member.sql](01-sql/kbpd-member.sql) | Member 数据库建表脚本，mbr_member 会员表（含唯一索引 uk_mobile_app） |
 
 ---
 
@@ -105,7 +106,8 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，会员管理微服务定位、DDD 分层结构与 Dubbo RPC 骨架 |
+| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，DDD 分层结构、MVP 领域模型与持久化层已完成、Dubbo RPC 骨架 |
+| [domain-model.md](06-modules/kbpd-member/domain-model.md) | Member 领域模型，聚合根、值对象（MemberId/SysAppId）、读写分离 Repository、持久化层设计 |
 | [business-rules.md](06-modules/kbpd-member/business-rules.md) | Member 模块业务规则（规划），多租户隔离、CQRS、DDD 分层约束 |
 
 ### kbpd-upms/ — 用户权限管理服务
@@ -140,6 +142,6 @@ docs/
 
 **开发接口**：`04-reference/error-codes.md`
 
-**建库建表**：`01-sql/kbpd-upms.sql`
+**建库建表**：`01-sql/kbpd-upms.sql`（UPMS）、`01-sql/kbpd-member.sql`（Member）
 
-**模块开发**：`06-modules/kbpd-{模块}/overview.md` → `api.md` → `business-rules.md`
+**模块开发**：`06-modules/kbpd-{模块}/overview.md` → `domain-model.md` → `business-rules.md`

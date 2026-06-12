@@ -1,7 +1,7 @@
 package com.kava.kbpd.upms.infrastructure.adapter.repository;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.kava.kbpd.upms.domain.model.valobj.SysAppId;
+import com.kava.kbpd.common.core.model.valobj.SysAppId;
 import com.kava.kbpd.upms.domain.repository.ISysAppMenuRepository;
 import com.kava.kbpd.upms.infrastructure.dao.SysAppMenuMapper;
 import com.kava.kbpd.upms.infrastructure.dao.po.SysAppMenuPO;
