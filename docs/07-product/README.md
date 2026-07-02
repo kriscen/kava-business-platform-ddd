@@ -2,7 +2,7 @@
 
 本目录存放 Kava 平台的产品级文档，包括产品愿景、用户角色定义和平台架构概念。
 
-> **与 `.claude/rules/product-vision.md` 的关系**：rules 文件是精简的核心规则（每次 Claude Code 对话自动加载），本目录是完整的产品知识库，需要时查阅。
+> **与 `.Codex/rules/product-vision.md` 的关系**：rules 文件是精简的核心规则（Codex 通过 `AGENTS.md` 引用），本目录是完整的产品知识库，需要时查阅。
 
 ## 文档清单
 
