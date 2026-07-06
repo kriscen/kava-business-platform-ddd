@@ -1,6 +1,6 @@
 # kbpd-upms -- 业务规则
 
-> 模块已完成 14 个资源的 CRUD、RBAC 关联持久化、权限运行时、租户管理和数据隔离。部分领域业务逻辑和集成测试尚在推进中。
+> 模块已完成 16 个 REST Controller 覆盖的核心资源能力，包括 CRUD、RBAC 关联持久化、App/租户应用订阅、权限运行时、租户管理和数据隔离。部分数据权限细节和集成测试仍在后续迭代中。
 
 ---
 
@@ -37,12 +37,14 @@
 ┌─────────────┐       ┌─────────────┐
 │   SysGroup  │       │  SysTenant  │
 │   (实体)     │       │   (实体)     │
-└─────────────┘       │  menuId     │
+└─────────────┘       │ subscriptions │
                       └─────────────┘
 
 关联表（基础设施层）：
   sys_user_role  → userId, roleId
   sys_role_menu  → roleId, menuId
+  sys_app_menu   → appId, menuId
+  sys_tenant_app → tenantId, appId
 ```
 
 ---
@@ -113,13 +115,24 @@
 | 规则 | 描述 |
 |---|---|
 | 租户数据隔离 | `KavaTenantLineInnerInterceptor` 自动注入 `WHERE tenant_id = ?`，平台管理员跳过，支持忽略表配置 |
-| 租户创建自动初始化 | 创建租户时自动创建 `tenant_admin` 角色，关联所有已分配菜单，dsType=ALL |
-| 租户菜单分配 | 通过 `sys_tenant.menu_id` 字段存储分配的菜单 ID 列表 |
+| 租户创建自动初始化 | 创建租户时自动创建 `tenant_admin` 角色，角色菜单来自租户可用应用菜单范围，dsType=ALL |
 | 租户状态枚举 | `SysTenantStatus`: NORMAL("0")/DISABLED("9")，创建时默认 NORMAL，到期状态通过 `endTime` 实时计算 |
 | 租户编码唯一性 | 创建/更新时校验 `code` 全局唯一（排除自身），违反抛 `TENANT_CODE_DUPLICATE`（10040002） |
 | 租户生命周期管理 | enable/disable 操作校验状态流转合法性，重复操作抛 `TENANT_STATUS_INVALID_TRANSITION`（10040003） |
 | 租户到期自动判定 | `isExpired()` 实时比较 `endTime` 与当前时间；`queryEffectiveStatus()` 综合到期+显式状态返回最终有效状态 |
 | 租户创建管理员用户 | 创建租户时可传入 adminUsername/adminPassword，自动创建管理员用户并绑定 tenant_admin 角色 |
+
+### 应用与租户应用订阅
+
+| 规则 | 描述 |
+|---|---|
+| 应用编码唯一性 | 创建/更新 App 时校验 code 唯一，违反抛 `APP_CODE_DUPLICATE`（10090002） |
+| 系统应用保护 | 系统应用不可删除、不可停用；删除或停用分别抛 `APP_SYSTEM_CANNOT_DELETE`（10090003）和 `APP_SYSTEM_CANNOT_DISABLE`（10090004） |
+| 应用菜单绑定 | App 可通过 `sys_app_menu` 绑定菜单集合；绑定时校验菜单存在且属于可分配范围 |
+| 应用删除保护 | App 仍被租户订阅时不可删除，抛 `APP_IN_USE`（10090005） |
+| 租户订阅唯一性 | `sys_tenant_app` 记录租户与 App 的订阅关系，同一租户不可重复订阅同一 App |
+| 停用应用不可订阅 | 订阅已停用 App 时抛 `APP_DISABLED`（10090006） |
+| 系统应用不可退订 | `kava-base` 等系统基础应用不可从租户退订，抛 `TENANT_APP_BASE_CANNOT_UNSUBSCRIBE`（10100002） |
 
 ### 基础设施
 

@@ -117,6 +117,8 @@ BaseBizException (运行时异常, 支持 MessageFormat 参数替换)
 |----|---------|
 | `SysUserId` | `Long id` |
 | `SysTenantId` | `Long id` |
+| `SysAppId` | `Long id` |
+| `MemberId` | `Long id` |
 
 ### 常量与枚举
 
@@ -180,13 +182,19 @@ BasePO (Serializable 空基类)
 
 自动装配 `MybatisPlusConfig`，包含：
 
-- `PaginationInnerInterceptor`（MySQL 分页插件）
+- `TenantLineInnerInterceptor` + `KavaTenantLineInnerInterceptor`（多租户 `tenant_id` 自动注入，平台管理员跳过）
+- `DataScopeInnerInterceptor`（数据权限条件构建能力；当前业务方法注解接入和 SQL 注入生效由业务模块继续推进）
+- `PaginationInnerInterceptor`（MySQL 分页插件，注册在租户和数据权限拦截器之后）
+- `KavaMetaObjectHandler`（审计字段与逻辑删除默认值自动填充）
 - `StringArrayTypeHandler`（Java `String[]` ↔ 数据库逗号分隔字符串）
 
 ### 辅助类
 
 | 类 | 说明 |
 |----|------|
+| `KavaTenantLineInnerInterceptor` | MyBatis-Plus 租户处理器，根据 `UserContext` 注入 tenant_id 过滤，支持忽略表 |
+| `DataScopeInnerInterceptor` | 数据权限拦截器骨架，可根据 `UserContext.dataScope` 构造 group/user 过滤表达式 |
+| `KavaMetaObjectHandler` | 自动填充 creator、gmtCreate、modifier、gmtModified、delFlag |
 | `StringArrayTypeHandler` | MyBatis 类型处理器：`String[]` ↔ 逗号分隔字符串 |
 | `DataScopeType` | 数据权限级别枚举：`ALL`、`CUSTOM`、`OWN_CHILD_LEVEL`、`OWN_LEVEL`、`SELF_LEVEL` |
 

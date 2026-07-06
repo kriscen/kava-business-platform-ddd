@@ -4,7 +4,7 @@
 
 kbpd-member 是基于 DDD 分层架构的会员管理微服务，负责平台会员的注册、信息管理、角色权限等核心业务。
 
-当前已完成 MVP 领域模型搭建（聚合根、值对象、读写分离 Repository、持久化层），尚未实现业务行为（注册、登录等）和应用层服务。
+当前已完成 MVP 领域模型搭建（聚合根、值对象、读写分离 Repository、MyBatis-Plus 持久化和 MapStruct 转换）。RPC Provider 仍为桩实现，尚未接入领域/持久化查询；应用服务和 HTTP Controller 仍未实现。
 
 **核心职责（规划）：**
 
@@ -27,10 +27,10 @@ kbpd-member 是基于 DDD 分层架构的会员管理微服务，负责平台会
 | Spring Boot | 3.3.13 | 应用框架 |
 | Spring Cloud Alibaba Nacos | 2023.0.3.2 | 服务注册发现 & 配置管理 |
 | Apache Dubbo | 3.3.x | 微服务间 RPC 通信 |
-| MyBatis-Plus | 3.5.x | 数据访问层（已引入依赖，未使用） |
+| MyBatis-Plus | 3.5.x | 数据访问层（已用于 MemberMapper / MemberPO） |
 | MySQL | — | 数据库（`kava-member`） |
 | Redis | — | 缓存（已配置连接，未使用） |
-| MapStruct | — | 对象映射（已引入依赖，未使用） |
+| MapStruct | — | 对象映射（已用于 MemberConverter PO↔Entity） |
 | Java | 21 | 运行时 |
 
 ---

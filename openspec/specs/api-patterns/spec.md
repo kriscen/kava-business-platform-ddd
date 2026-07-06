@@ -6,6 +6,40 @@
 
 ## Requirements
 
+### Requirement: HTTP 响应统一使用 JsonResult 包装
+后端 REST Controller MUST 使用 `JsonResult<T>` 作为业务响应包装，字段为 `success`、`data`、`errorCode`、`errorMessage`。
+
+#### Scenario: 业务成功响应
+- **WHEN** Controller 成功处理请求
+- **THEN** 响应体 MUST 包含 `success: true`
+- **AND** `data` MUST 包含业务数据或为 null
+- **AND** `errorCode` 与 `errorMessage` MUST 为 null
+
+#### Scenario: 业务失败响应
+- **WHEN** 后端抛出业务异常并被统一异常处理转换为响应
+- **THEN** 响应体 MUST 包含 `success: false`
+- **AND** `data` MUST 为 null
+- **AND** `errorCode` MUST 为字符串错误码
+- **AND** `errorMessage` MUST 为可展示的错误描述
+
+### Requirement: 分页响应使用 PagingInfo 字段
+分页 REST 端点 MUST 返回 `JsonResult<PagingInfo<T>>`，分页数据字段为 `list`、`total`、`pageNo`、`pageSize`。
+
+#### Scenario: 查询分页列表
+- **WHEN** 前端调用任一 `/page` 端点
+- **THEN** `data.list` MUST 包含当前页数据数组
+- **AND** `data.total` MUST 包含总记录数
+- **AND** `data.pageNo` MUST 包含当前页码
+- **AND** `data.pageSize` MUST 包含每页条数
+
+### Requirement: Long 响应字段序列化为字符串
+后端 Web 层 MUST 将 `Long` 和 `BigInteger` 响应字段序列化为 JSON 字符串，避免 JavaScript 精度丢失。
+
+#### Scenario: 响应包含 Long ID
+- **WHEN** 响应 DTO 或 `JsonResult.data` 包含 `Long` ID 字段
+- **THEN** JSON 响应中的该字段 SHOULD 表现为字符串
+- **AND** 前端契约文档 MUST 明确 ID 字段按字符串消费
+
 ### Requirement: ListQuery 值对象包含实际过滤字段
 ListQuery 值对象 MUST 包含对应实体的实际过滤条件字段，MUST NOT 仅有分页参数。
 

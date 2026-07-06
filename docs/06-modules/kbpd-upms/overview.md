@@ -18,6 +18,8 @@ kbpd-upms 是平台的**用户权限管理**核心服务，负责用户、角色
 - 公共参数（PublicParam）：系统级参数配置
 - 网关路由（RouteConf）：动态路由配置
 - OAuth 客户端（OauthClient）：OAuth2 客户端信息管理
+- 应用管理（App）：平台应用定义、应用菜单绑定、系统应用保护
+- 租户应用订阅（TenantApp）：租户订阅/退订应用、查询租户已订阅应用
 
 **不负责：**
 
@@ -49,9 +51,9 @@ kbpd-upms 是平台的**用户权限管理**核心服务，负责用户、角色
 ```
 kbpd-upms/
 ├── kbpd-upms-api/                    # 对外契约：Request/Response/Query/DTO/远程接口定义
-│   ├── model/request/                #   14 个 Request 类（对应 14 个资源）
-│   ├── model/response/               #   ListResponse + DetailResponse（共 28 个）
-│   ├── model/query/                  #   Adapter 层分页查询参数
+│   ├── model/request/                #   16 个 Request 类（含 App、TenantApp）
+│   ├── model/response/               #   List/Detail/Dropdown/订阅响应（共 35 个文件）
+│   ├── model/query/                  #   14 个 Adapter 层分页查询参数
 │   ├── model/dto/                    #   跨服务传输 DTO（SysUserDTO、SysOauthClientDTO）
 │   └── service/                      #   Dubbo 远程接口（IRemoteUserService、IRemoteOauthClientService）
 ├── kbpd-upms-types/                  # 共享类型：枚举、常量、异常定义
@@ -61,25 +63,25 @@ kbpd-upms/
 ├── kbpd-upms-domain/                 # 领域层：实体、聚合、领域服务、仓储接口
 │   ├── model/aggregate/              #   SysUserEntity、SysRoleEntity（聚合根）
 │   ├── model/entity/                 #   Menu、Group、Tenant、Area 等 12 个实体
-│   ├── model/valobj/                 #   值对象 ID（12 个）+ 列表查询对象（14 个）
+│   ├── model/valobj/                 #   值对象 ID + 列表查询对象
 │   ├── service/                      #   领域服务接口
 │   ├── service/impl/                 #   领域服务实现
-│   └── repository/                   #   仓储接口（Read/Write 分离 + Simple）
+│   └── repository/                   #   19 个仓储接口（Read/Write 分离 + Simple + 关联表）
 ├── kbpd-upms-application/            # 应用层：应用服务、命令、DTO、转换器
-│   ├── service/                      #   14 个应用服务接口
+│   ├── service/                      #   16 个应用服务接口及实现
 │   ├── service/impl/                 #   应用服务实现
-│   ├── model/command/                #   Create/Update 命令（共 28 个）
-│   ├── model/dto/                    #   App 层 List/Detail DTO（共 28 个）
-│   └── converter/                    #   MapStruct 转换器（14 个）
+│   ├── model/command/                #   Create/Update/订阅命令（共 30 个文件）
+│   ├── model/dto/                    #   App 层 List/Detail/Dropdown DTO（共 33 个文件）
+│   └── converter/                    #   MapStruct 转换器
 ├── kbpd-upms-infrastructure/         # 基础设施层：仓储实现、Mapper、PO、转换器
-│   ├── adapter/repository/           #   仓储实现（16 个）
-│   ├── dao/                          #   MyBatis-Plus Mapper 接口（14 个）
+│   ├── adapter/repository/           #   仓储实现（含关联表查询/写入）
+│   ├── dao/                          #   19 个 MyBatis-Plus Mapper 接口
 │   ├── dao/po/                       #   持久化对象（16 个，含关联表 PO）
-│   └── converter/                    #   Entity ↔ PO 转换器（14 个）
+│   └── converter/                    #   17 个 Entity ↔ PO 转换器
 ├── kbpd-upms-adapter/                # 适配器层：Controller、RPC 服务、转换器
-│   ├── http/                         #   REST Controller（14 个）
+│   ├── http/                         #   16 个 REST Controller
 │   ├── rpc/                          #   Dubbo 服务实现（3 个）
-│   └── converter/                    #   Request/Response ↔ Command/DTO 转换器（14 个）
+│   └── converter/                    #   Request/Response ↔ Command/DTO 转换器
 └── kbpd-upms-bootstrap/              # 启动模块
     └── src/main/java/                #   UpmsApplication + DevSecurityConfig
 ```
@@ -216,5 +218,7 @@ cd kbpd-upms/kbpd-upms-bootstrap && mvn spring-boot:run
 | 公共参数 CRUD | ✅ | 系统参数配置 |
 | 路由配置 CRUD | ✅ | 动态网关路由 |
 | OAuth 客户端 CRUD | ✅ | 客户端详情管理 |
+| 应用 CRUD | ✅ | App 创建、更新、删除、分页、详情、下拉和菜单绑定 |
+| 租户应用订阅 | ✅ | 订阅、退订、按租户查询；`kava-base` 系统应用不可退订 |
 | 领域业务逻辑 | ✅ | 密码加密、租户编码唯一性、状态流转校验、到期判定已实现 |
-| MetaObjectHandler | ❌ | PO 层 FieldFill 注解无对应 Handler，creator/gmtCreate 等字段为 null |
+| MetaObjectHandler | ✅ | `KavaMetaObjectHandler` 自动填充 creator、gmtCreate、modifier、gmtModified、delFlag |

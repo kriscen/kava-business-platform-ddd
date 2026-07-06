@@ -47,6 +47,8 @@
 }
 ```
 
+字段类型表中的 `Long` 表示后端 Java 类型；当前 Web 层通过 `WebConfig` 将 `Long` / `BigInteger` 响应序列化为 JSON 字符串，前端应把 ID、`tenantId`、`roleIds`、`menuIds`、`appId` 等字段按字符串处理，避免 JS number 精度丢失。请求体和路径参数仍按后端 `Long` 入参解析。
+
 ---
 
 ## HTTP REST 接口

@@ -106,7 +106,7 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，DDD 分层依赖已对齐 UPMS、JWT 资源服务器已激活、冒烟测试已补充 |
+| [overview.md](06-modules/kbpd-member/overview.md) | Member 模块概览，MVP 领域模型、MyBatis-Plus 持久化、MapStruct 转换和 RPC 桩边界 |
 | [domain-model.md](06-modules/kbpd-member/domain-model.md) | Member 领域模型，聚合根、值对象（MemberId/SysAppId）、读写分离 Repository、持久化层设计 |
 | [business-rules.md](06-modules/kbpd-member/business-rules.md) | Member 模块业务规则（规划），多租户隔离、CQRS、DDD 分层约束 |
 
@@ -114,8 +114,8 @@ docs/
 
 | 文件 | 说明 |
 |------|------|
-| [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览，用户权限管理核心服务、14 个资源 CRUD 体系、RBAC 权限模型与数据隔离策略 |
-| [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则，RBAC 关联持久化、权限运行时、租户管理及数据隔离规则 |
+| [overview.md](06-modules/kbpd-upms/overview.md) | UPMS 模块概览，用户权限管理核心服务、16 个 REST Controller、App/租户应用订阅、RBAC 权限模型与数据隔离策略 |
+| [business-rules.md](06-modules/kbpd-upms/business-rules.md) | UPMS 模块业务规则，RBAC 关联持久化、App 菜单绑定、租户应用订阅、权限运行时及数据隔离规则 |
 
 ---
 
